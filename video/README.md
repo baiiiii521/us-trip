@@ -33,4 +33,14 @@ node video/tools/capture.cjs film film/film-broadcast.html video/out/film-silent
 node video/tools/mix.cjs video/out/film-silent-60.mp4 video/out/east-coast-hoops-60fps.mp4
 ```
 
+方向三 City Pop 梦境（`导演稿-citypop.md`、`film/film-citypop.html`，30.25 秒，配乐 bgm-tech.mp3）：
+
+```bash
+node video/tools/capture.cjs film film/film-citypop.html video/out/citypop-silent-60.mp4 60
+```
+
+```bash
+node video/tools/mix.cjs video/out/citypop-silent-60.mp4 video/out/east-coast-hoops-citypop-60fps.mp4 citypop
+```
+
 产物在 `video/out/`（不进 git）。

@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>EAST COAST HOOPS City Pop 正片</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,600&family=IBM+Plex+Mono:wght@500&family=Noto+Serif+SC:wght@700;900&display=block">
+<style>
+  html, body { margin: 0; height: 100%; background: #F7E8E1; overflow: hidden; }
+  #stage { position: relative; width: 1080px; height: 1920px; transform-origin: 0 0; overflow: hidden; background: #F7E8E1; }
+  .layer { position: absolute; inset: 0; }
+  .scene { position: absolute; inset: 0; display: none; transform-origin: 50% 50%; }
+  .en { font-family: "Fraunces", serif; font-style: italic; font-weight: 600; }
+  .zh { font-family: "Noto Serif SC", serif; font-weight: 900; }
+  .zh7 { font-family: "Noto Serif SC", serif; font-weight: 700; }
+  .center { position: absolute; left: 0; right: 0; text-align: center; }
+  .navy { color: #2B3A67; } .coral { color: #E2603F; } .cream { color: #FFF8EE; } .grey { color: #5E6577; }
+  .soft { text-shadow: 0 6px 30px rgba(120,80,140,.28); }
+  /* 落日（横条切开） */
+  .sun { position: absolute; width: 640px; height: 640px; left: 220px; border-radius: 50%; overflow: hidden;
+    background: linear-gradient(180deg, #FFF0B8 0%, #FFC27A 45%, #FF7E5F 100%);
+    -webkit-mask: linear-gradient(#000 0 52%, transparent 52% 56%, #000 56% 64%, transparent 64% 69%, #000 69% 77%, transparent 77% 83%, #000 83% 90%, transparent 90% 97%, #000 97%);
+            mask: linear-gradient(#000 0 52%, transparent 52% 56%, #000 56% 64%, transparent 64% 69%, #000 69% 77%, transparent 77% 83%, #000 83% 90%, transparent 90% 97%, #000 97%); }
+  .sun svg { position: absolute; inset: 0; }
+  .sea { position: absolute; left: 0; right: 0; top: 1210px; bottom: 0; background: linear-gradient(180deg, #46C1D9 0%, #2A93B8 45%, #1C6E93 100%); }
+  .glint { position: absolute; left: 50%; height: 10px; border-radius: 5px; background: rgba(255,236,190,.85); }
+  /* 票根 */
+  .tk { position: absolute; left: 110px; width: 860px; height: 250px; border-radius: 24px; background: #FFF6E6; box-shadow: 0 26px 50px rgba(30,60,90,.22);
+    display: grid; grid-template-columns: 300px 1fr; overflow: hidden; transform-origin: 50% 50%; }
+  .tk .l { display: grid; place-items: center; border-right: 6px dashed #E9C9A8; }
+  .tk .r { display: flex; align-items: center; padding-left: 40px; }
+  .gt { position: absolute; left: 80px; width: 920px; height: 290px; border-radius: 26px; background: #FFF6E6; box-shadow: 0 30px 60px rgba(20,30,70,.3);
+    display: grid; grid-template-columns: 230px 1fr; overflow: hidden; transform-origin: 50% 50%; }
+  .gt .stub { display: grid; place-content: center; text-align: center; color: #fff; border-right: 6px dashed rgba(255,246,230,.85); }
+  .gt .main { display: grid; align-content: center; gap: 10px; padding-left: 44px; }
+  /* 明信片 */
+  .card { position: absolute; left: 80px; top: 300px; width: 920px; height: 1180px; border-radius: 14px; background: #FFF6E6;
+    background-image: repeating-linear-gradient(0deg, rgba(150,110,80,.035) 0 2px, transparent 2px 6px); box-shadow: 0 40px 80px rgba(40,50,90,.28); transform-origin: 50% 50%; }
+  .card svg { position: absolute; left: 30px; top: 250px; width: 860px; height: 900px; }
+  .stamp-l { font-family: "Noto Serif SC", serif; font-weight: 900; font-size: 44px; fill: #2B3A67; }
+  .stamp-d { font-family: "Fraunces", serif; font-style: italic; font-size: 36px; fill: #E2603F; }
+  /* 纽约 */
+  .moon { position: absolute; width: 520px; height: 520px; left: 280px; top: 260px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 38%, #FFFBF2 0%, #FFF1DC 60%, #FBD9C6 100%); box-shadow: 0 0 120px 40px rgba(255,240,225,.65); }
+  .ground { position: absolute; left: 0; right: 0; top: 1300px; bottom: 0; background: linear-gradient(180deg, #F7EEF4 0%, #FFF6EC 100%); box-shadow: 0 -30px 60px rgba(255,255,255,.55); }
+  .ticket { position: absolute; left: 110px; top: 1380px; width: 860px; height: 300px; border-radius: 26px; background: #FFF6E6;
+    box-shadow: 0 30px 60px rgba(30,60,90,.28); display: grid; grid-template-columns: 1fr 170px; overflow: hidden; }
+  .ticket .main { padding: 40px 0 0 52px; display: grid; align-content: start; gap: 10px; }
+  .ticket .stub { border-left: 6px dashed #E9C9A8; display: grid; place-items: center; background: #FFE9CC; }
+  .band { position: absolute; left: 0; width: 1080px; height: 240px; }
+  #grain { width: 1080px; height: 1920px; mix-blend-mode: soft-light; opacity: .5; }
+  .haze { background: radial-gradient(80% 50% at 50% 55%, rgba(255,250,240,.28), transparent 70%); mix-blend-mode: screen; pointer-events: none; }
+  .wm { position: absolute; right: 44px; bottom: 40px; font-family: "IBM Plex Mono", monospace; font-size: 22px; letter-spacing: .12em; color: rgba(255,255,255,.6); text-shadow: 0 1px 3px rgba(0,0,0,.3); }
+  .fade { background: #FFF4E6; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <!-- 1 封面：篮球落日 -->
+  <div class="scene" id="s1">
+    <div class="layer" style="background:linear-gradient(180deg,#7FA7DD 0%,#B9B4E0 32%,#F3C3D2 55%,#FFE5CC 66%)"></div>
+    <div class="sun" id="sun1"><svg viewBox="0 0 640 640" fill="none" stroke="#C4522E" stroke-width="7" opacity=".55"><path d="M0 320h640M320 0v640"/><path d="M105 70c75 60 110 150 110 250s-35 190-110 250M535 70c-75 60-110 150-110 250s35 190 110 250"/></svg></div>
+    <div class="sea"><div id="gl1"></div></div>
+    <div class="center" id="t1" style="top:200px"><div class="en cream soft" style="font-size:150px;line-height:1">East Coast</div><div class="en coral" style="font-size:250px;line-height:.95">Hoops</div></div>
+    <div class="center" id="t1z" style="top:1430px"><div class="zh cream" style="font-size:78px;text-shadow:0 4px 20px rgba(20,60,90,.35)">美东圣诞篮球行</div><div class="en cream" style="font-size:60px;margin-top:14px">2026.12.18 — 12.31</div></div>
+  </div>
+  <!-- 2 三张票 -->
+  <div class="scene" id="s2">
+    <div class="layer" style="background:linear-gradient(180deg,#F3C3D2 0%,#FFE5CC 60%,#FFF1DC 100%)"></div>
+    <div class="layer" style="background:radial-gradient(60% 35% at 50% 45%,rgba(255,255,255,.7),transparent 70%)"></div>
+    <div class="tk" id="k0" style="top:420px"><div class="l"><span class="en coral" style="font-size:170px;line-height:1">14</span></div><div class="r"><span class="zh navy" style="font-size:80px">天</span></div></div>
+    <div class="tk" id="k1" style="top:820px"><div class="l"><span class="en coral" style="font-size:170px;line-height:1">5</span></div><div class="r"><span class="zh navy" style="font-size:80px">座城市</span></div></div>
+    <div class="tk" id="k2" style="top:1220px"><div class="l"><span class="en coral" style="font-size:170px;line-height:1">2</span></div><div class="r"><span class="zh navy" style="font-size:80px">个人</span></div></div>
+  </div>
+  <!-- 3 明信片路线 -->
+  <div class="scene" id="s3">
+    <div class="layer" style="background:linear-gradient(180deg,#9DBBE6 0%,#C9C2E6 40%,#F6CFD6 75%,#FFE5CC 100%)"></div>
+    <div class="card" id="card">
+      <div class="zh navy" style="position:absolute;left:60px;top:46px;font-size:100px">路线</div>
+      <div class="zh7 grey" style="position:absolute;left:62px;top:176px;font-size:40px">纽约进、纽瓦克出，全程火车和大巴</div>
+      <svg viewBox="0 0 860 900" id="map"></svg>
+    </div>
+    <div class="center" id="cap" style="top:1560px"><div><span class="zh navy" id="capCity" style="font-size:76px">纽约</span><span class="en coral" id="capDate" style="font-size:60px;margin-left:24px">12.18</span></div><div class="zh7 navy" id="capSub" style="font-size:44px;margin-top:8px">落地 JFK，当天坐火车去波士顿</div></div>
+  </div>
+  <!-- 4 三张球票 -->
+  <div class="scene" id="s4">
+    <div class="layer" style="background:linear-gradient(180deg,#2B3A67 0%,#5E78B8 38%,#C9B2D9 70%,#F6CFD6 100%)"></div>
+    <canvas class="layer" id="bokeh" style="width:1080px;height:1920px;filter:blur(14px)"></canvas>
+    <div class="center" id="t4" style="top:200px"><div class="zh cream" style="font-size:130px">3 场 NBA</div><div class="zh7 cream" style="font-size:48px;margin-top:6px;opacity:.9">两个人，三座球馆</div></div>
+    <div class="gt" id="g0" style="top:560px"><div class="stub" style="background:#E2603F"><span class="en" style="font-size:86px;line-height:1">12.22</span><span class="zh7" style="font-size:36px">周二</span></div><div class="main"><span class="zh navy" style="font-size:76px">奇才 vs 猛龙</span><span class="zh7 grey" style="font-size:38px">Capital One Arena，19:00 开球</span></div></div>
+    <div class="gt" id="g1" style="top:900px"><div class="stub" style="background:#2A93B8"><span class="en" style="font-size:86px;line-height:1">12.23</span><span class="zh7" style="font-size:36px">周三</span></div><div class="main"><span class="zh navy" style="font-size:76px">76人 vs 火箭</span><span class="zh7 grey" style="font-size:38px">Xfinity Mobile Arena，19:30 开球</span></div></div>
+    <div class="gt" id="g2" style="top:1240px"><div class="stub" style="background:#E06A9A"><span class="en" style="font-size:86px;line-height:1">12.26</span><span class="zh7" style="font-size:36px">周六</span></div><div class="main"><span class="zh navy" style="font-size:76px">篮网 vs 鹈鹕</span><span class="zh7 grey" style="font-size:38px">Barclays Center，18:00 开球</span></div></div>
+  </div>
+  <!-- 5 纽约圣诞 -->
+  <div class="scene" id="s5">
+    <div class="layer" style="background:linear-gradient(180deg,#7FA7DD 0%,#B9B4E0 30%,#F3C3D2 62%,#FFE5CC 100%)"></div>
+    <div class="moon" id="moon"></div>
+    <svg class="layer" id="city" viewBox="0 0 1080 1920" width="1080" height="1920"></svg>
+    <svg class="layer" viewBox="0 0 1080 1920" width="1080" height="1920">
+      <g id="treeG" transform="translate(800 600) scale(.82)">
+        <polygon points="0,0 -150,250 150,250" fill="#2F8F83"/><polygon points="0,140 -200,420 200,420" fill="#2A7F78"/><polygon points="0,300 -250,600 250,600" fill="#24706C"/>
+        <rect x="-34" y="600" width="68" height="80" fill="#7A4E3A"/>
+        <path id="treeStar" d="M0,-58 15,-18 58,-18 23,8 37,50 0,24 -37,50 -23,8 -58,-18 -15,-18z" fill="#FFE29A"/>
+        <g id="lights"></g>
+      </g>
+    </svg>
+    <div class="ground"></div>
+    <canvas class="layer" id="snow" style="width:1080px;height:1920px"></canvas>
+    <div class="center" id="t5" style="top:1420px"><div class="en coral" style="font-size:170px;line-height:1">New York</div><div class="zh7 navy" style="font-size:66px;margin-top:20px">在纽约过圣诞，连住 6 晚</div><div class="zh7 grey" style="font-size:42px;margin-top:22px">洛克菲勒圣诞树、布鲁克林大桥、篮网主场</div></div>
+  </div>
+  <!-- 6/7 洛杉矶落日 + 片尾 -->
+  <div class="scene" id="s6">
+    <div class="layer" style="background:linear-gradient(180deg,#F59E86 0%,#FFB38A 35%,#FFD59A 60%,#FFE6B5 64%)"></div>
+    <div class="sun" id="sun6"><svg viewBox="0 0 640 640" fill="none" stroke="#C4522E" stroke-width="7" opacity=".45"><path d="M0 320h640M320 0v640"/><path d="M105 70c75 60 110 150 110 250s-35 190-110 250M535 70c-75 60-110 150-110 250s35 190 110 250"/></svg></div>
+    <div class="sea"><div id="gl6"></div></div>
+    <svg class="layer" viewBox="0 0 1080 1920" width="1080" height="1920">
+      <g id="palmL" transform="translate(110 1240)"><path d="M0 0 C 10 -260, 40 -480, 70 -700" stroke="#1F4F5A" stroke-width="30" fill="none" stroke-linecap="round"/>
+        <g transform="translate(70 -700)" fill="#1F4F5A"><path d="M0 0 C 120 -60, 230 -20, 300 60 C 200 10, 110 10, 0 0Z"/><path d="M0 0 C -110 -70, -230 -40, -300 40 C -190 0, -100 0, 0 0Z"/><path d="M0 0 C 60 -130, 170 -190, 260 -170 C 170 -140, 80 -90, 0 0Z"/><path d="M0 0 C -40 -140, -150 -210, -250 -200 C -160 -160, -70 -100, 0 0Z"/><path d="M0 0 C 100 40, 170 140, 190 240 C 130 150, 70 80, 0 0Z"/></g></g>
+      <g id="palmR" transform="translate(980 1260)"><path d="M0 0 C -10 -220, -30 -400, -60 -580" stroke="#1F4F5A" stroke-width="26" fill="none" stroke-linecap="round"/>
+        <g transform="translate(-60 -580)" fill="#1F4F5A"><path d="M0 0 C 110 -50, 210 -10, 270 60 C 180 10, 100 10, 0 0Z"/><path d="M0 0 C -100 -60, -210 -30, -270 40 C -170 0, -90 0, 0 0Z"/><path d="M0 0 C 50 -120, 150 -170, 230 -150 C 150 -120, 70 -80, 0 0Z"/><path d="M0 0 C -40 -120, -130 -180, -220 -170 C -140 -140, -60 -90, 0 0Z"/></g></g>
+    </svg>
+    <div class="ticket" id="ticket"><div class="main"><div class="en coral" style="font-size:120px;line-height:1">12.31</div><div class="zh7 navy" style="font-size:42px;white-space:nowrap">最后一天，在圣莫尼卡看日落</div></div><div class="stub"><div class="en" style="font-size:44px;color:#2A93B8;writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap">Santa Monica</div></div></div>
+    <div class="center" id="t7" style="top:200px"><div class="en cream soft" style="font-size:140px;line-height:1">East Coast</div><div class="en" style="font-size:240px;line-height:.95;color:#FFF8EE;text-shadow:0 8px 40px rgba(200,80,50,.35)">Hoops</div></div>
+    <div class="center" id="t7z" style="top:1440px"><div class="zh cream" style="font-size:70px;text-shadow:0 4px 20px rgba(20,60,90,.35)">两人 14 天 5 座城市</div><div class="en cream" style="font-size:60px;margin-top:14px">2026.12.18 — 12.31</div></div>
+  </div>
+  <div id="bands" class="layer" style="pointer-events:none"></div>
+  <div class="layer haze"></div>
+  <canvas id="grain" class="layer"></canvas>
+  <div class="wm">Created by Huashu-Design</div>
+  <div class="layer fade" id="fade"></div>
+</div>
+<script type="module">
+import { makeStage, makeGrain, prog, ease, lerp, clamp, rng } from '../lib/stage.js';
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+const BEAT = 60 / 119, BAR = BEAT * 4;
+const S = [0, 2, 3, 6, 9, 12, 14, 15].map((b) => b * BAR);
+const DUR = S[7];
+const grain = makeGrain($('grain'), { alpha: .35 });
+
+// 海面光斑
+function makeGlints(id, seed) { const box = $(id); const r = rng(seed); return Array.from({ length: 7 }, (_, i) => { const d = document.createElement('div'); d.className = 'glint'; d.style.top = (24 + i * 28) + 'px'; box.appendChild(d); return { el: d, w: 120 + r() * 380, p: r() * 6.28 }; }); }
+const G1 = makeGlints('gl1', 9), G6 = makeGlints('gl6', 19);
+function glints(G, t) { G.forEach((g, i) => { const w = g.w * (.7 + .3 * Math.sin(t * 2 + g.p)); g.el.style.width = w + 'px'; g.el.style.marginLeft = (-w / 2 + Math.sin(t + i) * 30) + 'px'; g.el.style.opacity = .4 + .5 * Math.sin(t * 3 + g.p) ** 2; }); }
+// 散景
+const bk = $('bokeh'); bk.width = 540; bk.height = 960; const bx = bk.getContext('2d'); const BR = rng(7);
+const BC = ['255,214,226', '255,240,220', '170,200,240', '255,190,160'];
+const dots = Array.from({ length: 40 }, () => ({ x: BR() * 540, y: BR() * 960, r: 14 + BR() * 40, c: BC[Math.floor(BR() * 4)], a: .25 + BR() * .4, sp: .2 + BR() * .6, p: BR() * 6.28 }));
+function bokeh(t) { bx.clearRect(0, 0, 540, 960); for (const d of dots) { const y = (d.y - t * 18 * d.sp + 960) % 960; bx.beginPath(); bx.fillStyle = `rgba(${d.c},${d.a * (.8 + .2 * Math.sin(t + d.p))})`; bx.arc(d.x + Math.sin(t * .6 + d.p) * 10, y, d.r, 0, 6.283); bx.fill(); } }
+// 纽约天际线、树灯、雪
+(function city() {
+  const g = $('city'); const r = rng(21);
+  const layers = [{ base: 1330, color: '#9A8FC8', win: 'rgba(255,240,220,.55)', n: 11, hmin: 220, hmax: 520 }, { base: 1400, color: '#6C79B6', win: 'rgba(255,236,200,.8)', n: 9, hmin: 260, hmax: 700 }];
+  for (const L of layers) { let x = -40; for (let i = 0; i < L.n; i++) { const w = 90 + r() * 120, h = L.hmin + r() * (L.hmax - L.hmin);
+    const rect = document.createElementNS(NS, 'rect'); rect.setAttribute('x', x); rect.setAttribute('y', L.base - h); rect.setAttribute('width', w); rect.setAttribute('height', h + 600); rect.setAttribute('fill', L.color); g.appendChild(rect);
+    for (let wy = L.base - h + 30; wy < L.base - 20; wy += 46) for (let wx = x + 18; wx < x + w - 24; wx += 34) if (r() > .55) { const wr = document.createElementNS(NS, 'rect'); wr.setAttribute('x', wx); wr.setAttribute('y', wy); wr.setAttribute('width', 14); wr.setAttribute('height', 20); wr.setAttribute('fill', L.win); g.appendChild(wr); }
+    x += w + 6; } }
+})();
+const LIGHTS = []; (function () { const lr = rng(5); for (let i = 0; i < 26; i++) { const c = document.createElementNS(NS, 'circle'); const yy = 60 + lr() * 520; const half = 40 + yy * .36;
+  c.setAttribute('cx', (lr() * 2 - 1) * half); c.setAttribute('cy', yy); c.setAttribute('r', 9); c.setAttribute('fill', ['#FFE29A', '#FF9DB0', '#FFFFFF'][i % 3]); $('lights').appendChild(c); LIGHTS.push({ el: c, at: Math.floor(lr() * 10) }); } })();
+const sn = $('snow'); sn.width = 540; sn.height = 960; const sx = sn.getContext('2d'); const SR = rng(3);
+const flakes = Array.from({ length: 70 }, () => ({ x: SR() * 540, y: SR() * 960, r: 2 + SR() * 5, v: 20 + SR() * 40, p: SR() * 6.28 }));
+function snow(t) { sx.clearRect(0, 0, 540, 960); for (const f of flakes) { const y = (f.y + t * f.v) % 960; sx.beginPath(); sx.fillStyle = 'rgba(255,255,255,.85)'; sx.arc(f.x + Math.sin(t * 1.2 + f.p) * 10, y, f.r, 0, 6.283); sx.fill(); } }
+// 明信片路线图
+const map = $('map');
+function el(tag, attrs, parent = map) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; }
+const P = { bos: { x: 640, y: 120 }, nyc: { x: 480, y: 380 }, phl: { x: 360, y: 570 }, dc: { x: 230, y: 790 }, la: { x: 120, y: 120 } };
+el('rect', { x: 30, y: 40, width: 200, height: 150, rx: 12, fill: 'none', stroke: '#E9C9A8', 'stroke-width': 4, 'stroke-dasharray': '10 10' });
+const SEGS = [
+  `M${P.nyc.x} ${P.nyc.y} Q 600 280 ${P.bos.x} ${P.bos.y}`,
+  `M${P.bos.x} ${P.bos.y} Q 640 520 ${P.dc.x + 30} ${P.dc.y - 10}`,
+  `M${P.dc.x} ${P.dc.y} Q 250 660 ${P.phl.x} ${P.phl.y}`,
+  `M${P.phl.x} ${P.phl.y} Q 380 450 ${P.nyc.x} ${P.nyc.y}`,
+  `M${P.nyc.x} ${P.nyc.y} Q 300 160 ${P.la.x + 60} ${P.la.y + 10}`
+].map((d, i) => { const p = el('path', { d, fill: 'none', stroke: i === 4 ? '#2A93B8' : '#E2603F', 'stroke-width': 9, 'stroke-linecap': 'round' }); return { p, len: p.getTotalLength(), dash: i === 1 || i === 4 ? [18, 16] : null }; });
+const STAMPS = [['nyc', '纽约', '12.18', '#E06A9A', 'r'], ['bos', '波士顿', '12.18–20', '#2A93B8', 'r'], ['dc', '华盛顿', '12.21–22', '#2B3A67', 'r'], ['phl', '费城', '12.23', '#E2603F', 'r'], ['nyc', '', '', '#E06A9A', 'r'], ['la', '洛杉矶', '12.31', '#FF8C69', 'box']].map(([k, n, d, c, side], i) => {
+  const p = side === 'box' ? { x: 130, y: 115 } : P[k];
+  const g = el('g', {});
+  el('circle', { cx: p.x, cy: p.y, r: 46, fill: c }, g);
+  el('circle', { cx: p.x, cy: p.y, r: 36, fill: 'none', stroke: '#FFF6E6', 'stroke-width': 4, 'stroke-dasharray': '6 6' }, g);
+  el('path', { d: `M${p.x} ${p.y - 18} l5 11 12 1 -9 8 3 12 -11 -6 -11 6 3 -12 -9 -8 12 -1z`, fill: '#FFF6E6' }, g);
+  if (n) {
+    const tx = side === 'box' ? 30 : p.x + 66, ty = side === 'box' ? 250 : p.y;
+    const t1 = el('text', { x: tx, y: ty - 4, class: 'stamp-l' }, g); t1.textContent = n;
+    const t2 = el('text', { x: tx, y: ty + 40, class: 'stamp-d' }, g); t2.textContent = d;
+  }
+  return { g, p };
+});
+const plane = el('path', { d: 'M0 -16 L36 0 L0 16 L8 0 Z', fill: '#2A93B8' });
+const STOPS = [
+  { at: 0, city: '纽约', date: '12.18', sub: '落地 JFK，当天坐火车去波士顿' },
+  { at: 2, city: '波士顿', date: '12.18–20', sub: '哈佛、MIT、宪法号' },
+  { at: 4, city: '华盛顿', date: '12.21–22', sub: '国会、林肯纪念堂、奇才主场' },
+  { at: 6, city: '费城', date: '12.23', sub: '独立厅、芝士牛肉堡、76人' },
+  { at: 8, city: '纽约', date: '12.24–30', sub: '圣诞、布鲁克林大桥、篮网' },
+  { at: 10, city: '洛杉矶', date: '12.31', sub: '圣莫尼卡海边看日落' }
+].map((s) => ({ ...s, at: s.at * BEAT }));
+// 横条擦除
+const BCOL = ['#FF8C69', '#FFB38A', '#F7C6D0', '#B9B4E0', '#7FA7DD', '#46C1D9', '#FFD59A', '#FF7E5F'];
+const bandEls = BCOL.map((c, i) => { const b = document.createElement('div'); b.className = 'band'; b.style.top = (i * 240) + 'px'; b.style.background = c; $('bands').appendChild(b); return b; });
+const WIPES = [S[1], S[3], S[5]];
+const DISSOLVES = [S[2], S[4]];
+
+function sceneIndex(t) { for (let i = 6; i >= 0; i--) if (t >= S[i]) return i; return 0; }
+
+function render(t) {
+  grain(t);
+  const cur = sceneIndex(t);
+  // 每个场景的可见度：溶解转场时前后两镜同时出现
+  const vis = [0, 0, 0, 0, 0, 0, 0]; vis[cur] = 1;
+  const blur = [0, 0, 0, 0, 0, 0, 0];
+  for (const c of DISSOLVES) {
+    if (t > c - .3 && t < c + .3) {
+      const k = ease.inOut(prog(t, c - .3, c + .3)); const i = S.indexOf(c);
+      vis[i - 1] = 1 - k; vis[i] = k; blur[i - 1] = k * 12; blur[i] = (1 - k) * 12;
+    }
+  }
+  const ids = ['s1', 's2', 's3', 's4', 's5', 's6', 's6'];
+  ['s1', 's2', 's3', 's4', 's5', 's6'].forEach((id) => { $(id).style.display = 'none'; });
+  vis.forEach((v, i) => { if (v > 0) { const e = $(ids[i]); e.style.display = 'block'; e.style.opacity = i >= 5 ? 1 : v; e.style.filter = blur[i] > .3 ? `blur(${blur[i]}px)` : 'none'; } });
+
+  if (vis[0]) {
+    const tl = t;
+    const k = ease.out(prog(tl, 0, 2.6));
+    $('sun1').style.top = lerp(1260, 600, k) + 'px';
+    glints(G1, t);
+    const a = ease.out(prog(tl, .6, 1.6));
+    $('t1').style.opacity = a; $('t1').style.transform = `translateY(${(1 - a) * 40}px)`; $('t1').style.filter = a < .98 ? `blur(${(1 - a) * 10}px)` : 'none';
+    const b = ease.out(prog(tl, 1.5, 2.3)); $('t1z').style.opacity = b; $('t1z').style.transform = `translateY(${(1 - b) * 30}px)`;
+    $('s1').style.transform = `scale(${lerp(1, 1.03, ease.inOut(prog(tl, 0, S[1])))})`;
+  }
+  if (vis[1]) {
+    const tl = t - S[1];
+    [0, 1, 2].forEach((i) => {
+      const st = i * BEAT; const k = ease.back(prog(tl, st, st + .4));
+      const rot = [-3, 2, -1.5][i];
+      $('k' + i).style.opacity = prog(tl, st, st + .06);
+      $('k' + i).style.transform = `translateY(${(1 - k) * -260 + Math.sin(t * 2 + i) * 6}px) rotate(${lerp(rot * 4, rot, k)}deg)`;
+    });
+  }
+  if (vis[2]) {
+    const tl = t - S[2];
+    const STARTS = STOPS.map((s) => s.at);
+    SEGS.forEach((s, i) => {
+      const k = ease.inOut(prog(tl, STARTS[i + 1] - .75 * BEAT * 2, STARTS[i + 1] - .05));
+      const shown = s.len * k;
+      if (s.dash) { const arr = []; for (let acc = 0; acc < shown; acc += s.dash[0] + s.dash[1]) arr.push(Math.min(s.dash[0], shown - acc), s.dash[1]); arr.push(0, s.len * 2); s.p.style.strokeDasharray = arr.join(' '); s.p.style.strokeDashoffset = '0'; }
+      else { s.p.style.strokeDasharray = `${s.len}`; s.p.style.strokeDashoffset = String(s.len - shown); }
+      s.p.style.opacity = k > 0 ? 1 : 0;
+    });
+    let c = 0; STOPS.forEach((s, i) => { if (tl >= s.at) c = i; });
+    STAMPS.forEach((st, i) => {
+      const k = ease.back(prog(tl, STOPS[i].at, STOPS[i].at + .35));
+      st.g.style.opacity = tl >= STOPS[i].at ? 1 : 0;
+      st.g.style.transformOrigin = `${st.p.x}px ${st.p.y}px`;
+      st.g.style.transform = `scale(${lerp(1.8, 1, k)}) rotate(${lerp(-20, 0, k)}deg)`;
+    });
+    // 纸飞机沿最后一段飞
+    const L = SEGS[4]; const kp = ease.inOut(prog(tl, STOPS[5].at - 1.0, STOPS[5].at));
+    if (kp > 0 && kp < 1) { const p1 = L.p.getPointAtLength(L.len * kp), p0 = L.p.getPointAtLength(Math.max(0, L.len * kp - 2)); const ang = Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI;
+      plane.setAttribute('transform', `translate(${p1.x} ${p1.y}) rotate(${ang})`); plane.style.opacity = 1; } else plane.style.opacity = 0;
+    const s = STOPS[c];
+    $('capCity').textContent = s.city; $('capDate').textContent = s.date; $('capSub').textContent = s.sub;
+    const kc = ease.out(prog(tl, s.at, s.at + .3));
+    $('cap').style.opacity = kc; $('cap').style.transform = `translateY(${(1 - kc) * 24}px)`;
+    const target = STAMPS[c].p;
+    const z = lerp(1, 1.08, ease.inOut(prog(tl, 0, 6)));
+    $('card').style.transform = `rotate(-1.5deg) translate(${(430 - target.x) * .08}px, ${(450 - target.y) * .08}px) scale(${z})`;
+  }
+  if (vis[3]) {
+    const tl = t - S[3];
+    bokeh(t);
+    const h = ease.out(prog(tl, .1, .7)); $('t4').style.opacity = h; $('t4').style.transform = `translateY(${(1 - h) * -40}px)`;
+    [0, 1, 2].forEach((i) => {
+      const st = i * BAR; const k = ease.back(prog(tl, st, st + .6));
+      const rot = [-2, 1.5, -1][i];
+      $('g' + i).style.opacity = prog(tl, st, st + .1);
+      $('g' + i).style.transform = `translateY(${(1 - k) * 900 + Math.sin(t * 1.6 + i) * 7}px) rotate(${lerp(rot + 10, rot, k)}deg)`;
+    });
+  }
+  if (vis[4]) {
+    const tl = t - S[4];
+    snow(tl);
+    const k = ease.out(prog(tl, 0, 1.8));
+    $('moon').style.transform = `translateY(${(1 - k) * 80}px) scale(${lerp(.92, 1, k)})`;
+    $('city').style.transform = `translateY(${(1 - k) * 60}px)`;
+    $('treeG').setAttribute('transform', `translate(800 ${600 + (1 - k) * 120}) scale(${.82 + Math.sin(tl * 3) * .005})`);
+    const beat = Math.floor(tl / BEAT);
+    LIGHTS.forEach((l) => l.el.setAttribute('opacity', beat >= l.at ? .6 + .4 * Math.sin(tl * 4 + l.at) : .12));
+    $('treeStar').setAttribute('transform', `scale(${1 + .12 * Math.max(0, 1 - (tl % BEAT) / BEAT)})`);
+    const a = ease.out(prog(tl, .5, 1.4)); $('t5').style.opacity = a; $('t5').style.transform = `translateY(${(1 - a) * 50}px)`; $('t5').style.filter = a < .98 ? `blur(${(1 - a) * 8}px)` : 'none';
+    $('s5').style.transform = `scale(${lerp(1, 1.04, ease.inOut(prog(tl, 0, S[5] - S[4])))})`;
+  }
+  if (vis[5] || vis[6]) {
+    const tl = t - S[5];
+    glints(G6, t);
+    const palmFade = 1 - .6 * ease.inOut(prog(tl, S[6] - S[5] - .2, S[6] - S[5] + .6));
+    $('palmL').style.opacity = palmFade; $('palmR').style.opacity = palmFade;
+    $('palmL').setAttribute('transform', `translate(110 1240) rotate(${Math.sin(t * 1.3) * 1.6})`);
+    $('palmR').setAttribute('transform', `translate(980 1260) rotate(${Math.sin(t * 1.1 + 1) * -1.8})`);
+    const sink = ease.inOut(prog(tl, 0, S[7] - S[5]));
+    $('sun6').style.top = lerp(700, 1080, sink) + 'px';
+    const a = ease.out(prog(tl, .3, 1.2)); const out = ease.inOut(prog(tl, S[6] - S[5] - .3, S[6] - S[5] + .2));
+    $('ticket').style.opacity = a * (1 - out);
+    $('ticket').style.transform = `translateY(${(1 - a) * 140 + Math.sin(t * 2.2) * 8 + out * 120}px) rotate(${-3 + Math.sin(t * 1.6)}deg)`;
+    const e = ease.out(prog(tl, S[6] - S[5], S[6] - S[5] + .8)); const f = ease.out(prog(tl, S[6] - S[5] + .3, S[6] - S[5] + 1.0));
+    $('t7').style.opacity = e; $('t7').style.transform = `translateY(${(1 - e) * 40}px)`; $('t7').style.filter = e < .98 ? `blur(${(1 - e) * 10}px)` : 'none';
+    $('t7z').style.opacity = f; $('t7z').style.transform = `translateY(${(1 - f) * 30}px)`;
+  }
+  // 横条擦除
+  bandEls.forEach((b, i) => {
+    let shown = false, x = 0;
+    for (const c of WIPES) {
+      const d = i * .03;
+      const k1 = ease.inOut(prog(t, c - .45 + d, c - .05 + d)), k2 = ease.inOut(prog(t, c + .05 + d, c + .45 + d));
+      if (k1 > 0 && k2 < 1) { shown = true; x = k1 < 1 ? lerp(-1080, 0, k1) : lerp(0, 1080, k2); }
+    }
+    b.style.display = shown ? 'block' : 'none'; b.style.transform = `translateX(${i % 2 ? -x : x}px)`;
+  });
+  $('fade').style.opacity = ease.in(prog(t, DUR - .6, DUR));
+}
+makeStage({ dur: DUR, render });
+</script>
+</body>
+</html>
