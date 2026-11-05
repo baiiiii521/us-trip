@@ -1,7 +1,7 @@
 // 混音：BGM（从第一拍裁起）+ 按导演稿时间点的音效，合进无声视频。
 // 用法：node tools/mix.cjs <无声视频.mp4> <输出.mp4> [film|broadcast|citypop]
 // 规则来自 huashu-design audio-design-rules.md：BGM 0.45、低通 4 kHz；SFX 高通 800 Hz；amix normalize=0；
-// BGM 0.3 秒淡入、1.5 秒淡出。音效峰值先统一到 -3 dB，避免有的听不见。
+// BGM 0.3 秒淡入、1.5 秒淡出。音效峰值先统一到 -3 dB，避免有的听不见。最后整体响度标准化到 -14 LUFS（手机和社交平台的常用响度）。
 const { execFileSync, spawnSync } = require('child_process');
 const path = require('path');
 
@@ -69,7 +69,7 @@ CUES.forEach(([t, name], i) => {
 });
 parts.push(`${labels.join('')}amix=inputs=${labels.length}:duration=longest:normalize=0,highpass=f=800,volume=1.0[sfx]`);
 parts.push(`[1:a]atrim=start=${BGM_OFFSET}:duration=${DUR},asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.3,afade=t=out:st=${(DUR - 1.5).toFixed(2)}:d=1.5,lowpass=f=4000,volume=0.45[bgm]`);
-parts.push(`[bgm][sfx]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95[a]`);
+parts.push(`[bgm][sfx]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000,alimiter=limit=0.82:level=false[a]`);
 
 execFileSync('ffmpeg', ['-y', '-loglevel', 'error', ...inputs, '-filter_complex', parts.join(';'),
   '-map', '0:v', '-map', '[a]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-t', String(DUR), '-movflags', '+faststart', path.resolve(out)], { stdio: 'inherit' });
