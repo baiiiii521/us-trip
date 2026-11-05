@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>EAST COAST HOOPS 正片</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+SC:wght@700;900&display=block">
+<style>
+  html, body { margin: 0; height: 100%; background: #040818; overflow: hidden; }
+  #stage { position: relative; width: 1080px; height: 1920px; transform-origin: 0 0; overflow: hidden; background: #0B1640; }
+  .layer { position: absolute; inset: 0; }
+  .bg { background: radial-gradient(90% 55% at 50% 38%, #24418F 0%, #0B1640 55%, #040818 100%); }
+  #sky { background: linear-gradient(180deg, #101A4E 0%, #3A1E5A00 0%, #14205A 0%, #7A1E3A 38%, #D7263D 56%, #F58A1F 70%, #F5B700 78%); opacity: 0; }
+  .beam { position: absolute; left: 50%; top: -200px; width: 1400px; height: 2400px; margin-left: -700px; transform-origin: 50% 0;
+    background: conic-gradient(from 180deg at 50% 0%, transparent 0deg 168deg, rgba(190,215,255,.22) 172deg 188deg, transparent 192deg 360deg); mix-blend-mode: screen; }
+  #crowd { width: 1080px; height: 1920px; }
+  .sun { position: absolute; left: 190px; width: 700px; height: 700px; border-radius: 50%; top: 1200px; opacity: 0;
+    background: linear-gradient(180deg, #FFE08A 0%, #F5B700 35%, #F58A1F 65%, #D7263D 100%);
+    -webkit-mask: linear-gradient(#000 0 50%, transparent 50% 54%, #000 54% 62%, transparent 62% 67%, #000 67% 75%, transparent 75% 81%, #000 81% 88%, transparent 88% 95%, #000 95%);
+            mask: linear-gradient(#000 0 50%, transparent 50% 54%, #000 54% 62%, transparent 62% 67%, #000 67% 75%, transparent 75% 81%, #000 81% 88%, transparent 88% 95%, #000 95%);
+    box-shadow: 0 0 120px rgba(245,138,31,.5); }
+  .courtwrap { position: absolute; left: -660px; right: -660px; bottom: -200px; height: 1100px; perspective: 900px; perspective-origin: 50% 0; }
+  .court { position: absolute; inset: 0; transform: rotateX(62deg); transform-origin: 50% 100%;
+    background-color: #B97835;
+    background-image: repeating-linear-gradient(90deg, rgba(0,0,0,.09) 0 3px, transparent 3px 120px), linear-gradient(180deg, #D79A55, #8E5524);
+    box-shadow: inset 0 200px 260px rgba(11,22,64,.95); }
+  .court::before { content: ""; position: absolute; left: 50%; top: 18%; width: 760px; height: 760px; margin-left: -380px; border: 10px solid rgba(255,255,255,.75); border-radius: 50%; }
+  .court::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 10px; margin-left: -5px; background: rgba(255,255,255,.75); }
+  #cam { transform-origin: 50% 50%; }
+  .scene { position: absolute; inset: 0; display: none; }
+  .center { position: absolute; left: 0; right: 0; text-align: center; }
+  .chrome, .chromeZh { display: inline-block; line-height: .95;
+    background: linear-gradient(180deg, #FFFFFF 0%, #DCE3EE 34%, #6A7891 49%, #F6F8FB 52%, #A7B4C6 76%, #FFFFFF 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 10px 0 #D7263D) drop-shadow(0 26px 30px rgba(0,0,0,.55)); }
+  .chrome { font-family: "Anton", sans-serif; -webkit-text-stroke: 4px #0B1640; }
+  .chromeZh { font-family: "Noto Sans SC", sans-serif; font-weight: 900; -webkit-text-stroke: 3px #0B1640; letter-spacing: .02em; }
+  .skew { display: inline-block; transform: skewX(-10deg); }
+  .white { font-family: "Noto Sans SC", sans-serif; font-weight: 900; color: #fff; text-shadow: 0 6px 18px rgba(0,0,0,.5); }
+  .gold { font-family: "Anton", sans-serif; color: #F5B700; text-shadow: 0 6px 18px rgba(0,0,0,.5); }
+  .bar { position: absolute; left: 90px; right: 90px; height: 128px; background: #D7263D; transform: skewX(-10deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 6px #F5B700, 0 20px 30px rgba(0,0,0,.4); }
+  .bar > span { transform: skewX(10deg); font-family: "Noto Sans SC", sans-serif; font-weight: 900; font-size: 54px; color: #fff; white-space: nowrap; letter-spacing: .02em; }
+  /* 2 数字 */
+  .stat { position: absolute; left: 0; right: 0; display: flex; justify-content: center; align-items: baseline; gap: 26px; transform-origin: 50% 60%; }
+  .stat .chrome { font-size: 300px; }
+  .stat .white { font-size: 92px; }
+  .ring { position: absolute; left: 50%; width: 600px; height: 600px; margin-left: -300px; border: 14px solid #F5B700; border-radius: 50%; opacity: 0; }
+  /* 3 路线 */
+  #mapPanel { position: absolute; left: 50px; right: 50px; top: 470px; height: 1040px; border-radius: 18px;
+    background: linear-gradient(180deg, rgba(5,10,30,.92), rgba(11,22,64,.88));
+    box-shadow: 0 0 0 4px rgba(245,183,0,.75), 0 40px 60px rgba(0,0,0,.5);
+    background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(180deg, rgba(5,10,30,.92), rgba(11,22,64,.88));
+    background-size: 60px 60px, 60px 60px, auto; overflow: hidden; }
+  #mapPanel svg { position: absolute; left: 0; top: 0; width: 980px; height: 1040px; }
+  .node-l { font-family: "Noto Sans SC", sans-serif; font-weight: 900; fill: #fff; font-size: 46px; }
+  .node-d { font-family: "Anton", sans-serif; fill: #F5B700; font-size: 38px; }
+  .lt { position: absolute; left: 60px; right: 60px; top: 1560px; }
+  .lt .top { display: flex; height: 130px; transform: skewX(-10deg); box-shadow: 0 0 0 5px #F5B700; }
+  .lt .city { flex: 1; background: #D7263D; display: flex; align-items: center; padding-left: 44px; }
+  .lt .date { width: 330px; background: #F5B700; display: flex; align-items: center; justify-content: center; }
+  .lt .city span { transform: skewX(10deg); font-family: "Noto Sans SC", sans-serif; font-weight: 900; font-size: 80px; color: #fff; }
+  .lt .date span { transform: skewX(10deg); font-family: "Anton", sans-serif; font-size: 72px; color: #0B1640; }
+  .lt .bot { margin: 16px 60px 0 30px; height: 84px; background: rgba(8,16,48,.95); transform: skewX(-10deg); display: flex; align-items: center; padding-left: 36px; box-shadow: 0 0 0 3px rgba(245,183,0,.6); }
+  .lt .bot span { transform: skewX(10deg); font-family: "Noto Sans SC", sans-serif; font-weight: 700; font-size: 44px; color: #E8EDF5; white-space: nowrap; }
+  /* 4 对阵 */
+  .team { position: absolute; left: 0; right: 0; text-align: center; }
+  .team .chromeZh { font-size: 230px; }
+  .vs { position: absolute; left: 50%; top: 860px; width: 230px; height: 230px; margin-left: -115px; }
+  .sb { position: absolute; left: 70px; right: 70px; height: 210px; display: grid; grid-template-columns: 250px 1fr 210px; transform: skewX(-10deg);
+    background: linear-gradient(90deg, #0E1E55, #1C3480); box-shadow: 0 0 0 5px #F5B700, 0 30px 40px rgba(0,0,0,.45); }
+  .sb > div { display: flex; align-items: center; justify-content: center; }
+  .sb .d { background: #F5B700; color: #0B1640; font-family: "Anton", sans-serif; font-size: 92px; }
+  .sb .m { color: #fff; font-family: "Noto Sans SC", sans-serif; font-weight: 900; font-size: 74px; }
+  .sb .tm { background: #D7263D; color: #fff; font-family: "Anton", sans-serif; font-size: 80px; }
+  .sb > div > * { transform: skewX(10deg); }
+  /* 5 圣诞 */
+  #snow { width: 1080px; height: 1920px; }
+  .ticker { position: absolute; left: 0; right: 0; top: 1470px; height: 120px; background: #D7263D; box-shadow: 0 0 0 5px #F5B700; overflow: hidden; }
+  .ticker div { position: absolute; top: 0; height: 120px; display: flex; align-items: center; white-space: nowrap; font-family: "Noto Sans SC", sans-serif; font-weight: 900; font-size: 58px; color: #fff; }
+  /* 6 时钟 */
+  #clock { position: absolute; left: 140px; top: 640px; width: 800px; height: 380px; border-radius: 26px; background: #05091A; box-shadow: 0 0 0 8px #F5B700, 0 0 80px rgba(245,183,0,.35);
+    display: flex; align-items: center; justify-content: center; transform-origin: 50% 50%; opacity: 0; }
+  #clock span { font-family: "Anton", sans-serif; font-size: 300px; color: #FFB238; text-shadow: 0 0 24px rgba(255,160,40,.9), 0 0 4px #fff; letter-spacing: .04em; }
+  #clock.red span { color: #FF4A3D; text-shadow: 0 0 30px rgba(255,59,48,.95), 0 0 4px #fff; }
+  .flash { background: #FFF6E5; opacity: 0; }
+  .redflash { background: #D7263D; opacity: 0; mix-blend-mode: screen; }
+  .black { background: #000; opacity: 0; }
+  .wipe { position: absolute; top: -400px; width: 1500px; height: 2800px; background: #D7263D; box-shadow: 0 0 0 30px #F5B700; transform-origin: 50% 50%; display: none; }
+  .scan { background: repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 2px, transparent 2px 5px); mix-blend-mode: multiply; pointer-events: none; }
+  .vig { background: radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(0,0,0,.6) 100%); pointer-events: none; }
+  .wm { position: absolute; right: 44px; bottom: 40px; font-family: "IBM Plex Mono", monospace; font-size: 22px; letter-spacing: .12em; color: rgba(255,255,255,.35); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer bg"></div>
+  <div class="layer" id="sky"></div>
+  <div class="beam" id="beam1"></div><div class="beam" id="beam2"></div>
+  <canvas id="crowd" class="layer"></canvas>
+  <div class="sun" id="sun"></div>
+  <div class="courtwrap" id="courtwrap"><div class="court" id="court"></div></div>
+
+  <div id="cam" class="layer">
+    <!-- 1 开场 -->
+    <div class="scene" id="s1">
+      <svg class="layer" viewBox="0 0 1080 1920" width="1080" height="1920">
+        <defs><linearGradient id="sw" x1="0" x2="1"><stop offset="0" stop-color="#F5B700" stop-opacity="0"/><stop offset="1" stop-color="#F5B700"/></linearGradient></defs>
+        <path id="swoosh" d="M-200 760 C 200 640, 520 600, 820 470" stroke="url(#sw)" stroke-width="34" fill="none" stroke-linecap="round"/>
+        <g id="star1"><path d="M0-90 26-28 92-28 39 12 59 76 0 38-59 76-39 12-92-28-26-28z" fill="#F5B700" stroke="#fff" stroke-width="6"/></g>
+      </svg>
+      <div class="center" id="t1" style="top:470px"><div class="skew"><span class="chrome" style="font-size:168px">EAST COAST</span><br><span class="chrome" style="font-size:330px">HOOPS</span></div></div>
+      <div class="bar" id="bar1" style="top:1180px"><span>美东圣诞篮球行 12.18 — 12.31</span></div>
+    </div>
+    <!-- 2 数字 -->
+    <div class="scene" id="s2">
+      <div class="ring" id="r0" style="top:230px"></div><div class="ring" id="r1" style="top:550px"></div><div class="ring" id="r2" style="top:870px"></div>
+      <div class="stat" id="n0" style="top:360px"><span class="skew"><span class="chrome">14</span></span><span class="white">天</span></div>
+      <div class="stat" id="n1" style="top:680px"><span class="skew"><span class="chrome">5</span></span><span class="white">座城市</span></div>
+      <div class="stat" id="n2" style="top:1000px"><span class="skew"><span class="chrome">2</span></span><span class="white">个人</span></div>
+    </div>
+    <!-- 3 路线 -->
+    <div class="scene" id="s3">
+      <div class="center" style="top:160px"><span class="skew"><span class="chromeZh" style="font-size:170px">路线</span></span></div>
+      <div class="center white" style="top:375px;font-size:46px;font-weight:700">纽约进、纽瓦克出，全程火车和大巴</div>
+      <div id="mapPanel"><svg viewBox="0 0 980 1040" id="map"></svg></div>
+      <div class="lt" id="lt"><div class="top"><div class="city"><span id="ltCity">纽约</span></div><div class="date"><span id="ltDate">12.18</span></div></div><div class="bot"><span id="ltSub">落地 JFK，直奔波士顿</span></div></div>
+    </div>
+    <!-- 4 球赛 -->
+    <div class="scene" id="s4">
+      <div id="s4a" class="layer"><div class="center" id="t4a" style="top:760px"><span class="skew"><span class="chrome" style="font-size:250px">3 <span class="chromeZh" style="font-size:.82em;filter:none;-webkit-text-stroke:3px #0B1640">场</span> NBA</span></span></div></div>
+      <div id="s4b" class="layer">
+        <div class="center" id="gDateWrap" style="top:230px"><span class="gold" id="gDate" style="font-size:200px">12.22</span><span class="white" id="gWd" style="font-size:64px;margin-left:24px">周二</span></div>
+        <div class="team" id="gA" style="top:560px"><span class="skew"><span class="chromeZh" id="gAName">奇才</span></span></div>
+        <svg class="vs" id="vs" viewBox="-120 -120 240 240"><path d="M0-112 30-38 110-36 46 12 70 92 0 46-70 92-46 12-110-36-30-38z" fill="#D7263D" stroke="#F5B700" stroke-width="8"/><text x="0" y="26" text-anchor="middle" font-family="Anton" font-size="78" fill="#fff">VS</text></svg>
+        <div class="team" id="gB" style="top:1100px"><span class="skew"><span class="chromeZh" id="gBName">猛龙</span></span></div>
+        <div class="bar" id="gBar" style="top:1420px"><span id="gArena" style="font-size:44px">Capital One Arena，19:00 开球</span></div>
+      </div>
+      <div id="s4c" class="layer">
+        <div class="center" id="t4c" style="top:330px"><span class="skew"><span class="chrome" style="font-size:180px">3 <span class="chromeZh" style="font-size:.82em;filter:none;-webkit-text-stroke:3px #0B1640">场</span> NBA</span></span></div>
+        <div class="sb" id="c1" style="top:680px"><div class="d"><span>12.22</span></div><div class="m"><span>奇才 vs 猛龙</span></div><div class="tm"><span>7:00</span></div></div>
+        <div class="sb" id="c2" style="top:950px"><div class="d"><span>12.23</span></div><div class="m"><span>76人 vs 火箭</span></div><div class="tm"><span>7:30</span></div></div>
+        <div class="sb" id="c3" style="top:1220px"><div class="d"><span>12.26</span></div><div class="m"><span>篮网 vs 鹈鹕</span></div><div class="tm"><span>6:00</span></div></div>
+      </div>
+    </div>
+    <!-- 5 圣诞 -->
+    <div class="scene" id="s5">
+      <canvas id="snow" class="layer"></canvas>
+      <div class="center" id="t5" style="top:190px"><span class="skew"><span class="chromeZh" style="font-size:170px">纽约过圣诞</span></span></div>
+      <div class="center white" id="t5s" style="top:420px;font-size:58px">平安夜到，连住 6 晚</div>
+      <svg class="layer" viewBox="0 0 1080 1920" width="1080" height="1920">
+        <defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE08A"/><stop offset=".5" stop-color="#F5B700"/><stop offset="1" stop-color="#B37A00"/></linearGradient></defs>
+        <g id="tree" transform="translate(540 560)">
+          <polygon points="0,30 -150,250 150,250" fill="url(#tg)" stroke="#0B1640" stroke-width="6"/>
+          <polygon points="0,170 -220,450 220,450" fill="url(#tg)" stroke="#0B1640" stroke-width="6"/>
+          <polygon points="0,350 -290,680 290,680" fill="url(#tg)" stroke="#0B1640" stroke-width="6"/>
+          <rect x="-46" y="680" width="92" height="110" fill="#D7263D" stroke="#0B1640" stroke-width="6"/>
+          <path id="treeStar" d="M0,-70 18,-22 70,-22 28,10 44,62 0,32 -44,62 -28,10 -70,-22 -18,-22z" fill="#fff" stroke="#F5B700" stroke-width="6"/>
+          <g id="bulbs"></g>
+        </g>
+      </svg>
+      <div class="ticker"><div id="tick">洛克菲勒圣诞树　　Dyker Heights 灯光　　布鲁克林大桥　　大都会艺术博物馆　　时代广场　　洛克菲勒圣诞树　　Dyker Heights 灯光　　布鲁克林大桥　　大都会艺术博物馆　　时代广场</div></div>
+    </div>
+    <!-- 6 终场 -->
+    <div class="scene" id="s6">
+      <div class="center" id="t6a" style="top:250px"><span class="skew"><span class="chrome" style="font-size:250px">12.31</span></span></div>
+      <div class="center" id="t6b" style="top:520px"><span class="skew"><span class="chromeZh" style="font-size:150px">洛杉矶</span></span></div>
+      <div class="bar" id="bar6" style="top:760px"><span>最后一天，在圣莫尼卡看日落</span></div>
+    </div>
+    <!-- 7 片尾 -->
+    <div class="scene" id="s7">
+      <div class="center" id="t7" style="top:520px"><div class="skew"><span class="chrome" style="font-size:150px">EAST COAST</span><br><span class="chrome" style="font-size:300px">HOOPS</span></div></div>
+      <svg class="layer" viewBox="0 0 1080 1920" width="1080" height="1920"><g id="star7" transform="translate(800 520) rotate(12)"><path d="M0-80 23-25 82-25 35 11 52 68 0 34-52 68-35 11-82-25-23-25z" fill="#F5B700" stroke="#fff" stroke-width="6"/></g></svg>
+      <div class="center white" id="t7a" style="top:1120px;font-size:68px">两人 14 天 5 座城市</div>
+      <div class="center gold" id="t7b" style="top:1230px;font-size:96px">2026.12.18 — 12.31</div>
+    </div>
+  </div>
+
+  <div id="clock"><span id="clockT">00:05</span></div>
+  <div class="wipe" id="wipe"></div>
+  <svg class="layer" viewBox="0 0 1080 1920" width="1080" height="1920" id="bigstarSvg" style="display:none"><g id="bigstar"><path d="M0-260 75-85 260-85 110 30 165 215 0 105-165 215-110 30-260-85-75-85z" fill="#F5B700" stroke="#fff" stroke-width="12"/></g></svg>
+  <div class="layer redflash" id="redflash"></div>
+  <div class="layer flash" id="flash"></div>
+  <div class="layer scan"></div>
+  <div class="layer vig"></div>
+  <div class="wm">Created by Huashu-Design</div>
+  <div class="layer black" id="black"></div>
+</div>
+<script type="module">
+import { makeStage, prog, ease, lerp, clamp, rng } from '../lib/stage.js';
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+const BEAT = 0.48, BAR = 1.92;
+const S = [0, 3.84, 5.76, 11.52, 19.20, 23.04, 26.88, 30.72];
+const DUR = S[7];
+
+// 看台灯光：确定性，拍点上有一批闪光灯
+const cr = $('crowd'); cr.width = 540; cr.height = 960; const cx = cr.getContext('2d'); const R = rng(11);
+const fans = Array.from({ length: 220 }, () => ({ x: R() * 540, y: 400 + R() * 210, r: .8 + R() * 1.8, a: .15 + R() * .35, k: Math.floor(R() * 8) }));
+function crowd(t, amt = 1) {
+  cx.clearRect(0, 0, 540, 960);
+  const beat = Math.floor(t / BEAT), since = t - beat * BEAT;
+  for (const f of fans) {
+    let a = f.a;
+    if (f.k === beat % 8 && since < .25) a += (1 - since / .25) * .9;
+    cx.beginPath(); cx.fillStyle = `rgba(255,236,200,${a * amt})`; cx.arc(f.x, f.y, f.r * (a > .6 ? 2 : 1), 0, 6.283); cx.fill();
+  }
+}
+// 雪
+const sn = $('snow'); sn.width = 540; sn.height = 960; const sx = sn.getContext('2d'); const SR = rng(3);
+const flakes = Array.from({ length: 90 }, () => ({ x: SR() * 540, y: SR() * 960, r: 1.5 + SR() * 4, v: 30 + SR() * 50, p: SR() * 6.28 }));
+function snow(t) { sx.clearRect(0, 0, 540, 960); for (const f of flakes) { const y = (f.y + t * f.v) % 960; sx.beginPath(); sx.fillStyle = 'rgba(255,255,255,.8)'; sx.arc(f.x + Math.sin(t * 1.2 + f.p) * 10, y, f.r, 0, 6.283); sx.fill(); } }
+// 树上的灯
+const bulbs = $('bulbs'); const BR = rng(5); const BULBS = [];
+for (let i = 0; i < 36; i++) {
+  const yy = 90 + BR() * 570; const half = 20 + (yy - 30) * .4;
+  const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', (BR() * 2 - 1) * half * .85); c.setAttribute('cy', yy); c.setAttribute('r', 13);
+  c.setAttribute('fill', ['#D7263D', '#FFFFFF', '#3FA9F5'][i % 3]); c.setAttribute('stroke', '#0B1640'); c.setAttribute('stroke-width', 4);
+  bulbs.appendChild(c); BULBS.push({ el: c, at: Math.floor(BR() * 7) });
+}
+// 路线图
+const MAP = {
+  bos: { x: 690, y: 150 }, nyc: { x: 540, y: 440 }, phl: { x: 410, y: 660 }, dc: { x: 280, y: 900 }, la: { x: 150, y: 170 }
+};
+const map = $('map');
+function el(tag, attrs) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); map.appendChild(e); return e; }
+el('polyline', { points: `${MAP.bos.x},${MAP.bos.y} ${MAP.nyc.x},${MAP.nyc.y} ${MAP.phl.x},${MAP.phl.y} ${MAP.dc.x},${MAP.dc.y}`, fill: 'none', stroke: 'rgba(255,255,255,.18)', 'stroke-width': 6, 'stroke-linecap': 'round' });
+el('rect', { x: 40, y: 90, width: 250, height: 150, rx: 14, fill: 'rgba(255,255,255,.06)', stroke: 'rgba(255,255,255,.35)', 'stroke-width': 3 });
+const off = (a, b, d) => { const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy); return [{ x: a.x - dy / L * d, y: a.y + dx / L * d }, { x: b.x - dy / L * d, y: b.y + dx / L * d }]; };
+const [a1, b1] = off(MAP.nyc, MAP.bos, 16);
+const legs = [
+  { d: `M${a1.x} ${a1.y} L${b1.x} ${b1.y}`, c: '#F5B700', dash: '' },
+  { d: (() => { const p = [off(MAP.bos, MAP.nyc, 16)[0], off(MAP.nyc, MAP.phl, 16)[0], off(MAP.phl, MAP.dc, 16)[0], off(MAP.phl, MAP.dc, 16)[1]]; return 'M' + p.map((q) => `${q.x} ${q.y}`).join(' L'); })(), c: '#F5B700', dash: '4 18' },
+  { d: `M${MAP.dc.x} ${MAP.dc.y} L${MAP.phl.x} ${MAP.phl.y}`, c: '#FF4A3D', dash: '' },
+  { d: `M${MAP.phl.x} ${MAP.phl.y} L${MAP.nyc.x} ${MAP.nyc.y}`, c: '#FF4A3D', dash: '' },
+  { d: `M${MAP.nyc.x} ${MAP.nyc.y} C 420 300, 330 230, 290 200`, c: '#FFFFFF', dash: '14 16' }
+].map((L) => {
+  const p = el('path', { d: L.d, fill: 'none', stroke: L.c, 'stroke-width': 12, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+  const len = p.getTotalLength(); return { p, len, dash: L.dash };
+});
+const NODES = [
+  ['nyc', '纽约', '12.18', 'left'], ['bos', '波士顿', '12.18–20', 'right'], ['dc', '华盛顿', '12.21–22', 'right'], ['phl', '费城', '12.23', 'right'], ['nyc', '纽约', '12.24–30', 'right'], ['la', '洛杉矶', '12.31', 'box']
+].map(([k, name, date, side], i) => {
+  const p = k === 'la' ? { x: 165, y: 165 } : MAP[k];
+  const g = el('g', {});
+  const ring = document.createElementNS(NS, 'circle'); ring.setAttribute('cx', p.x); ring.setAttribute('cy', p.y); ring.setAttribute('r', 30); ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', '#F5B700'); ring.setAttribute('stroke-width', 5); g.appendChild(ring);
+  const dot = document.createElementNS(NS, 'circle'); dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y); dot.setAttribute('r', 17); dot.setAttribute('fill', '#fff'); dot.setAttribute('stroke', '#D7263D'); dot.setAttribute('stroke-width', 6); g.appendChild(dot);
+  if (i !== 4) {
+    const tx = side === 'left' ? p.x - 48 : side === 'box' ? 64 : p.x + 48;
+    const anchor = side === 'left' ? 'end' : 'start';
+    const ty = side === 'box' ? 140 : p.y;
+    const l = document.createElementNS(NS, 'text'); l.setAttribute('x', side === 'box' ? 64 : tx); l.setAttribute('y', ty + (side === 'box' ? 0 : -2)); l.setAttribute('text-anchor', side === 'box' ? 'start' : anchor); l.setAttribute('class', 'node-l'); l.textContent = name; g.appendChild(l);
+    const d = document.createElementNS(NS, 'text'); d.setAttribute('x', side === 'box' ? 64 : tx); d.setAttribute('y', ty + (side === 'box' ? 52 : 46)); d.setAttribute('text-anchor', side === 'box' ? 'start' : anchor); d.setAttribute('class', 'node-d'); d.textContent = date; g.appendChild(d);
+  }
+  if (side === 'box') { dot.setAttribute('cx', 240); dot.setAttribute('cy', 200); ring.setAttribute('cx', 240); ring.setAttribute('cy', 200); }
+  return { g, ring, p: side === 'box' ? { x: 240, y: 200 } : p };
+});
+const STOPS = [
+  { at: 0.0, city: '纽约', date: '12.18', sub: '落地 JFK，当天坐火车去波士顿' },
+  { at: 1.44, city: '波士顿', date: '12.18–20', sub: '哈佛、MIT、宪法号，夜车南下' },
+  { at: 2.40, city: '华盛顿', date: '12.21–22', sub: '国会、林肯纪念堂、奇才主场' },
+  { at: 3.36, city: '费城', date: '12.23', sub: '独立厅、芝士牛肉堡、76人' },
+  { at: 4.32, city: '纽约', date: '12.24–30', sub: '圣诞、布鲁克林大桥、篮网' },
+  { at: 5.28, city: '洛杉矶', date: '12.31', sub: '圣莫尼卡海边看日落' }
+];
+const LEGT = [[0.96, 1.44], [1.92, 2.40], [2.88, 3.36], [3.84, 4.32], [4.80, 5.28]];
+// 对阵
+const GAMES = [
+  { date: '12.22', wd: '周二', a: '奇才', b: '猛龙', arena: 'Capital One Arena，19:00 开球' },
+  { date: '12.23', wd: '周三', a: '76人', b: '火箭', arena: 'Xfinity Mobile Arena，19:30 开球' },
+  { date: '12.26', wd: '周六', a: '篮网', b: '鹈鹕', arena: 'Barclays Center，18:00 开球' }
+];
+
+function show(id, on) { $(id).style.display = on ? 'block' : 'none'; }
+function whip(tl, start, end, dir = 'x', dist = 900) {
+  // 场间甩镜：进入前 0.18 秒从另一侧甩进，结束前 0.18 秒甩出
+  const inK = 1 - ease.out(prog(tl, start, start + .18));
+  const outK = ease.in(prog(tl, end - .18, end));
+  const d = inK > 0 ? inK * dist : -outK * dist;
+  const b = Math.max(inK, outK) * 18;
+  return { d, b, dir };
+}
+
+function render(t) {
+  // 全局氛围层
+  $('beam1').style.transform = `rotate(${Math.sin(t * 1.4) * 24 - 8}deg)`;
+  $('beam2').style.transform = `rotate(${Math.sin(t * 1.1 + 2) * 26 + 10}deg)`;
+  $('court').style.backgroundPosition = `${-t * 160}px 0, 0 0`;
+  crowd(t, t > S[5] + 1.92 && t < S[6] ? .4 : 1);
+  const scene = S.findIndex((s, i) => t >= s && t < (S[i + 1] ?? 1e9));
+  for (let i = 1; i <= 7; i++) show('s' + i, scene === i - 1);
+  const cam = $('cam'); let camT = '', camF = 'none';
+
+  if (scene === 0) {
+    const tl = t;
+    const ks = ease.out(prog(tl, 0, .55));
+    $('star1').setAttribute('transform', `translate(${lerp(-150, 820, ks)} ${lerp(800, 470, ks)}) rotate(${ks * 360}) scale(${lerp(.6, 1.3, ks)})`);
+    $('swoosh').style.strokeDasharray = '1400'; $('swoosh').style.strokeDashoffset = String(1400 * (1 - ks)); $('swoosh').style.opacity = 1 - prog(tl, .9, 1.4);
+    const kz = ease.expoOut(prog(tl, .25, .96));
+    $('t1').style.opacity = prog(tl, .25, .35);
+    $('t1').style.transform = `scale(${lerp(3.2, 1, kz)}) translateY(${(1 - kz) * -60}px)`;
+    $('t1').style.filter = kz < .98 ? `blur(${(1 - kz) * 10}px)` : 'none';
+    const kb = ease.out(prog(tl, 1.44, 1.8));
+    $('bar1').style.clipPath = `inset(0 ${(1 - kb) * 100}% 0 0)`;
+    const push = lerp(1, 1.04, ease.inOut(prog(tl, 1.0, 3.36)));
+    const thru = ease.in(prog(tl, 3.36, 3.84));
+    camT = `scale(${push * lerp(1, 4, thru)})`; camF = thru > .01 ? `blur(${thru * 22}px)` : 'none';
+    cam.style.opacity = 1 - thru;
+  } else cam.style.opacity = 1;
+
+  if (scene === 1) {
+    const tl = t - S[1];
+    [0, 1, 2].forEach((i) => {
+      const st = i * BEAT;
+      const k = ease.back(prog(tl, st, st + .3));
+      $('n' + i).style.opacity = prog(tl, st, st + .05);
+      $('n' + i).style.transform = `scale(${lerp(1.8, 1, k)})`;
+      const rk = prog(tl, st + .05, st + .5);
+      $('r' + i).style.opacity = rk > 0 && rk < 1 ? (1 - rk) : 0;
+      $('r' + i).style.transform = `scale(${lerp(.3, 1.5, ease.out(rk))})`;
+    });
+    const out = ease.in(prog(tl, 1.68, 1.92));
+    camT = `translateY(${-out * 1100}px)`; camF = out > .01 ? `blur(${out * 20}px)` : 'none';
+  }
+
+  if (scene === 2) {
+    const tl = t - S[2];
+    const inn = 1 - ease.out(prog(tl, 0, .22));
+    LEGT.forEach(([a, b], i) => {
+      const k = ease.inOut(prog(tl, a, b)); const L = legs[i];
+      L.p.style.opacity = k > 0 ? 1 : 0;
+      if (!L.dash) { L.p.style.strokeDasharray = `${L.len}`; L.p.style.strokeDashoffset = String(L.len * (1 - k)); return; }
+      // 虚线逐段长出来：把已画出的长度拆成“实-空”列表，后面补一段很长的空白
+      const [on, gap] = L.dash.split(' ').map(Number);
+      const shown = L.len * k; const arr = [];
+      for (let acc = 0; acc < shown; acc += on + gap) arr.push(Math.min(on, shown - acc), gap);
+      arr.push(0, L.len * 2);
+      L.p.style.strokeDasharray = arr.join(' '); L.p.style.strokeDashoffset = '0';
+    });
+    let cur = 0; STOPS.forEach((s, i) => { if (tl >= s.at) cur = i; });
+    NODES.forEach((n, i) => {
+      const k = ease.back(prog(tl, STOPS[i].at, STOPS[i].at + .3));
+      n.g.style.opacity = tl >= STOPS[i].at ? 1 : 0;
+      n.g.style.transformOrigin = `${n.p.x}px ${n.p.y}px`; n.g.style.transform = `scale(${lerp(.2, 1, k)})`;
+      const pulse = i === cur ? 1 + .25 * Math.max(0, 1 - ((tl - STOPS[i].at) % BEAT) / BEAT) : 1;
+      n.ring.setAttribute('r', 30 * pulse); n.ring.setAttribute('stroke-opacity', i === cur ? 1 : .35);
+    });
+    // 镜头跟随当前节点
+    const prev = NODES[Math.max(0, cur - 1)].p, now = NODES[cur].p;
+    const km = ease.inOut(prog(tl, STOPS[cur].at - .2, STOPS[cur].at + .3));
+    const fx = lerp(prev.x, now.x, cur ? km : 1), fy = lerp(prev.y, now.y, cur ? km : 1);
+    const zoom = lerp(1, 1.12, ease.inOut(prog(tl, 0, 5.76)));
+    $('map').style.transformOrigin = `${fx}px ${fy}px`;
+    $('map').style.transform = `translate(${(490 - fx) * .18}px, ${(520 - fy) * .18}px) scale(${zoom})`;
+    // 城市字幕条
+    const s = STOPS[cur];
+    $('ltCity').textContent = s.city; $('ltDate').textContent = s.date; $('ltSub').textContent = s.sub;
+    const kl = ease.out(prog(tl, s.at, s.at + .25));
+    $('lt').style.transform = `translateX(${(1 - kl) * -1150}px)`;
+    camT = `translateY(${inn * 1100}px)`; camF = inn > .01 ? `blur(${inn * 20}px)` : 'none';
+  }
+
+  if (scene === 3) {
+    const tl = t - S[3];
+    show('s4a', tl < .96); show('s4b', tl >= .96 && tl < 6.72); show('s4c', tl >= 6.72);
+    if (tl < .96) {
+      const k = ease.back(prog(tl, .08, .4));
+      $('t4a').style.transform = `scale(${lerp(1.5, 1, k)})`; $('t4a').style.opacity = prog(tl, .08, .14);
+      const w = whip(tl, -1, .96); camT = `translateX(${w.d}px)`; camF = w.b > .3 ? `blur(${w.b}px)` : 'none';
+    } else if (tl < 6.72) {
+      const gi = Math.min(2, Math.floor((tl - .96) / BAR)); const g = GAMES[gi]; const lt = tl - .96 - gi * BAR;
+      $('gDate').textContent = g.date; $('gWd').textContent = g.wd; $('gAName').textContent = g.a; $('gBName').textContent = g.b; $('gArena').textContent = g.arena;
+      const ka = ease.out(prog(lt, .05, .4)), kb = ease.out(prog(lt, .12, .47));
+      $('gA').style.transform = `translateX(${(1 - ka) * -1100}px)`; $('gB').style.transform = `translateX(${(1 - kb) * 1100}px)`;
+      const kv = ease.back(prog(lt, BEAT, BEAT + .28));
+      $('vs').style.transform = `scale(${kv}) rotate(${(1 - kv) * -90}deg)`;
+      const kd = ease.out(prog(lt, 0, .3)); $('gDateWrap').style.transform = `translateY(${(1 - kd) * -200}px)`; $('gDateWrap').style.opacity = kd;
+      const kr = ease.out(prog(lt, BEAT * 1.5, BEAT * 1.5 + .3)); $('gBar').style.clipPath = `inset(0 ${(1 - kr) * 100}% 0 0)`;
+      const w = whip(lt, 0, gi === 2 ? 99 : BAR); camT = `translateX(${w.d}px)`; camF = w.b > .3 ? `blur(${w.b}px)` : 'none';
+      // 场上灯光在拍点上加亮
+    } else {
+      const lt = tl - 6.72;
+      const kh = ease.out(prog(lt, 0, .3)); $('t4c').style.opacity = kh; $('t4c').style.transform = `translateY(${(1 - kh) * -60}px)`;
+      ['c1', 'c2', 'c3'].forEach((id, i) => {
+        const k = ease.back(prog(lt, .06 + i * .1, .4 + i * .1));
+        $(id).style.transform = `translateX(${(1 - k) * 1200}px) skewX(-10deg)`;
+        $(id).style.filter = k < .95 ? `blur(${(1 - k) * 8}px)` : 'none';
+      });
+    }
+  }
+
+  if (scene === 4) {
+    const tl = t - S[4];
+    snow(tl);
+    const k = ease.out(prog(tl, .1, .5));
+    $('t5').style.opacity = k; $('t5').style.transform = `translateY(${(1 - k) * -80}px)`;
+    $('t5s').style.opacity = ease.out(prog(tl, .35, .7));
+    const kt = ease.back(prog(tl, 0, .5));
+    $('tree').setAttribute('transform', `translate(540 ${560 + (1 - kt) * 300}) scale(${lerp(.6, 1, kt)})`);
+    const beat = Math.floor(tl / BEAT);
+    BULBS.forEach((b) => { const lit = beat >= b.at; const since = tl - beat * BEAT; b.el.setAttribute('opacity', lit ? (.75 + .25 * (1 - since / BEAT)) : .15); });
+    $('treeStar').setAttribute('transform', `scale(${1 + .12 * Math.max(0, 1 - (tl % BEAT) / BEAT)})`);
+    $('tick').style.transform = `translateX(${-tl * 320}px)`;
+    camT = `scale(${lerp(1, 1.05, ease.inOut(prog(tl, 0, 3.84)))})`;
+  }
+
+  // 比赛时钟：第 5 镜最后一拍以右下角小字幕出现（隐藏切），第 6 镜放大成主角
+  const clock = $('clock');
+  if (t >= S[5] - BEAT && t < S[5] + 2.6) {
+    const tl = t - S[5];
+    const remain = tl < 0 ? 5 : Math.max(0, 4 - Math.floor(tl / BEAT));
+    $('clockT').textContent = `00:0${remain}`;
+    clock.classList.toggle('red', tl >= 4 * BEAT);
+    const grow = ease.expoOut(prog(tl, 0, .4));
+    const small = { s: .34, x: 260, y: 640 };
+    let s = lerp(small.s, 1, grow), x = lerp(small.x, 0, grow), y = lerp(small.y, 0, grow);
+    const exit = ease.inOut(prog(tl, 2.0, 2.5));
+    s *= lerp(1, .5, exit); y += lerp(0, -900, exit);
+    const sh = tl >= 1.92 && tl < 2.3 ? (1 - (tl - 1.92) / .38) * 22 : 0;
+    clock.style.opacity = (tl < 0 ? ease.out(prog(tl, -BEAT, -BEAT + .2)) : 1) * (1 - exit);
+    clock.style.transform = `translate(${x + Math.sin(tl * 90) * sh}px, ${y + Math.cos(tl * 70) * sh}px) scale(${s})`;
+  } else clock.style.opacity = 0;
+
+  // 落日
+  const sunK = t >= S[5] + 1.92 && t < S[6] + .8 ? ease.out(prog(t, S[5] + 1.92, S[5] + 3.4)) : 0;
+  const skyK = t < S[6] ? sunK : sunK * (1 - prog(t, S[6], S[6] + .8));
+  $('sky').style.opacity = skyK;
+  $('sun').style.opacity = t < S[6] ? sunK : 1 - prog(t, S[6], S[6] + .5);
+  $('sun').style.transform = `translateY(${lerp(260, -60, sunK)}px)`;
+
+  if (scene === 5) {
+    const tl = t - S[5];
+    const k1 = ease.back(prog(tl, 2.3, 2.6)), k2 = ease.back(prog(tl, 2.42, 2.72)), k3 = ease.out(prog(tl, 2.62, 2.95));
+    $('t6a').style.opacity = prog(tl, 2.3, 2.36); $('t6a').style.transform = `scale(${lerp(1.6, 1, k1)})`;
+    $('t6b').style.opacity = prog(tl, 2.42, 2.48); $('t6b').style.transform = `scale(${lerp(1.6, 1, k2)})`;
+    $('bar6').style.clipPath = `inset(0 ${(1 - k3) * 100}% 0 0)`;
+    const rf = tl >= 1.92 && tl < 2.3 ? 1 - (tl - 1.92) / .38 : 0;
+    $('redflash').style.opacity = rf * .8;
+  } else $('redflash').style.opacity = 0;
+
+  if (scene === 6) {
+    const tl = t - S[6];
+    const k = ease.expoOut(prog(tl, 0, .6));
+    $('t7').style.transform = `scale(${lerp(1.25, 1, k)})`; $('t7').style.opacity = prog(tl, 0, .1);
+    $('star7').setAttribute('transform', `translate(${lerp(1300, 800, ease.out(prog(tl, .1, .6)))} 520) rotate(${lerp(-200, 12, ease.out(prog(tl, .1, .6)))})`);
+    const a = ease.out(prog(tl, .45, .8)), b = ease.out(prog(tl, .6, .95));
+    $('t7a').style.opacity = a; $('t7a').style.transform = `translateY(${(1 - a) * 40}px)`;
+    $('t7b').style.opacity = b; $('t7b').style.transform = `translateY(${(1 - b) * 40}px)`;
+    $('black').style.opacity = ease.in(prog(tl, 3.24, 3.84));
+  } else $('black').style.opacity = 0;
+
+  // 转场：红条擦除（3→4），金星划过（4→5），白闪（6→7）
+  const wipe = $('wipe');
+  if (t > S[3] - .26 && t < S[3] + .26) {
+    const k = ease.inOut(prog(t, S[3] - .26, S[3] + .26));
+    wipe.style.display = 'block'; wipe.style.left = lerp(-1700, 1300, k) + 'px'; wipe.style.transform = 'rotate(14deg)';
+  } else wipe.style.display = 'none';
+  const bs = $('bigstarSvg');
+  if (t > S[4] - .22 && t < S[4] + .22) {
+    const k = ease.inOut(prog(t, S[4] - .22, S[4] + .22));
+    bs.style.display = 'block'; $('bigstar').setAttribute('transform', `translate(${lerp(-400, 1500, k)} ${lerp(1500, 400, k)}) rotate(${k * 300}) scale(2.6)`);
+  } else bs.style.display = 'none';
+  const fl = t >= S[6] - .05 && t < S[6] + .3 ? 1 - prog(t, S[6] - .05, S[6] + .3) : (t >= S[4] - .04 && t < S[4] + .12 ? .5 * (1 - prog(t, S[4] - .04, S[4] + .12)) : 0);
+  $('flash').style.opacity = fl;
+
+  cam.style.transform = camT; cam.style.filter = camF;
+}
+makeStage({ dur: DUR, render });
+</script>
+</body>
+</html>

@@ -90,6 +90,16 @@ async function frames(browser, url, outFile, { fps, w, h, dpr }) {
   try {
     if (cmd === 'boards') await boards(base, browser);
     else if (cmd === 'sketch') await frames(browser, `${base}/design-demos/${PAGES[a]}`, path.join(OUT, `dir-${a}-sketch.mp4`), { fps: 30, w: 1080, h: 1920, dpr: 0.5 });
+    else if (cmd === 'stills') {
+      // node tools/capture.cjs stills <page> f60,f150,...（帧号按 60fps）
+      const page = await openPage(browser, `${base}/${a}`, { dpr: 0.5 });
+      for (const f of b.split(',')) {
+        const n = Number(f.replace('f', ''));
+        await page.evaluate((tt) => window.__seek(tt), n / 60);
+        await page.screenshot({ path: path.join(FRAMES, `still-${String(n).padStart(4, '0')}.png`) });
+      }
+      await page.close();
+    }
     else if (cmd === 'film') await frames(browser, `${base}/${a}`, path.resolve(b), { fps: Number(c) || 30, w: 1080, h: 1920, dpr: 1 });
     else console.log('usage: boards | sketch <1|2|3> | film <page> <out.mp4> [fps]');
   } finally {

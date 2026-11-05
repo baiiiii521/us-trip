@@ -17,4 +17,20 @@ node video/tools/capture.cjs boards
 node video/tools/capture.cjs sketch 1
 ```
 
+## 正片（方向二：90 年代转播）
+
+- `direction-approved.md` 用户选择的原话
+- `导演稿.md` 分镜卡（16 小节、拍点对齐）、视觉密度条款、音效时间表
+- `film/film-broadcast.html` 正片场景，30.72 秒，按时间 t 渲染
+- `audio/` 配乐和音效（来源见 `audio/NOTICE.md`）
+- `tools/mix.cjs` 混音：BGM 从第一拍裁起，音效按导演稿时间点落位
+
+```bash
+node video/tools/capture.cjs film film/film-broadcast.html video/out/film-silent-60.mp4 60
+```
+
+```bash
+node video/tools/mix.cjs video/out/film-silent-60.mp4 video/out/east-coast-hoops-60fps.mp4
+```
+
 产物在 `video/out/`（不进 git）。
