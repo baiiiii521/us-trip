@@ -1,5 +1,5 @@
 // 外壳：顶栏、桌面标签、手机底部导航、弹层容器
-import { icon, esc, usd, cny } from '../lib/dom.js';
+import { icon, esc, usd, cny, brandMark } from '../lib/dom.js';
 import { budgetTotal } from '../lib/calc.js';
 import { TRIP } from '../data/trip.js';
 
@@ -19,8 +19,7 @@ export function shellHtml() {
   <header class="topbar">
     <div class="topbar__in">
       <a class="brand" href="#home" aria-label="${esc(TRIP.title)} 首页">
-        <span class="brand__mark">${esc(TRIP.titleEn)}</span>
-        <span class="brand__zh">${esc(TRIP.title)} · 12.18–12.31</span>
+        ${brandMark}<span class="brand__name">${esc(TRIP.titleEn)}</span>
       </a>
       <nav class="tabs" aria-label="主导航">${tabs}</nav>
       <button class="total" type="button" data-action="open-settings" aria-label="方案设置和总价">
@@ -44,7 +43,7 @@ export function updateShell(state, route) {
   const u = document.getElementById('total-usd');
   const c = document.getElementById('total-cny');
   if (u) u.textContent = usd(total);
-  if (c) c.textContent = '≈ ' + cny(total * (+state.budget.rate || 0)) + (state.budget.flights ? '' : ' 未含机票');
+  if (c) c.textContent = '≈ ' + cny(total * (+state.budget.rate || 0));
   document.querySelectorAll('[data-route]').forEach((a) => {
     const on = a.dataset.route === route;
     a.classList.toggle('is-on', on);

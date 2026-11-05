@@ -1,73 +1,83 @@
-/* 设计变量：深色顶栏像车站发车牌，正文是冷灰纸面；橙色 = 篮球，蓝 = 火车，绿 = 大巴 */
+/* 设计变量（按 taste-skill 的 system 规则）：
+   - 界面 90–95% 中性色，唯一强调色是篮球橙，只用在主按钮、焦点环、当前状态和小标记
+   - 蓝 = 火车、绿 = 大巴、红/黄/绿 = 状态，只做细线和图标，不做大面积底色
+   - 没有紫色；正文 16px，标签 13px 起；间距 4 的倍数；圆角 8 / 12 / 20 一套 */
 :root {
-  --bg: #ECEFF2;
+  --bg: #F3F5F7;
   --card: #FFFFFF;
-  --soft: #F4F6F8;
+  --soft: #EEF1F4;
   --ink: #16202B;
-  --muted: #5A6672;
-  --line: #CDD5DC;
-  --board: #16202B;
-  --board-ink: #ECEFF2;
+  --ink-2: #33404C;
+  --muted: #5E6A76;
+  --line: color-mix(in srgb, var(--ink) 14%, transparent);
+  --line-strong: color-mix(in srgb, var(--ink) 30%, transparent);
 
-  --accent: #D9570F;
-  --accbg: #FCEBDD;
+  --accent: #C04A0A;
+  --on-accent: #FFFFFF;
+  --accent-soft: color-mix(in srgb, var(--accent) 9%, var(--card));
   --rail: #1F4E8C;
-  --railbg: #E3ECF7;
   --bus: #23775A;
-  --busbg: #E1F1EA;
-  --crit: #C0262D;
-  --critbg: #FBE7E8;
-  --warn: #A86A12;
-  --warnbg: #FBF0DD;
+  --crit: #B3261E;
+  --warn: #8A5A0B;
   --ok: #2E7D32;
-  --okbg: #E5F2E6;
   --stamp: #FF7A1A;
 
   --c-bos: #1E7A4C;
   --c-dc: #2B4C8C;
   --c-phl: #1D6FB8;
-  --c-nyc: #D9570F;
+  --c-nyc: #C04A0A;
   --c-la: #0E8A8A;
 
-  --g-flight: #5B6CC9;
+  --g-flight: #46525E;
   --g-transport: #1F4E8C;
-  --g-hotel: #D9570F;
-  --g-games: #C0262D;
+  --g-hotel: #C04A0A;
+  --g-games: #B3261E;
   --g-local: #23775A;
-  --g-tickets: #A86A12;
-  --g-food: #8E5BA8;
-  --g-other: #7A8794;
+  --g-tickets: #B07A12;
+  --g-food: #C2417A;
+  --g-other: #A3ADB8;
 
   --f-display: "Big Shoulders Display", "Oswald", "Arial Narrow", sans-serif;
   --f-body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
-  --r: 10px;
-  --r-sm: 6px;
-  --topbar-h: 56px;
-  --bottombar-h: 62px;
-  --shadow: 0 1px 2px rgba(22, 32, 43, .06), 0 6px 24px rgba(22, 32, 43, .06);
+  --t-h1: clamp(28px, 2.2vw + 20px, 44px);
+  --t-h2: clamp(20px, .6vw + 17px, 24px);
+  --t-h3: 18px;
+  --t-body: 16px;
+  --t-small: 14px;
+  --t-label: 13px;
+
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 20px;
+  --btn-h: 44px;
+
+  --nav: 64px;
+  --bar: 64px;
+  --shadow-hover: 0 8px 24px color-mix(in srgb, var(--ink) 10%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0F141A; --card: #17202A; --soft: #1C2632; --ink: #E6EBF0; --muted: #9AA6B2; --line: #2A3642;
-    --board: #0A0E13; --board-ink: #E6EBF0;
-    --accent: #FF8A3D; --accbg: #3A2414; --rail: #7FB0FF; --railbg: #1B2A40; --bus: #5CC79A; --busbg: #163327;
-    --crit: #FF6B70; --critbg: #3A1C1F; --warn: #E9B04B; --warnbg: #382B14; --ok: #6BCB77; --okbg: #1B3220;
+    --bg: #0F141A; --card: #17202A; --soft: #1D2733; --ink: #E6EBF0; --ink-2: #C9D2DB; --muted: #9AA6B2;
+    --accent: #FF8A3D; --on-accent: #16202B; --rail: #7FB0FF; --bus: #5CC79A; --crit: #FF6B70; --warn: #E9B04B; --ok: #6BCB77;
     --c-bos: #3FAF77; --c-dc: #6F92D6; --c-phl: #5AA2E6; --c-nyc: #FF8A3D; --c-la: #35BFBF;
-    --g-flight: #8E9CF0; --g-transport: #7FB0FF; --g-hotel: #FF8A3D; --g-games: #FF6B70; --g-local: #5CC79A; --g-tickets: #E9B04B; --g-food: #C69BE0; --g-other: #9AA6B2;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 28px rgba(0, 0, 0, .25);
+    --g-flight: #8794A1; --g-transport: #7FB0FF; --g-hotel: #FF8A3D; --g-games: #FF6B70; --g-local: #5CC79A; --g-tickets: #E9B04B; --g-food: #E06A9A; --g-other: #5E6A76;
+    --shadow-hover: 0 8px 24px rgba(0, 0, 0, .35);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0F141A; --card: #17202A; --soft: #1C2632; --ink: #E6EBF0; --muted: #9AA6B2; --line: #2A3642;
-  --board: #0A0E13; --board-ink: #E6EBF0;
-  --accent: #FF8A3D; --accbg: #3A2414; --rail: #7FB0FF; --railbg: #1B2A40; --bus: #5CC79A; --busbg: #163327;
-  --crit: #FF6B70; --critbg: #3A1C1F; --warn: #E9B04B; --warnbg: #382B14; --ok: #6BCB77; --okbg: #1B3220;
+  --bg: #0F141A; --card: #17202A; --soft: #1D2733; --ink: #E6EBF0; --ink-2: #C9D2DB; --muted: #9AA6B2;
+  --accent: #FF8A3D; --on-accent: #16202B; --rail: #7FB0FF; --bus: #5CC79A; --crit: #FF6B70; --warn: #E9B04B; --ok: #6BCB77;
   --c-bos: #3FAF77; --c-dc: #6F92D6; --c-phl: #5AA2E6; --c-nyc: #FF8A3D; --c-la: #35BFBF;
-  --g-flight: #8E9CF0; --g-transport: #7FB0FF; --g-hotel: #FF8A3D; --g-games: #FF6B70; --g-local: #5CC79A; --g-tickets: #E9B04B; --g-food: #C69BE0; --g-other: #9AA6B2;
-  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 28px rgba(0, 0, 0, .25);
+  --g-flight: #8794A1; --g-transport: #7FB0FF; --g-hotel: #FF8A3D; --g-games: #FF6B70; --g-local: #5CC79A; --g-tickets: #E9B04B; --g-food: #E06A9A; --g-other: #5E6A76;
+  --shadow-hover: 0 8px 24px rgba(0, 0, 0, .35);
   color-scheme: dark;
+}
+@media (max-width: 639px) {
+  :root { --nav: 56px; }
 }

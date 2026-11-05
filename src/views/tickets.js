@@ -1,5 +1,5 @@
 // 票务：城际交通（火车/大巴）、NBA 球票、需要预约的景点
-import { esc, icon, ext, usd, cny, vendorLinks, buyRow } from '../lib/dom.js';
+import { esc, icon, ext, usd, cny, vendorLinks, buyRow, arrow } from '../lib/dom.js';
 import { LEGS, LEG_IDS, legOption, legWhy } from '../data/legs.js';
 import { GAMES, GAME_ORDER, gameLinks, gameStatus } from '../data/games.js';
 import { TICKET_PLATFORMS } from '../data/vendors.js';
@@ -14,7 +14,7 @@ function legCard(id, state) {
     const on = cur === k;
     return `<div class="opt opt--${k}${on ? ' is-on' : ''}${o.disabled ? ' is-off' : ''}">
       <button type="button" class="opt__pick" data-action="leg" data-leg="${id}" data-kind="${k}" aria-pressed="${on}" ${o.disabled ? 'disabled' : ''}>
-        <span class="opt__top">${icon(k)}<b>${k === 'train' ? '火车' : '大巴'}</b><span class="price">${o.p ? usd(o.p) + '/人' : '—'}</span></span>
+        <span class="opt__top"><span class="opt__radio" aria-hidden="true"></span>${icon(k)}<b>${k === 'train' ? '火车' : '大巴'}</b><span class="price">${o.p ? usd(o.p) + '/人' : '—'}</span></span>
         <span class="opt__t">${esc(o.t)}</span>
         <span class="opt__d">${esc(o.d)}</span>
         ${o.price ? `<span class="opt__src">价格：${esc(o.price)}</span>` : ''}
@@ -63,7 +63,7 @@ export function renderTickets(state) {
   <div class="pagehead"><h1>票务</h1><p>城际交通、球票和需要预约的景点都在这一页。火车价按原攻略总价拆分估算，大巴价来自比价网站区间，下单前以官网为准。</p></div>
 
   <section class="sec">
-    <div class="sec__h"><h2>城际交通</h2><span class="more">当前：${esc(MODE_LABEL[state.mode])} · 两人 ${usd(transportCost(state))}</span></div>
+    <div class="sec__h"><h2>城际交通</h2><span class="meta">当前：${esc(MODE_LABEL[state.mode])} · 两人 ${usd(transportCost(state))}</span></div>
     <div class="segctl segctl--inline" role="radiogroup" aria-label="交通方式">${[['train', '全火车'], ['mix', '推荐混合'], ['bus', '全大巴']].map(([m, l]) =>
       `<button type="button" role="radio" aria-checked="${state.mode === m}" class="segctl__opt${state.mode === m ? ' is-on' : ''}" data-action="set" data-key="mode" data-value="${m}"><b>${l}</b></button>`).join('')}</div>
     <div class="legs">${LEG_IDS.map((id) => legCard(id, state)).join('')}</div>
@@ -72,15 +72,15 @@ export function renderTickets(state) {
   </section>
 
   <section class="sec">
-    <div class="sec__h"><h2>NBA 球票</h2><span class="more">每场 7 个入口，第一个是推荐</span></div>
+    <div class="sec__h"><h2>NBA 球票</h2><span class="meta">每场 7 个购票入口</span></div>
     <div class="games">${games}</div>
-    <h3 class="sec__sub">选哪个平台</h3>
+    <h3 class="sec__sub">六个购票平台怎么选</h3>
     <p class="note">先在 TickPick 看含费总价定基准，再去 SeatGeek、StubHub 打开“显示含费价格”对比，最后在 Ticketmaster 看有没有官方原价票。奇才、篮网赛前 1–2 天用 Gametime 捡漏。</p>
-    <div class="platforms">${TICKET_PLATFORMS.map((p) => `<a class="card platform" href="${esc(p.url)}" target="_blank" rel="noopener"><b>${esc(p.name)}</b><span>${esc(p.note)}</span></a>`).join('')}</div>
+    <div class="platforms">${TICKET_PLATFORMS.map((p) => `<a class="card platform m-card" href="${esc(p.url)}" target="_blank" rel="noopener"><b>${esc(p.name)}${arrow}</b><span>${esc(p.note)}</span></a>`).join('')}</div>
   </section>
 
   <section class="sec">
-    <div class="sec__h"><h2>需要预约的景点</h2></div>
+    <div class="sec__h"><h2>需要预约的景点</h2><span class="meta">${POIS.filter((p) => p.buy && p.buy.length).length} 处</span></div>
     <ul class="card reslist">${reservations}</ul>
   </section>`;
 }

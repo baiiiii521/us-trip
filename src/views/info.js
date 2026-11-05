@@ -33,7 +33,7 @@ function auditHtml() {
 }
 
 function sourcesHtml() {
-  return `<ul class="sources">${SOURCES.map(([l, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(l)}</a></li>`).join('')}</ul>
+  return `<ul class="sources">${SOURCES.map(([l, u]) => `<li><a class="link" href="${esc(u)}" target="_blank" rel="noopener">${esc(l)}</a></li>`).join('')}</ul>
   <p class="note">景点照片在浏览器里从维基百科读取，作者和许可证写在每个景点详情的图片下方。</p>`;
 }
 

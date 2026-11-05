@@ -1,0 +1,85 @@
+/* 微交互层：数值照 taste-skill references/motion.md
+   悬停 140ms 进 / 200ms 出，按下 90ms；按钮上浮 1px、按下下沉 1px 并缩到 .985；
+   可点的卡片上浮 2px、边框加深一级、柔和阴影；照片在框内放大 1.03（600ms）；
+   链接下划线从左往右画出；焦点环 2px，偏移从 6px 收到 2px。
+   不做滚动出现动画、视差、倾斜、发光。悬停只对精确指针生效，手机不会卡在悬停态。 */
+:root {
+  --m-in: 140ms;
+  --m-out: 200ms;
+  --m-press: 90ms;
+  --m-panel: 200ms;
+  --m-slide: 240ms;
+  --m-image: 600ms;
+  --m-ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+/* 焦点 */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; transition: outline-offset var(--m-out) var(--m-ease); }
+@starting-style { :focus-visible { outline-offset: 6px; } }
+
+/* 按钮 */
+.btn, .buy, .chip, .segctl__opt, .iconbtn, .todo__ck, .subtab {
+  transition: background-color var(--m-out) var(--m-ease), color var(--m-out) var(--m-ease),
+              border-color var(--m-out) var(--m-ease), transform var(--m-press) var(--m-ease);
+}
+.btn--primary:hover { background: color-mix(in oklab, var(--accent) 86%, var(--ink)); }
+.btn--secondary:hover, .buy:hover, .chip:not(.is-on):hover, .segctl__opt:not(.is-on):hover, .iconbtn:hover {
+  background: color-mix(in oklab, var(--card) 92%, var(--ink));
+  border-color: var(--line-strong);
+}
+.btn:active, .buy:active, .chip:active, .segctl__opt:active, .iconbtn:active, .todo__ck:active { transform: translateY(1px) scale(.985); }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover, .buy:hover { transform: translateY(-1px); transition-duration: var(--m-in); }
+  .btn:active, .buy:active { transform: translateY(1px) scale(.985); }
+}
+
+/* 箭头 */
+.m-arrow { transition: transform var(--m-out) var(--m-ease); }
+a:hover > .m-arrow, button:hover > .m-arrow, a:focus-visible > .m-arrow { transform: translateX(3px); transition-duration: var(--m-in); }
+
+/* 链接：静止时一条淡细线，悬停时墨色线从左画到右 */
+.link, .linkbtn {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor), linear-gradient(var(--line-strong), var(--line-strong));
+  background-repeat: no-repeat;
+  background-size: 0% 1px, 100% 1px;
+  background-position: 0 100%, 0 100%;
+  transition: background-size var(--m-out) var(--m-ease);
+}
+.link:hover, .linkbtn:hover, .link:focus-visible, .linkbtn:focus-visible { background-size: 100% 1px, 100% 1px; transition-duration: var(--m-in); }
+
+/* 可点的卡片 */
+.m-card { transition: transform 180ms var(--m-ease), border-color var(--m-out) var(--m-ease), box-shadow var(--m-out) var(--m-ease); }
+@media (hover: hover) and (pointer: fine) {
+  .m-card:hover { transform: translateY(-2px); border-color: var(--line-strong); box-shadow: var(--shadow-hover); transition-duration: 180ms, var(--m-in), var(--m-in); }
+}
+
+/* 照片在框内放大 */
+.m-zoom .photo img, .m-zoom .ph { transition: transform var(--m-image) var(--m-ease); }
+@media (hover: hover) and (pointer: fine) {
+  .m-zoom:hover .photo img, .m-zoom:hover .ph { transform: scale(1.03); }
+}
+
+/* 弹层：淡入并上移 6px；手机底部弹层从下往上滑 */
+dialog.sheet[open] { animation: sheet-in var(--m-panel) var(--m-ease); }
+dialog.sheet[open]::backdrop { animation: fade-in var(--m-panel) var(--m-ease); }
+@keyframes sheet-in { from { opacity: 0; transform: translateY(6px); } }
+@keyframes fade-in { from { opacity: 0; } }
+@media (max-width: 639px) {
+  dialog.sheet[open] { animation: sheet-up var(--m-slide) var(--m-ease); }
+  @keyframes sheet-up { from { transform: translateY(32px); opacity: 0; } }
+}
+
+/* 复制按钮：图标换成对勾，保持约 1.6 秒 */
+.btn[data-copied] .ic { color: var(--ok); }
+
+/* 减少动态：颜色照常变化，位移和缩放全部停止 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; scroll-behavior: auto !important; }
+  .btn, .buy, .chip, .segctl__opt, .iconbtn, .todo__ck, .m-card, .m-zoom .photo img, .m-zoom .ph, .m-arrow {
+    transition-property: background-color, color, border-color, opacity !important;
+  }
+  .btn:hover, .btn:active, .buy:hover, .buy:active, .m-card:hover, .m-zoom:hover .photo img, .m-zoom:hover .ph,
+  a:hover > .m-arrow, button:hover > .m-arrow, .chip:active, .segctl__opt:active, .iconbtn:active, .todo__ck:active { transform: none !important; }
+  .link, .linkbtn { transition: none; }
+}

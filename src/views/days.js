@@ -31,7 +31,7 @@ function gameBlock(id, text) {
   return `<div class="game">
     <div class="game__h">${icon('ball')}<b>${esc(g.title)}</b><span class="mono">${esc(g.time)}</span></div>
     ${text ? `<p class="game__note">${esc(text)}</p>` : ''}
-    <button type="button" class="poi-chip" data-action="poi" data-id="${arena.id}">${esc(arena.name)}<span>球馆介绍</span></button>
+    <button type="button" class="linkbtn poi-chip" data-action="poi" data-id="${arena.id}">看 ${esc(arena.name)} 球馆介绍</button>
     ${buyRow('买票', gameLinks(id).map((l, i) => ext(l.label, l.url, i === 0)).join(''))}
   </div>`;
 }
@@ -75,7 +75,7 @@ export function renderDays(state) {
           <h2 id="dt-${d.id}">${esc(d.title)}</h2>
           <p class="day__wx">${icon('sun')}${c.hi}° / ${c.lo}° · 日落 ${c.sunset}</p>
         </div>
-        ${rUrl ? `<a class="btn btn--small" href="${esc(rUrl)}" target="_blank" rel="noopener">${icon('route')}当天路线</a>` : ''}
+        ${rUrl ? `<a class="btn btn--secondary" href="${esc(rUrl)}" target="_blank" rel="noopener">${icon('route')}打开当天路线</a>` : ''}
       </header>
       <ol class="tl">${d.items.map((it) => `
         <li class="tl__i${it.leg ? ' tl__i--move' : ''}${it.game ? ' tl__i--game' : ''}">
@@ -94,7 +94,7 @@ export function renderDays(state) {
   }).join('');
 
   return `
-  <div class="pagehead"><h1>每日行程</h1><p>点景点看介绍和照片，右边箭头直接导航。“当天路线”把这一天的地点按顺序串进 Google 地图。</p></div>
+  <div class="pagehead"><h1>每日行程</h1><p>点景点卡片看介绍和照片，右侧箭头直接导航。“打开当天路线”会把这一天的地点按顺序放进 Google 地图。</p></div>
   <nav class="strip" aria-label="日期">${strip}</nav>
   <div class="days">${cards}</div>`;
 }

@@ -29,6 +29,6 @@ export function settingsHtml(state, { compact = false } = {}) {
     <section class="set"><h3 class="set__h">12/20 方案 <small>凯尔特人 20:00 开球 vs 67 次 18:45 开车</small></h3>${seg('12/20 方案', plans, state.plan)}</section>
     <section class="set"><h3 class="set__h">纽约住宿 <small>6 晚</small></h3>${seg('纽约住宿', hotels, state.hotel)}</section>
     ${compact ? '' : `<section class="set"><h3 class="set__h">导航用 <small>页面上所有“导航”按钮跟着换</small></h3>${seg('导航 App', navs, state.nav)}</section>
-    <p class="note">设置保存在这台设备的浏览器里。<button type="button" class="linkbtn" data-action="reset">恢复默认</button></p>`}
+    <p class="note">设置保存在这台设备的浏览器里。<button type="button" class="linkbtn" data-action="reset">恢复默认设置</button></p>`}
   </div>`;
 }

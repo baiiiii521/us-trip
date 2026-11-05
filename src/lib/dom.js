@@ -32,13 +32,20 @@ export function icon(name, cls = '') {
   return `<svg class="ic ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[name] || ''}</svg>`;
 }
 
-export function ext(label, url, primary = false) {
-  return `<a class="buy${primary ? ' buy--main' : ''}" href="${esc(url)}" target="_blank" rel="noopener">${esc(label)}</a>`;
+// 外部订票链接。recommended 时在名字前加“推荐”小字，不另换颜色或样式
+export function ext(label, url, recommended = false) {
+  return `<a class="buy" href="${esc(url)}" target="_blank" rel="noopener">${recommended ? '<span class="buy__rec">推荐</span>' : ''}${esc(label)}</a>`;
 }
 
 export function vendorLinks(keys = []) {
-  return keys.filter((k) => VENDORS[k]).map((k, i) => ext(VENDORS[k].label, VENDORS[k].url, i === 0)).join('');
+  return keys.filter((k) => VENDORS[k]).map((k) => ext(VENDORS[k].label, VENDORS[k].url)).join('');
 }
+
+// 往右的小箭头：悬停时右移 3px
+export const arrow = '<svg class="m-arrow ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+
+// 品牌标：一个篮球
+export const brandMark = '<svg class="brand__mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="var(--accent)"/><g fill="none" stroke="var(--card)" stroke-width="3"><path d="M4 32h56M32 4v56"/><path d="M13 12c8 6 12 13 12 20s-4 14-12 20M51 12c-8 6-12 13-12 20s4 14 12 20"/></g></svg>';
 
 export function buyRow(label, html) {
   if (!html) return '';
