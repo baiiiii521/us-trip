@@ -1,5 +1,5 @@
 // 混音：BGM（从第一拍裁起）+ 按导演稿时间点的音效，合进无声视频。
-// 用法：node tools/mix.cjs <无声视频.mp4> <输出.mp4> [broadcast|citypop]
+// 用法：node tools/mix.cjs <无声视频.mp4> <输出.mp4> [film|broadcast|citypop]
 // 规则来自 huashu-design audio-design-rules.md：BGM 0.45、低通 4 kHz；SFX 高通 800 Hz；amix normalize=0；
 // BGM 0.3 秒淡入、1.5 秒淡出。音效峰值先统一到 -3 dB，避免有的听不见。
 const { execFileSync, spawnSync } = require('child_process');
@@ -7,8 +7,9 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const A = (f) => path.join(ROOT, 'audio', f);
-// 两套预设：broadcast（方向二）、citypop（方向三）。时间点来自各自的导演稿
+// 三套预设：film（方向一）、broadcast（方向二）、citypop（方向三）。时间点来自各自的导演稿
 const BEAT3 = 60 / 119, BAR3 = BEAT3 * 4;
+const BAR1 = 4 * 60 / 104.5;
 const PRESETS = {
   broadcast: {
     bgm: 'bgm-ad.mp3', offset: 0.255, dur: 30.72,
@@ -18,6 +19,16 @@ const PRESETS = {
       [5.52, 'transition-swipe-horizontal'], [6.72, 'ui-focus'], [8.64, 'ui-focus'], [10.56, 'ui-focus'],
       [11.28, 'transition-slide-in'], [12.48, 'transition-whoosh'], [14.40, 'transition-whoosh'], [16.32, 'transition-whoosh'],
       [18.24, 'container-stack-collapse'], [19.00, 'magic-sparkle'], [24.96, 'impact-drop-thud'], [26.88, 'impact-logo-reveal-v2']
+    ]
+  },
+  film: {
+    bgm: 'bgm-educational.mp3', offset: 0.232, dur: 13 * BAR1,
+    cues: [
+      [0.30, 'magic-sparkle'],
+      ...[2, 4, 5, 6, 7, 8, 9, 11].map((b) => [b * BAR1, 'ui-click']),
+      [4 * BAR1 + 0.21, 'transition-whoosh-fast'],
+      [5 * BAR1 + 0.42, 'impact-drop-thud'], [6 * BAR1 + 0.42, 'impact-drop-thud'], [8 * BAR1 + 0.42, 'impact-drop-thud'],
+      [11 * BAR1 + 0.24, 'impact-logo-reveal-v2']
     ]
   },
   citypop: {
@@ -40,7 +51,7 @@ function peakDb(file) {
 }
 
 const [video, out, presetName = 'broadcast'] = process.argv.slice(2);
-if (!video || !out || !PRESETS[presetName]) { console.log('usage: node tools/mix.cjs <silent.mp4> <out.mp4> [broadcast|citypop]'); process.exit(1); }
+if (!video || !out || !PRESETS[presetName]) { console.log('usage: node tools/mix.cjs <silent.mp4> <out.mp4> [film|broadcast|citypop]'); process.exit(1); }
 const { bgm, offset: BGM_OFFSET, dur: DUR, cues: CUES } = PRESETS[presetName];
 
 const inputs = ['-i', path.resolve(video), '-i', A(bgm)];

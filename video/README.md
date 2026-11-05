@@ -43,4 +43,14 @@ node video/tools/capture.cjs film film/film-citypop.html video/out/citypop-silen
 node video/tools/mix.cjs video/out/citypop-silent-60.mp4 video/out/east-coast-hoops-citypop-60fps.mp4 citypop
 ```
 
+方向一 胶片抽帧（`导演稿-film.md`、`film/film-neon.html`，29.86 秒，配乐 bgm-educational.mp3）：
+
+```bash
+node video/tools/capture.cjs film film/film-neon.html video/out/neon-silent-60.mp4 60
+```
+
+```bash
+node video/tools/mix.cjs video/out/neon-silent-60.mp4 video/out/east-coast-hoops-film-60fps.mp4 film
+```
+
 产物在 `video/out/`（不进 git）。
