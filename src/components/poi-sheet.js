@@ -4,6 +4,7 @@ import { placeUrl, directionsUrl, NAV_APPS } from '../lib/maps.js';
 import { CITIES, CATEGORIES } from '../data/trip.js';
 import { gameLinks, GAMES } from '../data/games.js';
 import { photoHtml, photoCredit } from './photo.js';
+import { visitOf } from '../state.js';
 
 export function poiSheetHtml(poi, state, appearsOn = []) {
   const app = state.nav;
@@ -29,6 +30,9 @@ export function poiSheetHtml(poi, state, appearsOn = []) {
       <button class="btn btn--secondary" type="button" data-action="copy" data-text="${esc(poi.q)}">${icon('copy')}<span>复制地址</span></button>
     </div>
 
+    <div class="visit" role="group" aria-label="打卡">
+      ${[['been', '去过了'], ['want', '想去']].map(([k, l]) => `<button type="button" class="chip${visitOf(state, poi.id) === k ? ' is-on' : ''}" aria-pressed="${visitOf(state, poi.id) === k}" data-action="visit" data-id="${poi.id}" data-value="${k}">${l}</button>`).join('')}
+    </div>
     <p class="sheet__intro">${esc(poi.intro)}</p>
     ${poi.highlights && poi.highlights.length ? `<h3 class="sheet__h">看点</h3><ul class="sheet__list">${poi.highlights.map((h) => `<li>${esc(h)}</li>`).join('')}</ul>` : ''}
 

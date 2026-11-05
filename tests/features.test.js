@@ -1,0 +1,135 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mergeDocs, syncDoc, encodeShare, decodeShare, encryptDoc, decryptDoc, SYNC_KEYS } from '../src/lib/sync.js';
+import { settle, byCategory, toUsd } from '../src/lib/money.js';
+import { findToday, nowAndNext, itemTime, fmtCountdown, keyEvents } from '../src/lib/today.js';
+import { alertFor, codeLabel, weatherFor } from '../src/lib/weather.js';
+import { tripDayOf } from '../src/lib/exif.js';
+import { walletSlots, slotsForItem } from '../src/data/bookings.js';
+import { buildDays } from '../src/data/days.js';
+import { DEFAULTS, migrate, isDone, personName } from '../src/state.js';
+import { handle } from '../api/sync.js';
+
+const S = () => JSON.parse(JSON.stringify(DEFAULTS));
+
+test('mergeDocs: 每条记录取更新时间较新的一份，删除也生效', () => {
+  const a = { todo: { t1: { v: true, u: 5 } }, expenses: { e1: { amount: 10, u: 1 } } };
+  const b = { todo: { t1: { v: false, u: 9 } }, expenses: { e1: { del: true, u: 3 }, e2: { amount: 4, u: 2 } } };
+  const m = mergeDocs(a, b);
+  assert.equal(m.todo.t1.v, false);
+  assert.equal(m.expenses.e1.del, true);
+  assert.equal(m.expenses.e2.amount, 4);
+  for (const k of SYNC_KEYS) assert.ok(k in m);
+});
+
+test('mergeDocs: 顺序无关、重复合并结果不变', () => {
+  const a = { wallet: { x: { code: 'A', u: 2 } } };
+  const b = { wallet: { x: { code: 'B', u: 7 }, y: { code: 'C', u: 1 } } };
+  assert.deepEqual(mergeDocs(a, b), mergeDocs(b, a));
+  assert.deepEqual(mergeDocs(mergeDocs(a, b), b), mergeDocs(a, b));
+});
+
+test('同步码：编码再解码得到同一份数据', async () => {
+  const s = S(); s.todo.t1 = { v: true, u: 1 }; s.people.a = { v: '小白', u: 2 };
+  const code = await encodeShare(syncDoc(s));
+  assert.match(code, /^HOOPS[01]\./);
+  assert.deepEqual(await decodeShare(code), syncDoc(s));
+  await assert.rejects(() => decodeShare('乱写的'));
+});
+
+test('云同步加密：对的口令能解开，错的不行，房间 id 与口令有关', async () => {
+  const doc = { todo: { t1: { v: true, u: 1 } } };
+  const { id, body } = await encryptDoc(doc, 'room', 'pw');
+  assert.match(id, /^[a-f0-9]{64}$/);
+  assert.deepEqual(await decryptDoc(body, 'room', 'pw'), doc);
+  await assert.rejects(() => decryptDoc(body, 'room', 'wrong'));
+  assert.notEqual((await encryptDoc(doc, 'room', 'other')).id, id);
+});
+
+test('api/sync：未配置 501，PUT 后 GET 取回，坏输入被拒绝', async () => {
+  assert.equal((await handle({ method: 'GET', id: 'a'.repeat(64) }, null)).status, 501);
+  const mem = new Map();
+  const store = { get: async (k) => mem.get(k) || null, set: async (k, v) => { mem.set(k, v); } };
+  const id = 'b'.repeat(64);
+  assert.equal((await handle({ method: 'GET', id }, store)).status, 404);
+  assert.equal((await handle({ method: 'PUT', id, body: { iv: 'x', ct: 'y' } }, store)).status, 200);
+  const got = await handle({ method: 'GET', id }, store);
+  assert.deepEqual(got.json, { iv: 'x', ct: 'y' });
+  assert.equal((await handle({ method: 'PUT', id: 'short', body: {} }, store)).status, 400);
+  assert.equal((await handle({ method: 'PUT', id, body: { nope: 1 } }, store)).status, 400);
+  assert.equal((await handle({ method: 'PUT', id, body: 'x'.repeat(400000) }, store)).status, 413);
+  assert.equal((await handle({ method: 'DELETE', id }, store)).status, 405);
+});
+
+test('settle: 两人平分、只算一人、人民币换算', () => {
+  const ex = {
+    e1: { amount: 100, currency: 'USD', payer: 'a', split: 'both', cat: 'food', u: 1 },
+    e2: { amount: 30, currency: 'USD', payer: 'b', split: 'a', cat: 'other', u: 2 },
+    e3: { amount: 68, currency: 'CNY', payer: 'b', split: 'both', cat: 'food', u: 3 },
+    e4: { amount: 999, currency: 'USD', payer: 'a', split: 'both', del: true, u: 4 }
+  };
+  const r = settle(ex, 6.8);
+  assert.equal(Math.round(r.total * 100) / 100, 140);
+  assert.equal(Math.round(r.paid.a), 100);
+  assert.equal(Math.round(r.paid.b), 40);
+  // a 应承担 50 + 30 + 5 = 85；b 应承担 50 + 5 = 55；a 多付 15
+  assert.equal(Math.round(r.owe.a), 85);
+  assert.equal(Math.round(r.owe.b), 55);
+  assert.equal(r.transfer.from, 'b'); assert.equal(r.transfer.to, 'a'); assert.equal(Math.round(r.transfer.usd), 15);
+  assert.equal(toUsd({ amount: 68, currency: 'CNY' }, 6.8), 10);
+  assert.equal(Math.round(byCategory(ex, 6.8).food), 110);
+  assert.equal(settle({}, 6.8).transfer, null);
+});
+
+test('今天模式：按日期找到当天，再找当前项和下一项', () => {
+  const days = buildDays(S());
+  const d = findToday(days, new Date(2026, 11, 19, 10, 0));
+  assert.equal(d.id, '1219');
+  assert.equal(findToday(days, new Date(2026, 10, 5)), null);
+  assert.equal(findToday(days, new Date(2025, 11, 19)), null);
+  const { current, next, minutes } = nowAndNext(d, new Date(2026, 11, 19, 10, 0));
+  assert.equal(current.it.t, '09:30'); assert.equal(next.it.t, '11:00'); assert.equal(minutes, 60);
+  assert.equal(itemTime(d, '落地'), null);
+  assert.equal(fmtCountdown(0), '马上'); assert.equal(fmtCountdown(45), '45 分钟后'); assert.equal(fmtCountdown(125), '2 小时 5 分钟后');
+  assert.ok(keyEvents(findToday(days, new Date(2026, 11, 20))).length >= 1);
+});
+
+test('天气预案：大雪、小雪、大雨、严寒才提醒', () => {
+  assert.equal(alertFor({ snow: 12, code: 75, lo: -3 }).level, 'crit');
+  assert.equal(alertFor({ snow: 3, code: 71, lo: -1 }).level, 'warn');
+  assert.equal(alertFor({ rain: 20, code: 63, lo: 5 }).level, 'warn');
+  assert.equal(alertFor({ snow: 0, code: 0, lo: -12 }).level, 'warn');
+  assert.equal(alertFor({ snow: 0, rain: 0, code: 1, lo: 2 }), null);
+  assert.equal(alertFor(null), null);
+  assert.equal(codeLabel(0), '晴'); assert.equal(codeLabel(73), '雪');
+  assert.equal(weatherFor({ 'nyc|2026-12-25': { hi: 3 } }, 'nyc', { md: '12/25' }).hi, 3);
+});
+
+test('照片日期归到行程第几天', () => {
+  assert.equal(tripDayOf(new Date(2026, 11, 20, 9)), '1220');
+  assert.equal(tripDayOf(new Date(2026, 11, 31, 23)), '1231');
+  assert.equal(tripDayOf(new Date(2026, 11, 17)), 'other');
+  assert.equal(tripDayOf(new Date(2025, 11, 20)), 'other');
+});
+
+test('订单夹：格子随 12/20 方案和可选项变化，每个行程里的票都有对应格子', () => {
+  const a = walletSlots(S()).map((s) => s.id);
+  const c = S(); c.plan = 'C'; c.opts.ewr = true; c.opts.ins = true; c.opts.summit = true;
+  const ids = walletSlots(c).map((s) => s.id);
+  assert.ok(!a.includes('game-bos')); assert.ok(ids.includes('game-bos'));
+  assert.ok(ids.includes('hotel-ewr') && ids.includes('doc-ins') && ids.includes('res-summit'));
+  assert.equal(new Set(ids).size, ids.length);
+  for (const p of ['A', 'B', 'C']) {
+    const st = S(); st.plan = p; st.opts = { ewr: true, summit: true, ins: true };
+    const have = new Set(walletSlots(st).map((s) => s.id));
+    for (const d of buildDays(st)) for (const it of d.items) for (const id of slotsForItem(it)) assert.ok(have.has(id), `${p} ${d.md} 缺格子 ${id}`);
+  }
+});
+
+test('状态迁移：旧版布尔清单升级，名字有默认值', () => {
+  const o = migrate({ todo: { t1: true, t2: false, t3: { v: true, u: 5 } } });
+  assert.deepEqual(o.todo.t1, { v: true, u: 0 });
+  const s = S(); s.todo = o.todo;
+  assert.equal(isDone(s, 't1'), true); assert.equal(isDone(s, 't2'), false); assert.equal(isDone(s, 't3'), true);
+  assert.equal(personName(S(), 'a'), '我'); assert.equal(personName(S(), 'b'), '同伴');
+});

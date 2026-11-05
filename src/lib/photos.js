@@ -10,6 +10,7 @@ const listeners = new Set();
 
 export function getPhoto(wikiTitle) { return wikiTitle ? photos[wikiTitle] || null : null; }
 export function onPhotos(fn) { listeners.add(fn); }
+export function photoUrls() { return Object.values(photos).map((p) => p.src).filter(Boolean); }
 
 function readCache() {
   try {

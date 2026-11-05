@@ -5,12 +5,15 @@ import { CITIES, CATEGORIES } from '../data/trip.js';
 import { buildDays } from '../data/days.js';
 import { poiAppearances } from '../lib/index.js';
 import { photoHtml } from '../components/photo.js';
+import { visitOf } from '../state.js';
 
-export const guideUi = { city: 'all', cat: 'all', q: '' };
+export const guideUi = { city: 'all', cat: 'all', q: '', visit: 'all' };
+let visitState = {};
 
 function matches(p) {
   if (guideUi.city !== 'all' && p.city !== guideUi.city) return false;
   if (guideUi.cat !== 'all' && p.cat !== guideUi.cat) return false;
+  if (guideUi.visit !== 'all' && visitOf(visitState, p.id) !== guideUi.visit) return false;
   const q = guideUi.q.trim().toLowerCase();
   if (!q) return true;
   return [p.name, p.en, p.tag, p.intro, p.tip, ...(p.highlights || []), CITIES[p.city].zh].some((v) => v && v.toLowerCase().includes(q));
@@ -18,6 +21,7 @@ function matches(p) {
 
 // 只渲染结果区，搜索输入时调用，不打断输入框
 export function guideResultsHtml(state) {
+  visitState = state;
   const app = poiAppearances(buildDays(state));
   const list = POIS.filter(matches);
   return `<p class="count" aria-live="polite">${list.length} 个地点</p>
@@ -27,7 +31,7 @@ export function guideResultsHtml(state) {
       ${photoHtml(p, { size: 'card', md: ds[0] && ds[0].md })}
       <span class="poicard__body">
         <span class="poicard__meta"><span class="tag tag--${p.city}">${esc(CITIES[p.city].zh)}</span><span class="poicard__days">${ds.length ? ds.map((d) => d.md).join(' · ') : '备选'}</span></span>
-        <b class="poicard__name">${esc(p.name)}</b>
+        <b class="poicard__name">${esc(p.name)}${visitOf(state, p.id) === 'been' ? ' <span class="tag tag--ok">去过</span>' : visitOf(state, p.id) === 'want' ? ' <span class="tag">想去</span>' : ''}</b>
         <span class="poicard__tag">${esc(p.tag || '')}</span>
       </span>
     </button>`;
@@ -47,6 +51,7 @@ export function renderGuide(state) {
       <input id="guide-q" type="search" placeholder="搜索景点，例如 大桥、披萨、Met" value="${esc(guideUi.q)}" autocomplete="off" data-guide-search></label>
     <div class="chips" role="group" aria-label="城市">${cityChips}</div>
     <div class="chips" role="group" aria-label="类型">${catChips}</div>
+    <div class="chips" role="group" aria-label="打卡">${[['all', '全部'], ['want', '想去'], ['been', '去过']].map(([k, v]) => `<button type="button" class="chip${guideUi.visit === k ? ' is-on' : ''}" data-action="guide-filter" data-key="visit" data-value="${k}" aria-pressed="${guideUi.visit === k}">${esc(v)}</button>`).join('')}</div>
   </div>
   <div id="guide-results">${guideResultsHtml(state)}</div>`;
 }

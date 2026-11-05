@@ -2,16 +2,17 @@
 import { esc, icon, ext, vendorLinks } from '../lib/dom.js';
 import { CHECKLIST, TIPS, AUDIT, SOURCES } from '../data/content.js';
 import { gameLinks } from '../data/games.js';
+import { isDone } from '../state.js';
 
 export const infoUi = { tab: 'todo' };
 
 const TABS = [['todo', '预订清单'], ['tips', '实用提示'], ['audit', '审计发现'], ['sources', '来源']];
 
 function todoHtml(state) {
-  const done = CHECKLIST.filter((t) => state.todo[t.id]).length;
+  const done = CHECKLIST.filter((t) => isDone(state, t.id)).length;
   return `<p class="note">${done}/${CHECKLIST.length} 已完成。按截止时间排。</p>
   <ul class="todo">${CHECKLIST.map((t) => {
-    const on = !!state.todo[t.id];
+    const on = isDone(state, t.id);
     const links = vendorLinks(t.buy || []) + (t.game ? gameLinks(t.game).slice(0, 2).map((l) => ext(l.label, l.url)).join('') : '');
     return `<li class="todo__i${on ? ' is-done' : ''}">
       <button type="button" class="todo__ck" data-action="todo" data-id="${t.id}" aria-pressed="${on}" aria-label="${on ? '标记为未完成' : '标记为完成'}">${on ? icon('check') : ''}</button>

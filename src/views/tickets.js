@@ -5,6 +5,7 @@ import { GAMES, GAME_ORDER, gameLinks, gameStatus } from '../data/games.js';
 import { TICKET_PLATFORMS } from '../data/vendors.js';
 import { POI, POIS } from '../data/pois.js';
 import { choiceFor, transportCost, MODE_LABEL } from '../lib/calc.js';
+import { slotChip } from './wallet.js';
 
 function legCard(id, state) {
   const leg = LEGS[id];
@@ -50,6 +51,8 @@ export function renderTickets(state) {
         <h3>${esc(g.title)}</h3>
         <p><button type="button" class="linkbtn" data-action="poi" data-id="${arena.id}">${esc(arena.name)}</button> · ${esc(g.price)} · <span class="pill pill--${st.tone}">${esc(st.label)}</span></p>
         ${buyRow('买票', gameLinks(id).map((l, i) => ext(l.label, l.url, i === 0)).join(''))}
+        ${buyRow('我的订单', slotChip(state, 'game-' + id))}
+        <button type="button" class="linkbtn" data-action="gameday" data-id="${id}">球赛日卡片</button>
       </div>
     </article>`;
   }).join('');

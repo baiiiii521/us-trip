@@ -8,6 +8,10 @@ import { GAMES, gameLinks } from '../data/games.js';
 import { choiceFor, tripPhase } from '../lib/calc.js';
 import { routeUrl, directionsUrl } from '../lib/maps.js';
 import { photoHtml } from '../components/photo.js';
+import { slotsForItem } from '../data/bookings.js';
+import { slotChip } from './wallet.js';
+import { findToday } from '../lib/today.js';
+import { weatherFor, alertFor, codeLabel } from '../lib/weather.js';
 
 function legBlock(id, state) {
   const kind = choiceFor(state, id);
@@ -32,6 +36,7 @@ function gameBlock(id, text) {
     <div class="game__h">${icon('ball')}<b>${esc(g.title)}</b><span class="mono">${esc(g.time)}</span></div>
     ${text ? `<p class="game__note">${esc(text)}</p>` : ''}
     <button type="button" class="linkbtn poi-chip" data-action="poi" data-id="${arena.id}">看 ${esc(arena.name)} 球馆介绍</button>
+    <div class="btn-row"><button type="button" class="btn btn--secondary btn--sm" data-action="gameday" data-id="${id}">${icon('ball')}球赛日卡片：几点开门、怎么去怎么回</button></div>
     ${buyRow('买票', gameLinks(id).map((l, i) => ext(l.label, l.url, i === 0)).join(''))}
   </div>`;
 }
@@ -51,9 +56,9 @@ function poiChips(ids, state, md) {
   void md;
 }
 
-export function renderDays(state) {
+export function renderDays(state, ctx = { now: new Date(), weather: null }) {
   const days = buildDays(state);
-  const phase = tripPhase();
+  const phase = tripPhase(ctx.now);
   const strip = days.map((d) => {
     const hasGame = d.items.some((i) => i.game && !['nyk25', 'nyk27'].includes(i.game));
     const isToday = phase.phase === 'during' && phase.id === d.id;
@@ -73,7 +78,8 @@ export function renderDays(state) {
         <div class="day__meta">
           <span class="tag tag--${d.city}">${d.from ? esc(CITIES[d.from].zh) + ' → ' : ''}${esc(c.zh)}</span>
           <h2 id="dt-${d.id}">${esc(d.title)}</h2>
-          <p class="day__wx">${icon('sun')}${c.hi}° / ${c.lo}° · 日落 ${c.sunset}</p>
+          ${(() => { const w = weatherFor(ctx.weather, d.city, d); const al = alertFor(w);
+            return `<p class="day__wx">${icon('sun')}${w ? `预报 ${codeLabel(w.code)} ${Math.round(w.hi)}° / ${Math.round(w.lo)}°C` : `12 月平均 ${c.hi}° / ${c.lo}°`} · 日落 ${c.sunset}</p>${al ? `<p class="alert alert--${al.level}" role="alert"><b>天气提醒</b>${esc(al.text)}，户外项目请准备室内备选。</p>` : ''}`; })()}
         </div>
         ${rUrl ? `<a class="btn btn--secondary" href="${esc(rUrl)}" target="_blank" rel="noopener">${icon('route')}打开当天路线</a>` : ''}
       </header>
@@ -86,6 +92,7 @@ export function renderDays(state) {
             ${!it.game && it.text ? `<p>${esc(it.text)}</p>` : ''}
             ${it.pois && it.pois.length ? poiChips(it.pois, state, d.md) : ''}
             ${it.buy && it.buy.length ? buyRow('预约 / 买票', vendorLinks(it.buy)) : ''}
+            ${(() => { const ids = slotsForItem(it); return ids.length ? `<div class="buys"><span class="buys__label">我的订单</span><div class="buys__list">${ids.map((id) => slotChip(state, id)).join('')}</div></div>` : ''; })()}
           </div>
         </li>`).join('')}</ol>
       ${d.tips && d.tips.length ? `<ul class="day__tips">${d.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}

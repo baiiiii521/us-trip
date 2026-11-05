@@ -8,9 +8,16 @@ export const ROUTES = [
   { id: 'days', label: '行程', icon: 'days' },
   { id: 'guide', label: '景点', icon: 'guide' },
   { id: 'tickets', label: '票务', icon: 'ticket' },
-  { id: 'budget', label: '预算', icon: 'wallet' },
-  { id: 'info', label: '资料', icon: 'info' }
+  { id: 'money', label: '花费', icon: 'wallet' },
+  { id: 'more', label: '更多', icon: 'info' }
 ];
+// 不在导航栏里的页面：标题 + 点亮哪个导航项
+export const SUBPAGES = {
+  wallet: { label: '订单夹', parent: 'more' },
+  cards: { label: '英文大字卡', parent: 'more' },
+  memories: { label: '回忆', parent: 'more' },
+  info: { label: '资料', parent: 'more' }
+};
 
 export function shellHtml() {
   const tabs = ROUTES.map((r) => `<a href="#${r.id}" class="tab" data-route="${r.id}">${esc(r.label)}</a>`).join('');
@@ -44,8 +51,9 @@ export function updateShell(state, route) {
   const c = document.getElementById('total-cny');
   if (u) u.textContent = usd(total);
   if (c) c.textContent = '≈ ' + cny(total * (+state.budget.rate || 0));
+  const active = (SUBPAGES[route] && SUBPAGES[route].parent) || route;
   document.querySelectorAll('[data-route]').forEach((a) => {
-    const on = a.dataset.route === route;
+    const on = a.dataset.route === active;
     a.classList.toggle('is-on', on);
     if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   });

@@ -37,6 +37,11 @@ export function budgetOutputHtml(state) {
 export function renderBudget(state) {
   return `
   <div class="pagehead"><h1>预算</h1><p>数字都能改，保存在这台设备的浏览器里。房价是 12 月下旬的估算，请换成订房页的含税价，再填上机票。</p></div>
+  ${budgetBody(state)}`;
+}
+
+export function budgetBody(state) {
+  return `
   <div class="grid2 grid2--budget">
     <section class="card">
       <div class="card__h"><h2>输入</h2></div>
