@@ -87,7 +87,7 @@ export function renderHome(state, ctx = { now: new Date(), weather: null }) {
         : '<p class="next__what">清单全部完成。出发前 48 小时再核对一次球赛和车次时间。</p>'}
     </div>
     <div class="m-nolift card">
-      <div class="m-nolift card__h"><h2>三个关键决定</h2></div>
+      <div class="m-nolift card__h"><h2>四个关键决定</h2></div>
       ${settingsHtml(state, { compact: true })}
     </div>
   </section>

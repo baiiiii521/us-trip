@@ -241,7 +241,7 @@ export function buildDays(state) {
       { t: '18:00', text: '回酒店取行李。' },
       { t: '19:00', text: 'NJ Transit 从 Penn Station 到 Newark Airport 站，换 AirTrain 到航站楼，约 $16.80/人（票里含 AirTrain 费）。', buy: state.opts.ewr ? ['njt', 'booking', 'trip'] : ['njt'], pois: ['moynihan'] }
     ],
-    tips: ['大都会周三闭馆，别挪到这天。', '订了机场酒店的话，晚饭后就动身，NJ Transit 末班在午夜前后。'],
+    tips: ['大都会周三闭馆，别挪到这天。', state.opts.ewr ? '住机场酒店：晚饭后就动身，NJ Transit 末班在午夜前后；酒店通常有免费接驳，入住时问清楚次日航站楼接驳时间。' : '机场过夜：EWR 航站楼夜里不会清场但座位少、冷。带上保暖外套和充电宝，行李不要离手；值机柜台一般起飞前 3–4 小时才开，可先在安检后区域休息。想睡好觉就在上方切到机场酒店。'],
     stay: state.opts.ewr ? '纽瓦克机场酒店' : '机场过夜（建议改订机场酒店）'
   });
 

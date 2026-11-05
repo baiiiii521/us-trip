@@ -270,8 +270,10 @@ const ACTIONS = {
     const { key, value } = el.dataset;
     update((s) => {
       if (key === 'mode') s.choice = choicesForMode(value);
+      else if (key.startsWith('opts.')) s.opts[key.slice(5)] = value === 'true';
       else s[key] = value;
     });
+    if (key === 'opts.ewr') toast(value === 'true' ? '12/30 改为住纽瓦克机场酒店，预算和订单夹已更新' : '12/30 改为机场过夜，预算已去掉酒店');
     if (key === 'plan') toast(value === 'A' ? '已切到方案 A：不看凯尔特人' : value === 'C' ? '已切到方案 C：波士顿多住一晚' : '已切到方案 B：凌晨大巴');
   },
   leg: (el) => update((s) => { s.choice[el.dataset.leg] = el.dataset.kind; }),

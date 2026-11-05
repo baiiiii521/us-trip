@@ -22,12 +22,17 @@ export function settingsHtml(state, { compact = false } = {}) {
     { key: 'hotel', value: 'penn', label: '方便版 · Penn Station', sub: '步行到火车站和 NJ Transit' },
     { key: 'hotel', value: 'lic', label: '省钱版 · 长岛市', sub: '每晚约省 $90，地铁 10–15 分钟' }
   ];
+  const stays30 = [
+    { key: 'opts.ewr', value: 'false', label: '机场过夜', sub: '省 $170，白天都能玩，夜里在航站楼坐着' },
+    { key: 'opts.ewr', value: 'true', label: '机场酒店 1 晚', sub: '约 $170，能睡觉洗澡，次日轻松赶飞机' }
+  ];
   const navs = Object.entries(NAV_APPS).map(([k, v]) => ({ key: 'nav', value: k, label: v }));
   return `
   <div class="settings${compact ? ' settings--compact' : ''}">
     <section class="set"><h3 class="set__h">城际交通 <small>两人 4 段${state.mode === 'custom' ? ' · 当前是自选组合' : ''}</small></h3>${seg('城际交通', modes, state.mode)}</section>
     <section class="set"><h3 class="set__h">12/20 方案 <small>凯尔特人 20:00 开球 vs 67 次 18:45 开车</small></h3>${seg('12/20 方案', plans, state.plan)}</section>
     <section class="set"><h3 class="set__h">纽约住宿 <small>6 晚</small></h3>${seg('纽约住宿', hotels, state.hotel)}</section>
+    <section class="set"><h3 class="set__h">12/30 晚住宿 <small>纽瓦克机场，次日 12/31 飞洛杉矶</small></h3>${seg('12/30 晚住宿', stays30, String(!!state.opts.ewr))}</section>
     ${compact ? '' : `<section class="set"><h3 class="set__h">导航用 <small>页面上所有“导航”按钮跟着换</small></h3>${seg('导航 App', navs, state.nav)}</section>
     <p class="note">设置保存在这台设备的浏览器里。<button type="button" class="linkbtn" data-action="reset">恢复默认设置</button></p>`}
   </div>`;
