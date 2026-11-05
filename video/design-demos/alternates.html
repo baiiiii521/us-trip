@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>备选方向 4 5 6</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@900&family=JetBrains+Mono:wght@500&family=Noto+Sans+SC:wght@500;900&family=Noto+Serif+SC:wght@900&display=block">
+<style>
+  html, body { margin: 0; background: #111; }
+  .f { position: relative; width: 1080px; height: 1920px; overflow: hidden; display: none; }
+  body[data-v="4"] #v4, body[data-v="5"] #v5, body[data-v="6"] #v6 { display: block; }
+  /* 4 Saul Bass 剪纸 */
+  #v4 { background: #F2E6CF; }
+  #v4 .sun { position: absolute; left: 140px; top: 330px; width: 800px; height: 800px; border-radius: 50%; background: #E8611A; }
+  #v4 .cut { position: absolute; background: #141414; }
+  #v4 .t { position: absolute; left: 90px; bottom: 300px; font-family: "Anton", sans-serif; font-size: 230px; line-height: .9; color: #141414; transform: rotate(-4deg); }
+  #v4 .s { position: absolute; left: 100px; bottom: 190px; font-family: "Noto Sans SC", sans-serif; font-weight: 900; font-size: 58px; color: #E8611A; }
+  /* 5 CS50 糖果舞台 */
+  #v5 { background: radial-gradient(70% 45% at 50% 45%, #1A1420 0%, #0A0A0A 70%); }
+  #v5 .w { position: absolute; left: 0; right: 0; top: 640px; text-align: center; font-family: "Noto Sans SC", sans-serif; font-weight: 900; font-size: 330px; color: #FF2D95; line-height: 1; }
+  #v5 .c { position: absolute; left: 0; right: 0; top: 1060px; text-align: center; font-family: "JetBrains Mono", monospace; font-size: 50px; color: #00E5FF; }
+  #v5 .code { position: absolute; left: 150px; right: 150px; top: 1220px; padding: 40px 48px; border: 2px solid #2A2A2A; border-radius: 20px; background: #141414; font-family: "JetBrains Mono", monospace; font-size: 40px; line-height: 1.7; color: #EDEDED; }
+  /* 6 田中一光几何 */
+  #v6 { background: #F1EADB; }
+  #v6 .g { position: absolute; left: 90px; top: 220px; width: 900px; height: 900px; }
+  #v6 .g div { position: absolute; }
+  #v6 .vt { position: absolute; right: 120px; top: 1220px; writing-mode: vertical-rl; font-family: "Noto Serif SC", serif; font-weight: 900; font-size: 116px; color: #1A1A1A; line-height: 1; }
+  #v6 .info { position: absolute; left: 110px; top: 1230px; font-family: "Noto Sans SC", sans-serif; font-size: 44px; color: #1A1A1A; line-height: 1.5; }
+  #v6 .info b { display: block; color: #D9381E; font-size: 34px; margin-top: 26px; }
+  #v6 .line { position: absolute; left: 110px; right: 110px; bottom: 150px; height: 4px; background: #1A1A1A; }
+</style>
+</head>
+<body>
+<div class="f" id="v4">
+  <div class="sun"></div>
+  <div class="cut" style="left:0;right:0;top:860px;height:30px;transform:rotate(-3deg)"></div>
+  <div class="cut" style="left:180px;top:620px;width:120px;height:520px"></div>
+  <div class="cut" style="left:330px;top:520px;width:90px;height:620px"></div>
+  <div class="cut" style="left:450px;top:700px;width:150px;height:440px"></div>
+  <div class="cut" style="left:640px;top:580px;width:80px;height:560px"></div>
+  <div class="cut" style="left:750px;top:760px;width:140px;height:380px"></div>
+  <div class="t">EAST COAST<br>HOOPS</div>
+  <div class="s">12.18 到 12.31，两个人</div>
+</div>
+<div class="f" id="v5">
+  <div class="w">波士顿</div>
+  <div class="c">// 12.18–12.20，哈佛、MIT、宪法号</div>
+  <div class="code"><span style="color:#FF2D95">trip</span>.<span style="color:#FFD500">next</span>(<span style="color:#39FF14">"华盛顿"</span>)<br><span style="color:#777"># 67 次夜车，18:45 开</span></div>
+</div>
+<div class="f" id="v6">
+  <div class="g">
+    <div style="left:0;top:0;width:450px;height:450px;background:#D9381E"></div>
+    <div style="left:120px;top:120px;width:210px;height:210px;border-radius:50%;background:#F1EADB"></div>
+    <div style="left:450px;top:0;width:450px;height:450px;background:#1A1A1A;border-top-right-radius:450px"></div>
+    <div style="left:0;top:450px;width:450px;height:450px;background:#1A1A1A;border-bottom-left-radius:450px"></div>
+    <div style="left:450px;top:450px;width:450px;height:450px;background:#E2B12C;border-top-left-radius:450px"></div>
+    <div style="left:340px;top:340px;width:220px;height:220px;background:#3E6E93;border-radius:0 0 220px 0"></div>
+    <div style="left:0;top:930px;width:900px;height:70px;background:repeating-linear-gradient(90deg,#1A1A1A 0 60px,transparent 60px 112px)"></div>
+  </div>
+  <div class="vt">美東籃球行</div>
+  <div class="info"><b>日期</b>12 月 18 日至 31 日<b>城市</b>波士顿、华盛顿、费城<br>纽约、洛杉矶<b>球赛</b>奇才、76人、篮网</div>
+  <div class="line"></div>
+</div>
+<script>document.body.dataset.v = new URLSearchParams(location.search).get('v') || '4';
+document.fonts.ready.then(() => { window.__ready = true; });</script>
+</body>
+</html>

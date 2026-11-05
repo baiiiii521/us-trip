@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>方向三 City Pop 梦境</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,600&family=Noto+Serif+SC:wght@700;900&display=block">
+<style>
+  html, body { margin: 0; height: 100%; background: #F7E8E1; overflow: hidden; }
+  #stage { position: relative; width: 1080px; height: 1920px; transform-origin: 0 0; overflow: hidden; background: #F7C6D0; }
+  .layer { position: absolute; inset: 0; }
+  .skyA { background: linear-gradient(180deg, #7FA7DD 0%, #B9B4E0 30%, #F3C3D2 62%, #FFE5CC 100%); }
+  .moon { position: absolute; width: 520px; height: 520px; left: 280px; top: 260px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 38%, #FFFBF2 0%, #FFF1DC 60%, #FBD9C6 100%); box-shadow: 0 0 120px 40px rgba(255,240,225,.65); }
+  svg.fill { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+  .snow { position: absolute; inset: 0; }
+  .ground { position: absolute; left: 0; right: 0; top: 1300px; bottom: 0; background: linear-gradient(180deg, #F7EEF4 0%, #FFF6EC 100%); box-shadow: 0 -30px 60px rgba(255,255,255,.55); }
+  .titleA { position: absolute; left: 0; right: 0; top: 1440px; text-align: center; }
+  .en { font-family: "Fraunces", serif; font-style: italic; font-weight: 600; color: #FFF8EE; text-shadow: 0 6px 30px rgba(120,80,140,.35); }
+  .zh { font-family: "Noto Serif SC", serif; font-weight: 700; color: #2B3A67; }
+  .haze { background: radial-gradient(80% 50% at 50% 60%, rgba(255,255,255,.35), transparent 70%); mix-blend-mode: soft-light; }
+  .bands { position: absolute; inset: 0; pointer-events: none; }
+  .band { position: absolute; left: 0; width: 1080px; height: 240px; }
+  .skyB { background: linear-gradient(180deg, #F59E86 0%, #FFB38A 35%, #FFD59A 60%, #FFE6B5 64%); }
+  .sun { position: absolute; width: 640px; height: 640px; left: 220px; border-radius: 50%;
+    background: linear-gradient(180deg, #FFF0B8 0%, #FFC27A 45%, #FF7E5F 100%);
+    -webkit-mask: linear-gradient(#000 0 52%, transparent 52% 56%, #000 56% 64%, transparent 64% 69%, #000 69% 77%, transparent 77% 83%, #000 83% 90%, transparent 90% 97%, #000 97%);
+            mask: linear-gradient(#000 0 52%, transparent 52% 56%, #000 56% 64%, transparent 64% 69%, #000 69% 77%, transparent 77% 83%, #000 83% 90%, transparent 90% 97%, #000 97%); }
+  .sea { position: absolute; left: 0; right: 0; top: 1210px; bottom: 0; background: linear-gradient(180deg, #46C1D9 0%, #2A93B8 45%, #1C6E93 100%); }
+  .glint { position: absolute; left: 50%; height: 10px; border-radius: 5px; background: rgba(255,236,190,.85); }
+  .ticket { position: absolute; left: 110px; top: 1380px; width: 860px; height: 300px; border-radius: 26px; background: #FFF6E6;
+    box-shadow: 0 30px 60px rgba(30,60,90,.28); display: grid; grid-template-columns: 1fr 170px; overflow: hidden; }
+  .ticket .main { padding: 40px 0 0 52px; display: grid; align-content: start; gap: 10px; }
+  .ticket .stub { border-left: 6px dashed #E9C9A8; display: grid; place-items: center; background: #FFE9CC; }
+  .ticket .d { font-family: "Fraunces", serif; font-style: italic; font-size: 120px; line-height: 1; color: #E2603F; }
+  .ticket .t { font-family: "Noto Serif SC", serif; font-weight: 700; font-size: 42px; color: #2B3A67; white-space: nowrap; }
+  .ticket .s { font-family: "Fraunces", serif; font-style: italic; font-size: 44px; white-space: nowrap; color: #2A93B8; writing-mode: vertical-rl; transform: rotate(180deg); }
+  .glow { background: radial-gradient(70% 40% at 50% 45%, rgba(255,240,200,.35), transparent 70%); mix-blend-mode: screen; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <!-- 第一镜：粉彩纽约圣诞 -->
+  <div id="sceneA" class="layer">
+    <div class="layer skyA"></div>
+    <div class="moon" id="moon"></div>
+    <svg class="fill" id="city" viewBox="0 0 1080 1920"></svg>
+    <svg class="fill" id="tree" viewBox="0 0 1080 1920">
+      <g id="treeG" transform="translate(800 600) scale(.82)">
+        <polygon points="0,0 -150,250 150,250" fill="#2F8F83"/><polygon points="0,140 -200,420 200,420" fill="#2A7F78"/><polygon points="0,300 -250,600 250,600" fill="#24706C"/>
+        <rect x="-34" y="600" width="68" height="80" fill="#7A4E3A"/>
+        <path d="M0,-58 15,-18 58,-18 23,8 37,50 0,24 -37,50 -23,8 -58,-18 -15,-18z" fill="#FFE29A"/>
+        <g id="lights"></g>
+      </g>
+    </svg>
+    <div class="ground"></div><canvas class="snow" id="snow"></canvas>
+    <div class="titleA" id="titleA"><div class="en" style="font-size:170px;line-height:1;color:#E2603F;text-shadow:none">New York</div><div class="zh" style="font-size:66px;margin-top:20px">在纽约过圣诞，连住 6 晚</div></div>
+    <div class="layer haze"></div>
+  </div>
+  <!-- 第二镜：洛杉矶落日 -->
+  <div id="sceneB" class="layer">
+    <div class="layer skyB"></div>
+    <div class="sun" id="sun"></div>
+    <div class="sea"><div id="glints"></div></div>
+    <svg class="fill" viewBox="0 0 1080 1920">
+      <g id="palmL" transform="translate(110 1240)"><path d="M0 0 C 10 -260, 40 -480, 70 -700" stroke="#1F4F5A" stroke-width="30" fill="none" stroke-linecap="round"/>
+        <g transform="translate(70 -700)" fill="#1F4F5A"><path d="M0 0 C 120 -60, 230 -20, 300 60 C 200 10, 110 10, 0 0Z"/><path d="M0 0 C -110 -70, -230 -40, -300 40 C -190 0, -100 0, 0 0Z"/><path d="M0 0 C 60 -130, 170 -190, 260 -170 C 170 -140, 80 -90, 0 0Z"/><path d="M0 0 C -40 -140, -150 -210, -250 -200 C -160 -160, -70 -100, 0 0Z"/><path d="M0 0 C 100 40, 170 140, 190 240 C 130 150, 70 80, 0 0Z"/></g></g>
+      <g id="palmR" transform="translate(980 1260)"><path d="M0 0 C -10 -220, -30 -400, -60 -580" stroke="#1F4F5A" stroke-width="26" fill="none" stroke-linecap="round"/>
+        <g transform="translate(-60 -580)" fill="#1F4F5A"><path d="M0 0 C 110 -50, 210 -10, 270 60 C 180 10, 100 10, 0 0Z"/><path d="M0 0 C -100 -60, -210 -30, -270 40 C -170 0, -90 0, 0 0Z"/><path d="M0 0 C 50 -120, 150 -170, 230 -150 C 150 -120, 70 -80, 0 0Z"/><path d="M0 0 C -40 -120, -130 -180, -220 -170 C -140 -140, -60 -90, 0 0Z"/></g></g>
+    </svg>
+    <div class="ticket" id="ticket"><div class="main"><div class="d">12.31</div><div class="t">最后一天，在圣莫尼卡看日落</div></div><div class="stub"><div class="s">Santa Monica</div></div></div>
+    <div class="layer glow"></div>
+  </div>
+  <div class="bands" id="bands"></div>
+</div>
+<script type="module">
+import { makeStage, prog, ease, lerp, rng } from '../lib/stage.js';
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+// 粉彩天际线（确定性）
+(function city() {
+  const g = $('city'); const r = rng(21);
+  const layers = [{ base: 1330, color: '#9A8FC8', win: 'rgba(255,240,220,.55)', n: 11, hmin: 220, hmax: 520 }, { base: 1400, color: '#6C79B6', win: 'rgba(255,236,200,.8)', n: 9, hmin: 260, hmax: 700 }];
+  for (const L of layers) {
+    let x = -40;
+    for (let i = 0; i < L.n; i++) {
+      const w = 90 + r() * 120, h = L.hmin + r() * (L.hmax - L.hmin);
+      const rect = document.createElementNS(NS, 'rect'); rect.setAttribute('x', x); rect.setAttribute('y', L.base - h); rect.setAttribute('width', w); rect.setAttribute('height', h + 600); rect.setAttribute('fill', L.color); g.appendChild(rect);
+      for (let wy = L.base - h + 30; wy < L.base - 20; wy += 46) for (let wx = x + 18; wx < x + w - 24; wx += 34) if (r() > .55) {
+        const wr = document.createElementNS(NS, 'rect'); wr.setAttribute('x', wx); wr.setAttribute('y', wy); wr.setAttribute('width', 14); wr.setAttribute('height', 20); wr.setAttribute('fill', L.win); g.appendChild(wr);
+      }
+      x += w + 6;
+    }
+  }
+  const lights = $('lights'); const lr = rng(5);
+  for (let i = 0; i < 26; i++) { const c = document.createElementNS(NS, 'circle'); const yy = 60 + lr() * 520; const half = 40 + yy * .36;
+    c.setAttribute('cx', (lr() * 2 - 1) * half); c.setAttribute('cy', yy); c.setAttribute('r', 9); c.setAttribute('fill', ['#FFE29A', '#FF9DB0', '#FFFFFF'][i % 3]); lights.appendChild(c); }
+})();
+// 雪：确定性飘落
+const sc = $('snow'); sc.width = 540; sc.height = 960; const sx = sc.getContext('2d'); const sr = rng(3);
+const flakes = Array.from({ length: 70 }, () => ({ x: sr() * 540, y: sr() * 960, r: 2 + sr() * 5, v: 20 + sr() * 40, p: sr() * 6.28 }));
+function snow(t) { sx.clearRect(0, 0, 540, 960); for (const f of flakes) { const y = (f.y + t * f.v) % 960; sx.beginPath(); sx.fillStyle = 'rgba(255,255,255,.85)'; sx.arc(f.x + Math.sin(t * 1.2 + f.p) * 10, y, f.r, 0, 6.283); sx.fill(); } }
+// 海面光斑
+const gl = $('glints'); const gr = rng(9);
+const glints = Array.from({ length: 12 }, (_, i) => { const d = document.createElement('div'); d.className = 'glint'; d.style.top = (30 + i * 52) + 'px'; gl.appendChild(d); return { el: d, w: 120 + gr() * 380, p: gr() * 6.28 }; });
+// 横条擦除
+const bands = $('bands'); const BCOL = ['#FF8C69', '#FFB38A', '#F7C6D0', '#B9B4E0', '#7FA7DD', '#46C1D9', '#FFD59A', '#FF7E5F'];
+const bandEls = BCOL.map((c, i) => { const b = document.createElement('div'); b.className = 'band'; b.style.top = (i * 240) + 'px'; b.style.background = c; bands.appendChild(b); return b; });
+
+const CUT = 2.05;
+function render(t) {
+  const inA = t < CUT;
+  $('sceneA').style.display = inA ? 'block' : 'none';
+  $('sceneB').style.display = inA ? 'none' : 'block';
+  if (inA) {
+    snow(t);
+    const k = ease.out(prog(t, 0, 1.6));
+    $('moon').style.transform = `translateY(${(1 - k) * 80}px) scale(${lerp(.92, 1, k)})`;
+    $('city').style.transform = `translateY(${(1 - k) * 60}px) scale(${lerp(1.06, 1, k)})`;
+    $('treeG').setAttribute('transform', `translate(800 ${600 + (1 - k) * 120}) scale(${.82 + Math.sin(t * 3) * .005})`);
+    [...$('lights').children].forEach((c, i) => c.setAttribute('opacity', .55 + .45 * Math.sin(t * 4 + i)));
+    const a = ease.out(prog(t, .35, 1.1));
+    $('titleA').style.opacity = a; $('titleA').style.transform = `translateY(${(1 - a) * 50}px)`;
+    $('titleA').style.filter = a < .98 ? `blur(${(1 - a) * 8}px)` : 'none';
+  } else {
+    const tb = t - CUT;
+    const k = ease.out(prog(tb, 0, 1.9));
+    $('sun').style.top = lerp(980, 760, k) + 'px';
+    $('palmL').setAttribute('transform', `translate(110 1240) rotate(${Math.sin(t * 1.3) * 1.6})`);
+    $('palmR').setAttribute('transform', `translate(980 1260) rotate(${Math.sin(t * 1.1 + 1) * -1.8})`);
+    glints.forEach((g, i) => { const w = g.w * (.7 + .3 * Math.sin(t * 2 + g.p)); g.el.style.width = w + 'px'; g.el.style.marginLeft = (-w / 2 + Math.sin(t + i) * 30) + 'px'; g.el.style.opacity = .4 + .5 * Math.sin(t * 3 + g.p) ** 2; });
+    const a = ease.out(prog(tb, .35, 1.2));
+    $('ticket').style.opacity = a;
+    $('ticket').style.transform = `translateY(${(1 - a) * 140 + Math.sin(t * 2.2) * 8}px) rotate(${-3 + Math.sin(t * 1.6) * 1}deg)`;
+  }
+  // 横条擦除：前半盖上，后半揭开
+  bandEls.forEach((b, i) => {
+    const d = i * .03;
+    const on = ease.inOut(prog(t, CUT - .45 + d, CUT - .05 + d));
+    const off = ease.inOut(prog(t, CUT + .05 + d, CUT + .45 + d));
+    const x = on < 1 ? lerp(-1080, 0, on) : lerp(0, 1080, off);
+    b.style.transform = `translateX(${i % 2 ? -x : x}px)`;
+    b.style.display = (on > 0 && off < 1) ? 'block' : 'none';
+  });
+}
+makeStage({ dur: 4, render });
+</script>
+</body>
+</html>

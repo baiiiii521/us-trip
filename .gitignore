@@ -2,3 +2,6 @@ node_modules/
 dist/
 .DS_Store
 *.log
+
+# 视频渲染产物（可用 video/tools/capture.cjs 重新生成）
+video/out/

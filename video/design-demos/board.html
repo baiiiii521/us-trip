@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>方向板</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500&display=block">
+<style>
+  html, body { margin: 0; }
+  body { width: 1920px; height: 1080px; background: #121417; color: #EDEFF2; font-family: "Noto Sans SC", sans-serif; display: grid; grid-template-columns: 1020px 1fr; gap: 64px; padding: 64px 80px; box-sizing: border-box; }
+  .frames { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+  .frames img { width: 100%; aspect-ratio: 9 / 16; border-radius: 10px; display: block; }
+  .info { display: grid; align-content: start; gap: 26px; min-width: 0; }
+  .n { font-size: 26px; color: #9AA3AD; }
+  h1 { margin: 0; font-size: 62px; font-weight: 900; line-height: 1.15; }
+  .pos { font-size: 30px; line-height: 1.6; color: #D6DADF; }
+  .pal { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .sw { height: 92px; border-radius: 8px; }
+  .lab { font-family: "IBM Plex Mono", monospace; font-size: 18px; color: #9AA3AD; margin-top: 6px; }
+  h2 { margin: 0; font-size: 26px; color: #9AA3AD; font-weight: 500; }
+  ul { margin: 6px 0 0; padding-left: 28px; font-size: 26px; line-height: 1.6; color: #D6DADF; }
+  .ref { font-size: 24px; line-height: 1.6; color: #B8BEC6; }
+</style>
+</head>
+<body>
+<div class="frames"><img id="k1" alt=""><img id="k2" alt=""></div>
+<div class="info" id="info"></div>
+<script>
+const D = {
+  1: { n: '方向一（现实参照）', t: '胶片抽帧', pos: '像在冬夜的城市里拿胶片相机边走边拍：霓虹地名带着抽帧拖影，每到一座城一次闪白硬切。',
+    pal: [['#0B1F1E', '夜绿'], ['#FF4A3D', '霓虹红'], ['#FFB238', '钠灯黄'], ['#F1E6CF', '胶片米'], ['#FF7A1A', '日期戳橙']],
+    mo: ['抽帧拖影：8–12 帧卡顿加 3 层残影', '手持微晃，闪白硬切换城', '胶片齿孔走片、颗粒、漏光'],
+    ref: '参照：王家卫《重庆森林》（1994）的抽帧摄影，一次性胶片相机的日期戳。参照截图在本环境打不开，未亲眼看到。', form: '网站景点照片上已经在用的胶片日期戳，冬夜的城市和球馆灯光。' },
+  2: { n: '方向二（现实参照，三版里用力最猛）', t: '90 年代转播', pos: '把这趟旅行做成一档 90 年代的 NBA 转播：镀铬大字冲镜，星形划光，对阵条一条条甩进画面。',
+    pal: [['#0B1640', '转播蓝'], ['#D7263D', '比分红'], ['#F5B700', '奖杯金'], ['#DCE3EE', '镀铬银'], ['#B97835', '木地板']],
+    mo: ['镀铬大字从 3.2 倍冲镜落定', '甩镜转场，对阵条回弹滑入', '聚光灯扫场，VHS 扫描线和色边'],
+    ref: '参照：1990 年代 NBA 转播片头包装。参照截图在本环境打不开，未亲眼看到。不用任何球队 logo，只用文字。', form: '这是一趟看球的旅行，开场就是转播。' },
+  3: { n: '方向三（最佳设计师）', t: 'City Pop 梦境', pos: '每一镜像一张 80 年代 City Pop 唱片封面：粉彩天空、横条切开的落日，节奏轻快，画面安静。',
+    pal: [['#7FA7DD', '薄暮蓝'], ['#F3C3D2', '樱花粉'], ['#FFB38A', '落日杏'], ['#46C1D9', '泳池蓝'], ['#1F4F5A', '棕榈墨绿']],
+    mo: ['慢推镜，元素轻轻漂浮', '彩色横条擦除转场', '落日缓升、海面光斑、雪花飘落'],
+    ref: '参照：永井博的 City Pop 唱片封面插画，梦核的雾面柔光。', form: '行程的终点是 12 月 31 日海边的日落。' }
+};
+const d = new URLSearchParams(location.search).get('d') || '1';
+const x = D[d];
+document.getElementById('k1').src = `../out/frames/dir-${d}-kf1.png`;
+document.getElementById('k2').src = `../out/frames/dir-${d}-kf2.png`;
+document.getElementById('info').innerHTML = `<div class="n">${x.n}</div><h1>${x.t}</h1><p class="pos">${x.pos}</p>
+  <div class="pal">${x.pal.map(([c, l]) => `<div><div class="sw" style="background:${c}"></div><div class="lab">${c} ${l}</div></div>`).join('')}</div>
+  <div><h2>运动语言</h2><ul>${x.mo.map((m) => `<li>${m}</li>`).join('')}</ul></div>
+  <div class="ref">${x.ref}</div><div class="ref">画面形式来自：${x.form}</div>`;
+Promise.all([document.fonts.ready, ...[...document.images].map((i) => i.decode().catch(() => {}))]).then(() => { window.__ready = true; });
+</script>
+</body>
+</html>

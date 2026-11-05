@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>六个候选缩略图</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;700&display=block">
+<style>
+  html, body { margin: 0; }
+  body { width: 1920px; height: 1080px; background: #121417; color: #EDEFF2; font-family: "Noto Sans SC", sans-serif; display: grid; grid-template-columns: repeat(6, 1fr); gap: 28px; padding: 56px 64px; box-sizing: border-box; align-content: center; }
+  figure { margin: 0; display: grid; gap: 14px; }
+  img { width: 100%; aspect-ratio: 9 / 16; border-radius: 8px; display: block; }
+  .pick { outline: 4px solid #FF8A3D; outline-offset: 4px; }
+  figcaption { font-size: 24px; line-height: 1.4; }
+  figcaption small { display: block; font-size: 19px; color: #9AA3AD; }
+</style>
+</head>
+<body>
+<figure><img class="pick" src="../out/frames/dir-1-kf1.png" alt=""><figcaption>1 胶片抽帧<small>现实参照</small></figcaption></figure>
+<figure><img class="pick" src="../out/frames/dir-2-kf1.png" alt=""><figcaption>2 90 年代转播<small>现实参照</small></figcaption></figure>
+<figure><img class="pick" src="../out/frames/dir-3-kf2.png" alt=""><figcaption>3 City Pop 梦境<small>最佳设计师</small></figcaption></figure>
+<figure><img src="../out/frames/alt-4.png" alt=""><figcaption>4 Saul Bass 剪纸<small>最佳设计师（备选）</small></figcaption></figure>
+<figure><img src="../out/frames/alt-5.png" alt=""><figcaption>5 CS50 糖果舞台<small>秒数轮盘（备选）</small></figcaption></figure>
+<figure><img src="../out/frames/alt-6.png" alt=""><figcaption>6 田中一光几何<small>秒数轮盘（备选）</small></figcaption></figure>
+<script>Promise.all([document.fonts.ready, ...[...document.images].map((i) => i.decode().catch(() => {}))]).then(() => { window.__ready = true; });</script>
+</body>
+</html>
