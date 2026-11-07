@@ -9,6 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "node --test tests/*.test.js",
+    "verify:net": "node scripts/verify-network.mjs",
     "build:single": "vite build && node scripts/build-single.mjs",
     "itinerary": "node scripts/itinerary-pdf.mjs"
   },
