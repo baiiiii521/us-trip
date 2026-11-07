@@ -8,6 +8,7 @@ import { GAMES, gameLinks } from '../data/games.js';
 import { choiceFor, tripPhase } from '../lib/calc.js';
 import { routeUrl, directionsUrl } from '../lib/maps.js';
 import { photoHtml } from '../components/photo.js';
+import { tripRouteHtml } from '../components/trip-route.js';
 import { slotsForItem } from '../data/bookings.js';
 import { slotChip } from './wallet.js';
 import { findToday } from '../lib/today.js';
@@ -15,9 +16,9 @@ import { weatherFor, alertFor, codeLabel } from '../lib/weather.js';
 
 function legBlock(id, state) {
   const kind = choiceFor(state, id);
-  const o = legOption(id, kind, state.plan);
+  const o = legOption(id, kind);
   const leg = LEGS[id];
-  const canSwitch = !(id === 's2' && state.plan === 'B');
+  const canSwitch = true;
   const other = kind === 'train' ? 'bus' : 'train';
   return `<div class="move move--${kind}">
     <div class="move__h">${icon(kind)}<b>${kind === 'train' ? '火车' : '大巴'} · ${esc(leg.route)}</b>
@@ -101,7 +102,8 @@ export function renderDays(state, ctx = { now: new Date(), weather: null }) {
   }).join('');
 
   return `
-  <div class="pagehead"><h1>每日行程</h1><p>点景点卡片看介绍和照片，右侧箭头直接导航。“打开当天路线”会把这一天的地点按顺序放进 Google 地图。</p></div>
+  <div class="pagehead"><h1>每日行程</h1><p>先看整体路线，再往下看每天。点景点卡片看介绍和照片，右侧箭头直接导航；“打开当天路线”会把这一天的地点按顺序放进 Google 地图。</p></div>
+  ${tripRouteHtml(state)}
   <nav class="strip" aria-label="日期">${strip}</nav>
   <div class="days">${cards}</div>`;
 }

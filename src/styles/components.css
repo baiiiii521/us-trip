@@ -290,9 +290,17 @@ dialog.sheet {
 }
 dialog.sheet::backdrop { background: color-mix(in srgb, #0A0E14 55%, transparent); }
 @media (max-width: 639px) {
-  dialog.sheet { margin: auto 0 0; max-width: 100%; width: 100%; max-height: 92vh; border-radius: var(--r-lg) var(--r-lg) 0 0; border-bottom: 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  /* 手机 Safari 的地址栏会吃掉高度：用 dvh（动态视口）+ 顶部安全区，保证右上角关闭按钮永远露在可视区 */
+  dialog.sheet {
+    margin: auto 0 0; max-width: 100%; width: 100%;
+    max-height: 92vh;
+    max-height: min(92vh, calc(100dvh - env(safe-area-inset-top, 0px) - 6px));
+    border-radius: var(--r-lg) var(--r-lg) 0 0; border-bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    overscroll-behavior: contain;
+  }
 }
-.sheet__close { position: sticky; top: var(--s-3); z-index: 3; display: grid; margin: var(--s-3) var(--s-3) calc(-1 * (var(--btn-h) + var(--s-3))) auto; }
+.sheet__close { position: sticky; top: max(var(--s-3), env(safe-area-inset-top, 0px)); z-index: 3; display: grid; margin: var(--s-3) var(--s-3) calc(-1 * (var(--btn-h) + var(--s-3))) auto; }
 .sheet--settings .sheet__close { margin-bottom: 0; }
 .sheet__body { padding: var(--s-5) var(--s-5) var(--s-6); display: grid; gap: var(--s-4); }
 @media (max-width: 639px) { .sheet__body { padding: var(--s-4) var(--s-4) var(--s-5); } }
@@ -441,3 +449,149 @@ dialog.sheet::backdrop { background: color-mix(in srgb, #0A0E14 55%, transparent
 @media (prefers-reduced-motion: reduce) { .toast { transform: translate(-50%, 0); } }
 
 .app-foot { margin-top: var(--s-7) !important; padding-top: var(--s-4); border-top: 1px solid var(--line); font-size: var(--t-label); color: var(--muted); display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); }
+
+/* ───────── 整体路线图（#days 顶部）：一条竖线串起停留段和城际移动 ─────────
+   竖线用 ::before 画，节点是每个 li 的 .tr__dot；线的颜色不变，靠节点和标签区分火车/大巴/飞机。
+   移动段整行可点（跳到那天的卡片），停留段的日期数字各自可点。 */
+.tr { padding: var(--s-4) var(--s-4) var(--s-4); display: block; }
+.tr__line { list-style: none; margin: 0; padding: 0 0 0 34px; position: relative; }
+.tr__line::before {
+  content: ""; position: absolute; left: 11px; top: 8px; bottom: 8px; width: 3px; border-radius: 2px;
+  background: var(--line);
+}
+.tr__item { position: relative; margin: 0 0 4px; }
+.tr__item--stay { margin: 10px 0 6px; }
+.tr__line > li:last-child { margin-bottom: 0; }
+.tr__dot {
+  position: absolute; left: -31px; top: 12px; width: 14px; height: 14px; border-radius: 50%;
+  background: var(--card); border: 3px solid var(--muted);
+}
+.tr__item--move .tr__dot { width: 10px; height: 10px; left: -29px; top: 10px; border-width: 2px; border-color: var(--line-strong); }
+
+.tr__item--stay .tr__dot { width: 16px; height: 16px; left: -32px; top: 14px; background: var(--dot, var(--ink)); border-color: var(--card); }
+.tr__item--end .tr__dot { background: var(--muted); border-color: var(--card); width: 12px; height: 12px; left: -30px; }
+.tr__stay--bos { --dot: var(--c-bos); } .tr__stay--dc { --dot: var(--c-dc); }
+.tr__stay--phl { --dot: var(--c-phl); } .tr__stay--nyc { --dot: var(--c-nyc); } .tr__stay--la { --dot: var(--c-la); }
+
+.tr__mv { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s-2); text-decoration: none; color: var(--ink-2); padding: 2px var(--s-2); border-radius: var(--r-sm); line-height: 1.5; }
+.tr__mv:hover, .tr__mv:focus-visible { background: var(--soft); }
+.tr__mvtop { display: contents; }
+.tr__mode { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; }
+.tr__move--train .tr__mode { color: var(--rail); }
+.tr__move--bus .tr__mode { color: var(--bus); }
+.tr__move--flight .tr__mode { color: var(--muted); }
+.tr__mode .ic { width: 15px; height: 15px; }
+.tr__mvdate { color: var(--ink); font-size: var(--t-small); }
+.tr__mvdur, .tr__nights, .tr__span { font-family: var(--f-mono); font-size: var(--t-label); }
+.tr__night { display: inline-flex; align-items: center; gap: 3px; color: var(--muted); }
+.tr__night .ic { width: 13px; height: 13px; }
+.tr__mvroute { font-size: var(--t-small); font-weight: 600; color: var(--ink); }
+.tr__mode, .tr__mvdur, .tr__night { font-size: var(--t-label); }
+
+.tr__card { background: var(--soft); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--s-2) var(--s-3); }
+.tr__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2); }
+.tr__city { font-size: var(--t-h3); color: var(--ink); }
+.tr__span { color: var(--ink-2); }
+.tr__nights { color: var(--muted); margin-left: auto; }
+.tr__days { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+.tr__day {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 26px; padding: 0 5px;
+  border: 1px solid var(--dot, var(--line-strong)); border-radius: var(--r-sm);
+  font-family: var(--f-mono); font-size: var(--t-label); font-weight: 600; color: var(--ink); text-decoration: none;
+}
+.tr__day:hover, .tr__day:focus-visible { background: var(--dot, var(--ink)); color: var(--card); border-color: var(--dot, var(--ink)); }
+.tr__daysnote { font-size: var(--t-label); color: var(--muted); margin-left: 2px; }
+.tr__games { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2px var(--s-3); margin-top: 6px; font-size: var(--t-label); color: var(--accent); }
+.tr__note { display: flex; align-items: center; gap: 4px; margin: 6px 0 0; font-size: var(--t-label); color: var(--muted); }
+.tr__note .ic { width: 13px; height: 13px; flex: none; }
+.tr__game { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+.tr__game .ic { width: 14px; height: 14px; }
+.tr__game i { font-style: normal; font-family: var(--f-mono); color: var(--muted); font-weight: 400; }
+.tr__end { display: flex; align-items: center; gap: 6px; margin: 0; padding: var(--s-1) var(--s-2); font-size: var(--t-label); color: var(--muted); }
+.tr__end .ic { width: 15px; height: 15px; }
+@media (max-width: 479px) {
+  .tr__line { padding-left: 28px; }
+  .tr__line::before { left: 8px; }
+  .tr__dot { left: -25px; }
+  .tr__item--move .tr__dot { left: -23px; }
+  .tr__item--stay .tr__dot { left: -26px; }
+  .tr__item--end .tr__dot { left: -24px; }
+  .tr__nights { margin-left: 0; }
+}
+
+/* 整体路线图的底图部分：东岸各州州界 + 城市钉 + 城际线。全部是内联 SVG，离线可用。 */
+.trmap__svg { width: 100%; height: auto; display: block; margin-bottom: var(--s-2); }
+.trmap__state { fill: var(--soft); stroke: var(--line); stroke-width: .8; }
+.trmap__seg { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.trmap__seg--train { stroke: var(--rail); }
+.trmap__seg--bus { stroke: var(--bus); }
+.trmap__seg.is-night { stroke-dasharray: 2 5; }
+.trmap__air { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.trmap__mlabel { font-family: var(--f-mono); font-size: 9px; font-weight: 600; fill: var(--muted); paint-order: stroke; stroke: var(--card); stroke-width: 2.6; stroke-linejoin: round; }
+.trmap__pin circle { fill: var(--dot, var(--ink)); stroke: var(--card); stroke-width: 2; }
+.trmap__pin:hover circle, .trmap__pin:focus-visible circle { r: 7; }
+.trmap__pin--bos { --dot: var(--c-bos); } .trmap__pin--nyc { --dot: var(--c-nyc); }
+.trmap__pin--phl { --dot: var(--c-phl); } .trmap__pin--dc { --dot: var(--c-dc); }
+.trmap__name { font-family: var(--f-body); font-size: 10.5px; font-weight: 700; fill: var(--ink); paint-order: stroke; stroke: var(--card); stroke-width: 3; stroke-linejoin: round; }
+.trmap__sub { font-family: var(--f-mono); font-size: 8.5px; fill: var(--muted); paint-order: stroke; stroke: var(--card); stroke-width: 3; stroke-linejoin: round; }
+.trmap__inset rect { fill: var(--card); stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 3; }
+.tr__more { margin-top: var(--s-3); border-top: 1px solid var(--line); padding-top: var(--s-2); }
+.tr__more summary { cursor: pointer; font-size: var(--t-label); color: var(--muted); padding: var(--s-1) 0; }
+.tr__more summary:hover { color: var(--ink); }
+.tr__more[open] summary { margin-bottom: var(--s-2); }
+.trmap__leader { stroke: var(--line-strong); stroke-width: .8; stroke-dasharray: 2 2; fill: none; }
+.trmap__arrow--train { fill: var(--rail); }
+.trmap__arrow--bus { fill: var(--bus); }
+.trmap__insetlabel { font-family: var(--f-body); font-size: 8px; font-weight: 700; fill: var(--muted); }
+.trmap__inset rect { fill: var(--card); stroke: var(--line-strong); stroke-width: .8; }
+.trmap__inset .trmap__state { fill: var(--soft); stroke: var(--line); stroke-width: .5; }
+.trmap__usdot { fill: var(--accent); }
+.trmap__usname { font-family: var(--f-body); font-size: 7.5px; font-weight: 700; fill: var(--ink); paint-order: stroke; stroke: var(--card); stroke-width: 2.4; }
+.trmap__state { stroke: color-mix(in srgb, var(--ink) 22%, transparent); }
+.trmap__sub { fill: var(--ink-2); }
+.trmap__name, .trmap__sub, .trmap__usname { stroke-width: 3.5; }
+
+/* 机票卡片（票务页）：票面信息原样排，出发前对一遍 */
+.flights { display: grid; gap: var(--s-3); }
+.fl__h { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2); margin-bottom: var(--s-3); }
+.fl__h h3 { font-size: var(--t-h3); }
+.fl__h .mono { color: var(--muted); font-size: var(--t-label); }
+.fl__segs { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
+.fl__seg { display: grid; grid-template-columns: 64px 1fr 26px 1fr; align-items: center; gap: var(--s-2); }
+.fl__no { font-size: var(--t-label); font-weight: 600; color: var(--ink); }
+.fl__col { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.fl__col b { font-size: var(--t-body); }
+.fl__col span { font-size: var(--t-label); color: var(--muted); }
+.fl__arrnote { font-style: normal; font-size: var(--t-label); color: var(--warn); }
+.fl__arrow { color: var(--muted); display: inline-flex; justify-content: center; }
+.fl__arrow .ic { width: 16px; height: 16px; }
+.fl__note { margin: var(--s-3) 0 0; font-size: var(--t-label); color: var(--warn); }
+.fl__meta { margin: 4px 0 0; font-size: var(--t-label); color: var(--muted); }
+@media (max-width: 479px) {
+  .fl__seg { grid-template-columns: 58px 1fr 18px 1fr; gap: 6px; }
+  .fl__col b { font-size: var(--t-small); }
+}
+.fl__col span { font-size: 12px; line-height: 1.35; }
+.fl__arrnote { font-size: 11px; }
+
+/* 酒店卡片（票务页）：已订订单原样贴出来，带“给司机看”和地图入口 */
+.hotels { display: grid; gap: var(--s-3); }
+.ht__h { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px var(--s-2); }
+.ht__dates { color: var(--muted); font-size: var(--t-label); }
+.ht__h .pill { justify-self: end; }
+.ht__h h3 { grid-column: 1 / -1; font-size: var(--t-h3); }
+.ht__en { margin: 4px 0 0; font-size: var(--t-small); color: var(--muted); }
+.ht__addr { margin: 6px 0 0; display: flex; align-items: center; gap: 5px; font-size: var(--t-small); color: var(--ink); }
+.ht__addr .ic { width: 14px; height: 14px; color: var(--muted); flex: none; }
+.ht__meta { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: grid; gap: 2px; font-size: var(--t-label); color: var(--ink-2); }
+.ht .btn-row { margin-top: var(--s-3); display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); }
+.ht .btn-row .btn { width: 100%; justify-content: center; }
+
+/* 设置里“已定行程”只读块：固定的那几项，不可改 */
+.set__fixed { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+.set__fixed li {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: var(--s-3) var(--s-4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--card);
+}
+.set__fixed b { font-size: 15px; font-weight: 700; }
+.set__fixed span { font-size: var(--t-small); color: var(--muted); line-height: 1.5; }

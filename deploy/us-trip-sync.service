@@ -1,0 +1,24 @@
+[Unit]
+Description=us-trip sync API (encrypted two-person trip data)
+Documentation=https://trip.byb521.com
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/us-trip-sync
+ExecStart=/usr/bin/node /opt/us-trip-sync/sync-server.mjs
+Environment=NODE_ENV=production PORT=8796 DATA_DIR=/var/lib/us-trip-sync
+StateDirectory=us-trip-sync
+StateDirectoryMode=0700
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

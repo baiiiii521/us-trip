@@ -10,11 +10,12 @@ const KEY = 'hoops-trip-v3';
 
 export const DEFAULTS = {
   mode: 'mix',
-  plan: 'A',
-  hotel: 'penn',
+  plan: 'C',
+  hotel: 'apt',
   nav: 'google',
   choice: { s1: 'train', s2: 'train', s3: 'bus', s4: 'bus' },
-  budget: { flights: 0, rate: 6.8, bos: 210, dc: 190, phl: 180, penn: 320, lic: 230, food: 65 },
+  // 机票 ¥12,200（去程 6,000 + 返程 6,200）÷ 6.8；酒店按已订订单的每晚实价
+  budget: { flights: 1794, rate: 6.8, bos: 108, dc: 86, phl: 109, apt: 90, food: 65 },
   opts: { ewr: false, summit: false, ins: false },
   todo: {},
   visited: {},
@@ -33,8 +34,19 @@ function clone(o) { return JSON.parse(JSON.stringify(o)); }
 
 // 旧版清单是 { t1: true }，改成 { t1: { v: true, u: 0 } }
 export function migrate(o) {
-  if (o && o.todo) {
+  if (!o) return o;
+  if (o.todo) {
     for (const [k, v] of Object.entries(o.todo)) if (typeof v === 'boolean') o.todo[k] = { v, u: 0 };
+  }
+  // 2026-11-05：12/20 只保留方案 C，纽约只保留已订公寓；老存档里的 A/B 和替代酒店一起归位
+  o.plan = 'C';
+  o.hotel = 'apt';
+  if (o.choice && o.choice.s2 !== 'train' && o.choice.s2 !== 'bus') o.choice.s2 = 'train';
+  if (o.budget) {
+    delete o.budget.penn;
+    delete o.budget.lic;
+    if (!o.budget.flights) o.budget.flights = 1794;
+    if (!o.budget.apt) o.budget.apt = 90;
   }
   return o;
 }

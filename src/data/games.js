@@ -51,8 +51,8 @@ export const GAMES = {
 
 export const GAME_ORDER = ['bos', 'was', 'phi', 'nyk25', 'bkn', 'nyk27'];
 
-export function gameStatus(id, plan) {
-  if (id === 'bos') return plan === 'A' ? { label: '不看（方案 A）', tone: 'muted' } : { label: '已排进', tone: 'ok' };
+export function gameStatus(id) {
+  if (id === 'bos') return { label: '已排进（12/20）', tone: 'ok' };
   if (id === 'nyk25') return { label: '不买，酒吧看直播', tone: 'muted' };
   if (id === 'nyk27') return { label: '可选加看', tone: 'warn' };
   return { label: '已排进', tone: 'ok' };

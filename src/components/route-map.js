@@ -23,7 +23,6 @@ const pts = (arr) => arr.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(
 export function routeMapHtml(state) {
   const k = (id) => choiceFor(state, id);
   const S = STOPS;
-  const night = state.plan !== 'C';
   const legs = [
     // 12/18 北上：走东侧
     ['s1', offset(S.bos, S.nyc, -9)],
@@ -34,14 +33,13 @@ export function routeMapHtml(state) {
     ['s4', [S.phl, S.nyc]]
   ];
   const lines = legs.map(([id, p]) =>
-    `<polyline class="rm-leg rm-${k(id)}${LEGS[id].night && night ? ' rm-night' : ''}" points="${pts(p)}"/>`).join('');
+    `<polyline class="rm-leg rm-${k(id)}" points="${pts(p)}"/>`).join('');
 
   const stops = Object.entries(S).map(([key, s]) => {
-    const hasGame = !(key === 'bos' && state.plan === 'A');
     return `<a href="#day-${s.day}" class="rm-stop">
       <circle cx="${s.x}" cy="${s.y}" r="9" class="rm-dot"/>
       <text x="${s.x + 22}" y="${s.y + 1}" class="rm-label">${esc(s.label)}</text>
-      <text x="${s.x + 22}" y="${s.y + 17}" class="rm-sub">${esc(s.sub)}${hasGame ? `<tspan class="rm-game"> · ${esc(s.game)}</tspan>` : ''}</text>
+      <text x="${s.x + 22}" y="${s.y + 17}" class="rm-sub">${esc(s.sub)}<tspan class="rm-game"> · ${esc(s.game)}</tspan></text>
     </a>`;
   }).join('');
 

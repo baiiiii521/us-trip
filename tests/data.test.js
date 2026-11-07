@@ -12,7 +12,7 @@ import { DEFAULTS } from '../src/state.js';
 import { parsePageImages, parseCredits, parseCommonsFiles } from '../src/lib/photos.js';
 import { routeUrl, directionsUrl } from '../src/lib/maps.js';
 
-const states = ['A', 'B', 'C'].flatMap((plan) => ['penn', 'lic'].map((hotel) => ({ ...JSON.parse(JSON.stringify(DEFAULTS)), plan, hotel })));
+const states = [JSON.parse(JSON.stringify(DEFAULTS))];
 
 test('每个方案都是 14 天，12/18 到 12/31', () => {
   for (const s of states) {
@@ -44,11 +44,10 @@ test('每段城际交通在每个方案里恰好出现一次', () => {
   }
 });
 
-test('方案 A 不看凯尔特人，B/C 看', () => {
-  const has = (plan) => buildDays({ ...DEFAULTS, plan }).some((d) => d.items.some((i) => i.game === 'bos'));
-  assert.equal(has('A'), false);
-  assert.equal(has('B'), true);
-  assert.equal(has('C'), true);
+test('12/20 凯尔特人固定在行程里', () => {
+  const d20 = buildDays({ ...DEFAULTS }).find((d) => d.id === '1220');
+  assert.ok(d20.items.some((i) => i.game === 'bos'));
+  assert.ok(d20.items.some((i) => /散场/.test(i.text)));
 });
 
 test('国会图书馆不排在周一', () => {
@@ -99,6 +98,14 @@ test('维基图片解析：处理规范化和重定向', () => {
   assert.equal(credits['PG.jpg'].license, 'CC BY-SA 4.0');
 });
 
+test('导航链接', () => {
+  assert.match(directionsUrl('Barclays Center', 'google'), /travelmode=transit/);
+  assert.match(directionsUrl('Barclays Center', 'apple'), /dirflg=r/);
+  const r = routeUrl(['A', 'B', 'C']);
+  assert.match(r, /origin=A&destination=C/);
+  assert.match(r, /waypoints=B/);
+});
+
 test('每个景点都有照片来源：维基条目或指定 Commons 文件', () => {
   for (const p of POIS) {
     assert.ok(p.wiki || p.photo || p.photoFile, `${p.id} 没有任何照片来源`);
@@ -121,12 +128,4 @@ test('Commons 指定文件：解析缩略图和许可', () => {
   assert.match(out.Charging_Bull.fileUrl, /Shooting_Charging_Bull/);
   // 文件不存在时不产出空壳
   assert.deepEqual(parseCommonsFiles({ query: { pages: [{ title: 'File:Nope.jpg' }] } }, [{ key: 'x', file: 'Nope.jpg' }]), {});
-});
-
-test('导航链接', () => {
-  assert.match(directionsUrl('Barclays Center', 'google'), /travelmode=transit/);
-  assert.match(directionsUrl('Barclays Center', 'apple'), /dirflg=r/);
-  const r = routeUrl(['A', 'B', 'C']);
-  assert.match(r, /origin=A&destination=C/);
-  assert.match(r, /waypoints=B/);
 });

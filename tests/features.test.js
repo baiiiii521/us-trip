@@ -83,6 +83,59 @@ test('settle: 两人平分、只算一人、人民币换算', () => {
   assert.equal(settle({}, 6.8).transfer, null);
 });
 
+test('今天模式：按日期找到当天，再找当前项和下一项', () => {
+  const days = buildDays(S());
+  const d = findToday(days, new Date(2026, 11, 19, 10, 0));
+  assert.equal(d.id, '1219');
+  assert.equal(findToday(days, new Date(2026, 10, 5)), null);
+  assert.equal(findToday(days, new Date(2025, 11, 19)), null);
+  const { current, next, minutes } = nowAndNext(d, new Date(2026, 11, 19, 10, 0));
+  assert.equal(current.it.t, '09:30'); assert.equal(next.it.t, '11:00'); assert.equal(minutes, 60);
+  assert.equal(itemTime(d, '落地'), null);
+  assert.equal(fmtCountdown(0), '马上'); assert.equal(fmtCountdown(45), '45 分钟后'); assert.equal(fmtCountdown(125), '2 小时 5 分钟后');
+  assert.ok(keyEvents(findToday(days, new Date(2026, 11, 20))).length >= 1);
+});
+
+test('天气预案：大雪、小雪、大雨、严寒才提醒', () => {
+  assert.equal(alertFor({ snow: 12, code: 75, lo: -3 }).level, 'crit');
+  assert.equal(alertFor({ snow: 3, code: 71, lo: -1 }).level, 'warn');
+  assert.equal(alertFor({ rain: 20, code: 63, lo: 5 }).level, 'warn');
+  assert.equal(alertFor({ snow: 0, code: 0, lo: -12 }).level, 'warn');
+  assert.equal(alertFor({ snow: 0, rain: 0, code: 1, lo: 2 }), null);
+  assert.equal(alertFor(null), null);
+  assert.equal(codeLabel(0), '晴'); assert.equal(codeLabel(73), '雪');
+  assert.equal(weatherFor({ 'nyc|2026-12-25': { hi: 3 } }, 'nyc', { md: '12/25' }).hi, 3);
+});
+
+test('照片日期归到行程第几天', () => {
+  assert.equal(tripDayOf(new Date(2026, 11, 20, 9)), '1220');
+  assert.equal(tripDayOf(new Date(2026, 11, 31, 23)), '1231');
+  assert.equal(tripDayOf(new Date(2026, 11, 17)), 'other');
+  assert.equal(tripDayOf(new Date(2025, 11, 20)), 'other');
+});
+
+test('订单夹：凯尔特人始终有格子，每个行程里的票都有对应格子', () => {
+  const a = S();
+  assert.ok(walletSlots(a).some((s) => s.id === 'game-bos'));
+  const c = S(); c.opts.ewr = true; c.opts.ins = true; c.opts.summit = true;
+  const ids = walletSlots(c).map((s) => s.id);
+  assert.ok(ids.includes('game-bos'));
+  assert.ok(ids.includes('hotel-ewr') && ids.includes('doc-ins') && ids.includes('res-summit'));
+  assert.equal(new Set(ids).size, ids.length);
+  for (const st of [c]) {
+    const have = new Set(walletSlots(st).map((s) => s.id));
+    for (const d of buildDays(st)) for (const it of d.items) for (const id of slotsForItem(it)) assert.ok(have.has(id), `${d.md} 缺格子 ${id}`);
+  }
+});
+
+test('状态迁移：旧版布尔清单升级，名字有默认值', () => {
+  const o = migrate({ todo: { t1: true, t2: false, t3: { v: true, u: 5 } } });
+  assert.deepEqual(o.todo.t1, { v: true, u: 0 });
+  const s = S(); s.todo = o.todo;
+  assert.equal(isDone(s, 't1'), true); assert.equal(isDone(s, 't2'), false); assert.equal(isDone(s, 't3'), true);
+  assert.equal(personName(S(), 'a'), '我'); assert.equal(personName(S(), 'b'), '同伴');
+});
+
 test('提醒：只有 60 / 15 分钟前、且落在这 24 小时窗口内才排程', () => {
   // node 里没有浏览器对象，先造一个最小环境（window + Notification）
   const g = globalThis;
@@ -140,19 +193,6 @@ test('实时汇率：v2 数组和 v1 对象两种返回都认，坏数据返回 
   assert.equal(parseRate([{ quote: 'CNY', rate: 0 }]), null);
 });
 
-test('今天模式：按日期找到当天，再找当前项和下一项', () => {
-  const days = buildDays(S());
-  const d = findToday(days, new Date(2026, 11, 19, 10, 0));
-  assert.equal(d.id, '1219');
-  assert.equal(findToday(days, new Date(2026, 10, 5)), null);
-  assert.equal(findToday(days, new Date(2025, 11, 19)), null);
-  const { current, next, minutes } = nowAndNext(d, new Date(2026, 11, 19, 10, 0));
-  assert.equal(current.it.t, '09:30'); assert.equal(next.it.t, '11:00'); assert.equal(minutes, 60);
-  assert.equal(itemTime(d, '落地'), null);
-  assert.equal(fmtCountdown(0), '马上'); assert.equal(fmtCountdown(45), '45 分钟后'); assert.equal(fmtCountdown(125), '2 小时 5 分钟后');
-  assert.ok(keyEvents(findToday(days, new Date(2026, 11, 20))).length >= 1);
-});
-
 test('天气：Open-Meteo 返回按 城市|日期 归档，行程日期能取到', () => {
   const map = parseWeather('nyc', { daily: {
     time: ['2026-12-20', '2026-12-21'],
@@ -168,42 +208,3 @@ test('天气：Open-Meteo 返回按 城市|日期 归档，行程日期能取到
   assert.deepEqual(parseWeather('nyc', {}), {});
 });
 
-test('天气预案：大雪、小雪、大雨、严寒才提醒', () => {
-  assert.equal(alertFor({ snow: 12, code: 75, lo: -3 }).level, 'crit');
-  assert.equal(alertFor({ snow: 3, code: 71, lo: -1 }).level, 'warn');
-  assert.equal(alertFor({ rain: 20, code: 63, lo: 5 }).level, 'warn');
-  assert.equal(alertFor({ snow: 0, code: 0, lo: -12 }).level, 'warn');
-  assert.equal(alertFor({ snow: 0, rain: 0, code: 1, lo: 2 }), null);
-  assert.equal(alertFor(null), null);
-  assert.equal(codeLabel(0), '晴'); assert.equal(codeLabel(73), '雪');
-  assert.equal(weatherFor({ 'nyc|2026-12-25': { hi: 3 } }, 'nyc', { md: '12/25' }).hi, 3);
-});
-
-test('照片日期归到行程第几天', () => {
-  assert.equal(tripDayOf(new Date(2026, 11, 20, 9)), '1220');
-  assert.equal(tripDayOf(new Date(2026, 11, 31, 23)), '1231');
-  assert.equal(tripDayOf(new Date(2026, 11, 17)), 'other');
-  assert.equal(tripDayOf(new Date(2025, 11, 20)), 'other');
-});
-
-test('订单夹：格子随 12/20 方案和可选项变化，每个行程里的票都有对应格子', () => {
-  const a = walletSlots(S()).map((s) => s.id);
-  const c = S(); c.plan = 'C'; c.opts.ewr = true; c.opts.ins = true; c.opts.summit = true;
-  const ids = walletSlots(c).map((s) => s.id);
-  assert.ok(!a.includes('game-bos')); assert.ok(ids.includes('game-bos'));
-  assert.ok(ids.includes('hotel-ewr') && ids.includes('doc-ins') && ids.includes('res-summit'));
-  assert.equal(new Set(ids).size, ids.length);
-  for (const p of ['A', 'B', 'C']) {
-    const st = S(); st.plan = p; st.opts = { ewr: true, summit: true, ins: true };
-    const have = new Set(walletSlots(st).map((s) => s.id));
-    for (const d of buildDays(st)) for (const it of d.items) for (const id of slotsForItem(it)) assert.ok(have.has(id), `${p} ${d.md} 缺格子 ${id}`);
-  }
-});
-
-test('状态迁移：旧版布尔清单升级，名字有默认值', () => {
-  const o = migrate({ todo: { t1: true, t2: false, t3: { v: true, u: 5 } } });
-  assert.deepEqual(o.todo.t1, { v: true, u: 0 });
-  const s = S(); s.todo = o.todo;
-  assert.equal(isDone(s, 't1'), true); assert.equal(isDone(s, 't2'), false); assert.equal(isDone(s, 't3'), true);
-  assert.equal(personName(S(), 'a'), '我'); assert.equal(personName(S(), 'b'), '同伴');
-});

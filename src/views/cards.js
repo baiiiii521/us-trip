@@ -5,6 +5,7 @@ import { POI } from '../data/pois.js';
 import { CITIES } from '../data/trip.js';
 import { buildDays } from '../data/days.js';
 import { hotelOf } from '../state.js';
+import { HOTEL_OF } from '../data/hotels.js';
 import { findToday } from '../lib/today.js';
 
 export const cardsUi = { day: '' };
@@ -28,7 +29,8 @@ export function renderCards(state, ctx = {}) {
   <section class="card">
     <div class="card__h"><h2>我们的酒店</h2></div>
     <ul class="clist">${stays.map(([c, label]) => {
-      const h = hotelOf(state, c);
+      const booked = HOTEL_OF[c];
+      const h = hotelOf(state, c) || (booked ? { name: booked.en, addr: booked.addr } : null);
       return `<li class="crow">
         <div class="crow__main"><b>${esc(label)}</b><small>${h && h.name ? esc(h.name + (h.addr ? '，' + h.addr : '')) : '还没填地址'}</small></div>
         ${h && (h.addr || h.name) ? `<button type="button" class="btn btn--secondary" data-action="bigcard" data-en="${esc('Please take me to:\n' + [h.name, h.addr].filter(Boolean).join('\n'))}" data-zh="${esc('请带我去' + label)}">给司机看</button>` : ''}
@@ -53,7 +55,8 @@ export function renderCards(state, ctx = {}) {
 
 export function hotelSheetHtml(state, city) {
   const label = (STAYS.find(([c]) => c === city) || [city, city])[1];
-  const h = hotelOf(state, city) || {};
+  const booked = HOTEL_OF[city];
+  const h = hotelOf(state, city) || (booked ? { name: booked.en, addr: booked.addr } : {});
   return `<div class="sheet__body">
     <h2 class="sheet__title" id="sheet-title">${esc(label)}</h2>
     <p class="meta">用英文填，给司机看时原样显示。</p>

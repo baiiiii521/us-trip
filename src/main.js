@@ -18,6 +18,7 @@ import { GAMES } from './data/games.js';
 import { LEGS } from './data/legs.js';
 import { CITIES } from './data/trip.js';
 import { buildDays } from './data/days.js';
+import { HOTEL_OF } from './data/hotels.js';
 import { shellHtml, updateShell, ROUTES, SUBPAGES } from './components/shell.js';
 import { settingsHtml } from './components/settings.js';
 import { poiSheetHtml } from './components/poi-sheet.js';
@@ -280,6 +281,20 @@ const ACTIONS = {
     if (key === 'plan') toast(value === 'A' ? '已切到方案 A：不看凯尔特人' : value === 'C' ? '已切到方案 C：波士顿多住一晚' : '已切到方案 B：凌晨大巴');
   },
   leg: (el) => update((s) => { s.choice[el.dataset.leg] = el.dataset.kind; }),
+  // 把已订酒店的实价写进预算，同时把 12/20 方案切到 C（波士顿订的是 3 晚）
+  'budget-actual': () => {
+    const nightly = (id) => {
+      const h = HOTEL_OF[id];
+      if (!h) return null;
+      return h.usdNightly || Math.round((h.cny / (getState().budget.rate || 6.8)) / h.nights);
+    };
+    update((s) => {
+      s.budget = { ...s.budget, bos: nightly('bos'), dc: nightly('dc'), phl: nightly('phl'), apt: nightly('nyc') };
+      s.hotel = 'apt';
+      if (s.plan !== 'C') s.plan = 'C';
+    });
+    toast('已按订单更新房价，12/20 切到方案 C');
+  },
   todo: (el) => update((s) => { s.todo[el.dataset.id] = { v: !isDone(s, el.dataset.id), u: stamp() }; }),
   visit: (el) => update((s) => {
     const cur = visitOf(s, el.dataset.id);
@@ -391,6 +406,8 @@ const ACTIONS = {
 };
 
 document.addEventListener('click', (e) => {
+  // 点弹层外面的遮罩也能关（手机 Safari 顶部被地址栏压住时，关闭按钮不好点）
+  if (sheet.open && e.target === sheet) { closeSheet(); return; }
   const dayLink = e.target.closest('a[href^="#day-"]');
   if (dayLink && route === 'days' && !dayLink.closest('dialog')) {
     e.preventDefault();
@@ -520,8 +537,8 @@ loadPhotos(POIS.map((p) => p.wiki), POI_FILES);
 registerSW();
 onPwaChange(() => { if (route === 'more') rerender(); });
 armReminders();
-// 今天页面每分钟刷新一次“现在/下一项”；顺手重新排提醒：
-// 行程日期通常离出发还有好几天，只在打开时排一次的话，等事件进入 24 小时窗口时页面已开着也不会响。
+// 今天页面每分钟刷新一次“现在/下一项”；顺手重排提醒：
+// 行程离出发还有好多天，只在打开时排一次的话，等事件进到 24 小时窗口内、页面一直开着也不会响。
 setInterval(() => {
   armReminders();
   if (route === 'home' && !typing() && !sheet.open && findToday(buildDays(getState()), currentNow(getState()))) rerender();

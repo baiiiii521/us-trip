@@ -6,7 +6,6 @@ import { TRIP } from '../data/trip.js';
 export const MODE_LABEL = { train: '全火车', mix: '推荐混合', bus: '全大巴', custom: '自选组合' };
 
 export function choiceFor(state, id) {
-  if (id === 's2' && state.plan === 'B') return 'bus';
   return state.choice[id];
 }
 
@@ -26,9 +25,8 @@ export function detectMode(choice) {
 export function transportCost(state, mode) {
   let perPerson = 0;
   for (const id of LEG_IDS) {
-    let kind = mode ? (mode === 'mix' ? LEGS[id].rec : mode) : choiceFor(state, id);
-    if (id === 's2' && state.plan === 'B') kind = 'bus';
-    perPerson += legOption(id, kind, state.plan).p;
+    const kind = mode ? (mode === 'mix' ? LEGS[id].rec : mode) : choiceFor(state, id);
+    perPerson += legOption(id, kind).p;
   }
   return perPerson * TRIP.people;
 }
@@ -40,19 +38,23 @@ export function budgetRows(state) {
   const b = state.budget;
   const o = state.opts;
   const people = TRIP.people;
-  const bosNights = state.plan === 'C' ? 3 : 2;
-  const nycNightly = state.hotel === 'lic' ? n(b.lic) : n(b.penn);
+  const bosNights = 3; // 波士顿酒店订到 12/21（3 晚）
+  // 纽约已订公寓 12/24–12/31 七晚；只有勾了 12/30 机场酒店才是 6 晚 + 机场 1 晚
+  // 纽约只保留已订的 DKLB BKLN 公寓
+  const nycLabel = 'DKLB BKLN 公寓';
+  const nycNightly = n(b.apt);
+  const nycNights = o.ewr ? 6 : 7;
   const rows = [
     { group: 'flight', label: '机票（两人）', amount: n(b.flights), kind: 'in' },
     { group: 'transport', label: '城际交通 4 段（' + MODE_LABEL[state.mode] + '）', amount: transportCost(state), kind: 'est' },
     { group: 'hotel', label: `波士顿 ${bosNights} 晚`, amount: n(b.bos) * bosNights, kind: 'est' },
     { group: 'hotel', label: '华盛顿 2 晚', amount: n(b.dc) * 2, kind: 'est' },
     { group: 'hotel', label: '费城 1 晚', amount: n(b.phl), kind: 'est' },
-    { group: 'hotel', label: `纽约 6 晚（${state.hotel === 'lic' ? '长岛市' : 'Penn Station'}）`, amount: nycNightly * 6, kind: 'est' }
+    { group: 'hotel', label: `纽约 ${nycNights} 晚（${nycLabel}）`, amount: nycNightly * nycNights, kind: 'est' }
   ];
   if (o.ewr) rows.push({ group: 'hotel', label: '纽瓦克机场酒店 1 晚', amount: 170, kind: 'est' });
   rows.push({ group: 'games', label: '球票 奇才 + 76人 + 篮网（两人含费）', amount: GAMES.was.est + GAMES.phi.est + GAMES.bkn.est, kind: 'est' });
-  if (state.plan !== 'A') rows.push({ group: 'games', label: '球票 凯尔特人（两人）', amount: GAMES.bos.est, kind: 'est' });
+  rows.push({ group: 'games', label: '球票 凯尔特人（两人）', amount: GAMES.bos.est, kind: 'est' });
   rows.push({ group: 'local', label: '市内交通（地铁、机场轨道、渡轮）', amount: 210, kind: 'est' });
   rows.push({ group: 'tickets', label: '大都会 $30×2 + 独立厅预约费', amount: 62, kind: 'real' });
   if (o.summit) rows.push({ group: 'tickets', label: 'Summit 观景台', amount: 45 * people, kind: 'est' });

@@ -3,13 +3,12 @@ import { esc, usd, cny } from '../lib/dom.js';
 import { budgetRows, budgetTotal, budgetByGroup, GROUP_LABEL } from '../lib/calc.js';
 
 const FIELDS = [
-  ['flights', '机票合计（两人，美元）', 10],
+  ['flights', '机票合计（两人，美元；去程 ¥6,000 + 返程 ¥6,200 ≈ $1,794）', 10],
   ['rate', '汇率 $1 = ¥', 0.01],
   ['bos', '波士顿 每晚', 5],
   ['dc', '华盛顿 每晚', 5],
   ['phl', '费城 每晚', 5],
-  ['penn', '纽约 Penn Station 每晚', 5],
-  ['lic', '纽约 长岛市 每晚', 5],
+  ['apt', '纽约 DKLB BKLN 公寓 每晚', 5],
   ['food', '餐饮 每人每天', 5]
 ];
 const OPTS = [

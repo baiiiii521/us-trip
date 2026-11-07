@@ -1,7 +1,7 @@
 // 总览：一句话说清这是什么 + 三个硬数字、下一件待办、三个关键决定、路线图、14 天一览、必须改的问题
 import { esc, icon, usd, cny, vendorLinks, ext, buyRow, arrow } from '../lib/dom.js';
 import { tripPhase, budgetTotal, MODE_LABEL, choiceFor } from '../lib/calc.js';
-import { CHECKLIST, AUDIT } from '../data/content.js';
+import { CHECKLIST } from '../data/content.js';
 import { CITIES, TRIP } from '../data/trip.js';
 import { GAMES, gameLinks } from '../data/games.js';
 import { buildDays } from '../data/days.js';
@@ -111,9 +111,5 @@ export function renderHome(state, ctx = { now: new Date(), weather: null }) {
       }).join('')}</ol>
     </div>
   </section>
-
-  <section class="m-nolift card">
-    <div class="m-nolift card__h"><h2>原攻略里必须改的 3 处</h2><a href="#info" class="more" data-action="info-tab" data-tab="audit">看全部审计${arrow}</a></div>
-    <ul class="audit">${AUDIT.filter((a) => a.level === 'crit').map((a) => `<li class="audit__item audit--crit"><b>${esc(a.title)}</b><span>${esc(a.fix)}</span></li>`).join('')}</ul>
-  </section>`;
+`;
 }

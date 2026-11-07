@@ -9,10 +9,11 @@ export const LEGS = {
     extra: { label: '机场进城', buy: ['lirr', 'airtrain'] }
   },
   s2: {
-    date: '12/20', wd: '周日', from: 'bos', to: 'dc', route: '波士顿 → 华盛顿', rec: 'train', night: true,
-    why: '推荐火车：同样过夜，火车座位宽、能走动、有洗手间和餐车，早上 06:54 到；大巴每人只省约 $30，要在座位上窝 11 小时。',
-    train: { p: 99, t: 'Amtrak 67 次 · 18:45 → 次日 06:54', d: 'South Station 18:45 开（Back Bay 18:51），约 12h，只有座位没有卧铺。商务座更宽，值得比价。', price: '估算', buy: ['amtrak'] },
-    bus: { p: 70, t: '过夜大巴 · Greyhound / FlixBus', d: 'Greyhound 19:35 → 06:50（约 $64）或 FlixBus 21:50 → 08:20（约 $77）。South Station 巴士总站 → Union Station 巴士层。', price: '区间', buy: ['grey', 'flix', 'wand'] }
+    // 12/20 固定按方案 C：看完凯尔特人回酒店睡，12/21 早上坐车南下
+    date: '12/21', wd: '周一', from: 'bos', to: 'dc', route: '波士顿 → 华盛顿', rec: 'train',
+    why: '12/21 早班火车南下：6:30 左右发车，午后到华盛顿，下午还能去看国家圣诞树。大巴慢 2–3 小时且周一早高峰出城容易堵，不推荐。',
+    train: { p: 89, t: 'Amtrak 早班东北区域 · 06:30 左右', d: 'South Station 早上 6–7 点发车，约 7h30–8h，午后到 Union Station。酒店打车到车站 10 分钟。', price: '估算', buy: ['amtrak'] },
+    bus: { p: 60, t: '白天大巴 · Greyhound / FlixBus', d: '约 9–10 小时，整天都在车上，下午晚些才到 Union Station 巴士层。不推荐。', price: '区间', buy: ['grey', 'flix', 'wand'] }
   },
   s3: {
     date: '12/23', wd: '周三', from: 'dc', to: 'phl', route: '华盛顿 → 费城', rec: 'bus',
@@ -31,29 +32,12 @@ export const LEGS = {
 
 export const LEG_IDS = Object.keys(LEGS);
 
-// 12/20 三个方案
-export const PLANS = {
-  A: { short: 'A 不看凯尔特人', label: 'A · 不看凯尔特人，坐 67 次过夜车', note: '原方案。省一晚房费，第二天一早到华盛顿。' },
-  C: { short: 'C 多住一晚', label: 'C · 看凯尔特人，波士顿多住一晚', note: '想看 4 场就选它。12/21 早上坐火车南下，多一晚房费约 $230。' },
-  B: { short: 'B 凌晨大巴', label: 'B · 看凯尔特人，凌晨 1:30 大巴', note: '不推荐。散场后等 3 小时，还要解决行李寄存（球馆不让带包）。' }
-};
-
-// 根据 12/20 方案返回某段某种方式的实际选项
-export function legOption(id, kind, plan) {
-  const leg = LEGS[id];
-  if (id === 's2' && plan === 'B') {
-    if (kind === 'train') return { p: 0, t: '67 次不可选', d: '18:45 开车，看不了 20:00 的凯尔特人。', disabled: true, buy: [] };
-    return { p: 75, t: 'Greyhound 凌晨 01:30 大巴', d: '散场后在 South Station 巴士总站等约 3 小时，01:30 开，次日约中午到 Union Station。$64–97。', price: '区间', buy: ['grey', 'wand'] };
-  }
-  if (id === 's2' && plan === 'C') {
-    if (kind === 'train') return { p: 89, t: '12/21 早班 Amtrak', d: 'South Station 早上 6–7 点的东北区域列车，约 7–8h，午后到华盛顿。', price: '估算', buy: ['amtrak'] };
-    return { p: 60, t: '12/21 白天大巴', d: '约 9–10h，整天都在车上，不推荐。', price: '区间', buy: ['grey', 'flix', 'wand'] };
-  }
-  return leg[kind];
+// 12/20 只保留方案 C（看凯尔特人、波士顿住 3 晚、12/21 早上南下）。
+// 签名保留 plan 参数，方便老调用处不报错；值不再影响结果。
+export function legOption(id, kind) {
+  return LEGS[id][kind];
 }
 
-export function legWhy(id, plan) {
-  if (id === 's2' && plan === 'B') return '方案 B：凯尔特人 20:00 开球，只能等凌晨 1:30 的大巴。连续熬夜，还要找地方寄存行李，不推荐。';
-  if (id === 's2' && plan === 'C') return '方案 C：12/20 看完凯尔特人回酒店睡，12/21 早上坐火车南下，下午到华盛顿。多一晚房费，但最轻松。';
+export function legWhy(id) {
   return LEGS[id].why;
 }
