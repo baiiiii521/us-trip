@@ -1,6 +1,6 @@
 // 景点照片：在浏览器里从维基百科读取条目首图（只取自由版权图片）和作者/许可信息。
 // 结果缓存在 localStorage 30 天。网络不通或被拦截时返回空，页面显示占位明信片。
-const CACHE_KEY = 'hoops-photos-v1';
+const CACHE_KEY = 'hoops-photos-v2'; // v2：补了 4 个景点的照片，旧缓存作废
 const TTL = 30 * 86400000;
 const WIKI_API = 'https://en.wikipedia.org/w/api.php';
 const COMMONS_API = 'https://commons.wikimedia.org/w/api.php';
@@ -74,13 +74,49 @@ async function getJson(base, params) {
   return res.json();
 }
 
+// 解析 Commons 指定文件的 imageinfo 返回（给没有自由版权首图的条目用）
+// requested: [{ key, file }]，key 是页面里用的缓存键（一般就是条目名）
+export function parseCommonsFiles(json, requested) {
+  const q = (json && json.query) || {};
+  const forward = {};
+  for (const r of q.normalized || []) forward[r.from] = r.to;
+  const byFile = {};
+  for (const p of q.pages || []) {
+    const info = p.imageinfo && p.imageinfo[0];
+    if (!info) continue;
+    const src = info.thumburl || info.url;
+    if (!src) continue;
+    const m = info.extmetadata || {};
+    const name = p.title.replace(/^File:/, '');
+    byFile[norm(name)] = {
+      src,
+      w: info.thumbwidth || info.width,
+      h: info.thumbheight || info.height,
+      file: name,
+      page: info.descriptionurl || '',
+      fileUrl: info.descriptionurl || '',
+      artist: stripHtml(m.Artist && m.Artist.value),
+      license: stripHtml(m.LicenseShortName && m.LicenseShortName.value),
+      licenseUrl: (m.LicenseUrl && m.LicenseUrl.value) || ''
+    };
+  }
+  const out = {};
+  for (const t of requested) {
+    let k = norm(t.file);
+    for (let i = 0; i < 3 && forward[k]; i++) k = forward[k];
+    if (byFile[k]) out[t.key] = byFile[k];
+  }
+  return out;
+}
+
 function chunks(arr, size) {
   const out = [];
   for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
   return out;
 }
 
-export async function loadPhotos(titles) {
+// titles: 维基条目名数组；files: { 条目名 → Commons 文件名 }，给没有自由版权首图的条目兜底
+export async function loadPhotos(titles, files = {}) {
   const cached = readCache();
   if (cached) { photos = cached; listeners.forEach((f) => f()); return; }
   const want = [...new Set(titles.filter(Boolean))];
@@ -93,9 +129,9 @@ export async function loadPhotos(titles) {
       });
       Object.assign(found, parsePageImages(json, group));
     }
-    const files = [...new Set(Object.values(found).map((p) => p.file).filter(Boolean))];
+    const files2 = [...new Set(Object.values(found).map((p) => p.file).filter(Boolean))];
     const credits = {};
-    for (const group of chunks(files, 45)) {
+    for (const group of chunks(files2, 45)) {
       const json = await getJson(COMMONS_API, {
         action: 'query', prop: 'imageinfo', iiprop: 'extmetadata|url',
         iiextmetadatafilter: 'Artist|LicenseShortName|LicenseUrl', titles: group.map((f) => 'File:' + f).join('|')
@@ -106,6 +142,19 @@ export async function loadPhotos(titles) {
       const c = credits[(found[t].file || '').replace(/ /g, '_')];
       if (c) Object.assign(found[t], c);
     }
+    // 指定文件兜底：条目首图是非自由版权或干脆没有首图时，直接读 Commons 上的自由版权照片
+    const pick = Object.entries(files || {}).filter(([k]) => k && !found[k]);
+    if (pick.length) {
+      const req = pick.map(([key, file]) => ({ key, file }));
+      for (const group of chunks(req, 45)) {
+        const json = await getJson(COMMONS_API, {
+          action: 'query', prop: 'imageinfo', iiprop: 'extmetadata|url|size', iiurlwidth: '960',
+          iiextmetadatafilter: 'Artist|LicenseShortName|LicenseUrl',
+          titles: group.map((r) => 'File:' + r.file).join('|')
+        });
+        Object.assign(found, parseCommonsFiles(json, group));
+      }
+    }
     photos = found;
     writeCache(found);
   } catch (e) {
@@ -114,3 +163,4 @@ export async function loadPhotos(titles) {
   }
   listeners.forEach((f) => f());
 }
+

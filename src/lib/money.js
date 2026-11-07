@@ -36,11 +36,34 @@ export function byCategory(expenses, rate) {
 }
 
 // 实时汇率（欧洲央行数据，免费、可跨域）。失败返回 null
-export async function fetchRate() {
-  try {
-    const r = await fetch('https://api.frankfurter.app/latest?from=USD&to=CNY');
-    if (!r.ok) return null;
-    const j = await r.json();
-    return j && j.rates && j.rates.CNY ? Number(j.rates.CNY) : null;
-  } catch (e) { return null; }
+// frankfurter.app 已经 301 跳到 frankfurter.dev，而跳转响应不带 CORS 头，浏览器里会直接失败；
+// 所以先打新端点 v2（返回数组），再退回 v1（返回 {rates:{CNY}}）。
+const FX_URLS = [
+  ['v2', 'https://api.frankfurter.dev/v2/rates?base=USD&quotes=CNY'],
+  ['v1', 'https://api.frankfurter.dev/v1/latest?from=USD&to=CNY']
+];
+
+// 解析两种返回格式，返回美元兑人民币的数字；认不出返回 null
+export function parseRate(json) {
+  if (!json) return null;
+  if (Array.isArray(json)) {
+    const row = json.find((r) => r && (r.quote === 'CNY' || r.quotes === 'CNY'));
+    if (row && Number(row.rate) > 0) return Number(row.rate);
+    return null;
+  }
+  if (json.rates && Number(json.rates.CNY) > 0) return Number(json.rates.CNY);
+  return null;
 }
+
+export async function fetchRate() {
+  for (const [, url] of FX_URLS) {
+    try {
+      const r = await fetch(url);
+      if (!r.ok) continue;
+      const n = parseRate(await r.json());
+      if (n) return n;
+    } catch (e) { /* 换下一个端点 */ }
+  }
+  return null;
+}
+

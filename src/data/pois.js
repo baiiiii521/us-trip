@@ -29,7 +29,7 @@ export const POIS = [
   },
   {
     id: 'mit-dome', city: 'bos', cat: 'sight', name: 'MIT 大圆顶', en: 'MIT Great Dome',
-    wiki: 'Maclaurin_Buildings', q: 'Killian Court, MIT, Cambridge, MA',
+    wiki: 'Killian_Court', q: 'Killian Court, MIT, Cambridge, MA',
     tag: 'MIT 的标志和“恶作剧”舞台',
     intro: '新古典主义大圆顶下面是 Killian Court 草坪，正对查尔斯河。圆顶是 MIT 学生 hack（恶作剧）的传统舞台，曾经被放上警车和消防车。',
     highlights: ['无限长廊 Infinite Corridor：约 251 米长的走廊贯穿主楼', 'Killian Court：毕业典礼场地，冬天草坪覆雪很好拍'],
@@ -448,6 +448,7 @@ export const POIS = [
   {
     id: 'charging-bull', city: 'nyc', cat: 'sight', name: '华尔街铜牛', en: 'Charging Bull',
     wiki: 'Charging_Bull', q: 'Charging Bull, Bowling Green, New York, NY',
+    photoFile: 'Shooting Charging Bull.jpg', // 条目首图是雕塑本身，非自由版权；用 Commons 的自由版权照片兜底
     tag: '半夜偷偷放上街的铜牛',
     intro: '1989 年艺术家 Arturo Di Modica 自费铸造，半夜偷偷放到纽交所门口，后来被市政府留了下来。“无畏女孩”铜像现在站在纽交所对面。',
     open: '全天', ticket: '免费', stay: '约 20 分钟', transit: '4/5 线 Bowling Green',
@@ -527,7 +528,7 @@ export const POIS = [
   },
   {
     id: 'nba-store', city: 'nyc', cat: 'shop', name: 'NBA Store', en: 'NBA Store',
-    wiki: '', q: 'NBA Store, 545 5th Ave, New York, NY',
+    wiki: 'NBA_Store', q: 'NBA Store, 545 5th Ave, New York, NY',
     tag: '篮球之旅的纪念品',
     intro: 'NBA 在第五大道的旗舰店，两层楼，能现场定制球衣印名字和号码。按你的规则，购物只排在 12/30 这一天。',
     open: '每天营业', ticket: '—', stay: '约 1 小时', transit: 'B/D/F/M 线 42 St–Bryant Park 或 7 号线 5 Av',
@@ -553,7 +554,7 @@ export const POIS = [
   },
   {
     id: 'venice-beach', city: 'la', cat: 'sight', name: '威尼斯海滩', en: 'Venice Beach',
-    wiki: 'Venice_Beach', q: 'Venice Beach Boardwalk, Los Angeles, CA',
+    wiki: 'Venice_Beach_Boardwalk', q: 'Venice Beach Boardwalk, Los Angeles, CA',
     tag: '街头艺人、滑板和 Muscle Beach',
     intro: '洛杉矶最有嬉皮气质的海滩，木板步道上有街头艺人、滑板公园和露天健身场 Muscle Beach。从圣莫尼卡沿海滩走过来约 3 公里。',
     open: '白天去', ticket: '免费', stay: '约 1.5 小时', transit: '从圣莫尼卡码头沿海滩步道往南',

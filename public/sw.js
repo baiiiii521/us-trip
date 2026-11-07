@@ -1,9 +1,10 @@
 // 离线缓存：第一次打开后，页面、脚本、样式、字体和看过的景点照片都会存下来，没网也能看。
 // 页面和脚本：先读缓存，同时后台更新；图片字体：同样处理；接口（天气、汇率、云同步）不缓存。
-const VERSION = 'hoops-v3-1';
+const VERSION = 'hoops-v3-2';
 const SHELL = VERSION + '-shell';
 const MEDIA = VERSION + '-media';
-const MEDIA_HOSTS = ['upload.wikimedia.org', 'fonts.gstatic.com', 'fonts.googleapis.com'];
+// thumb.wikimedia.org 是维基 pageimages 现在返回的缩略图域名，漏了它照片在线有图、离线全没
+const MEDIA_HOSTS = ['thumb.wikimedia.org', 'upload.wikimedia.org', 'fonts.gstatic.com', 'fonts.googleapis.com'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil((async () => {

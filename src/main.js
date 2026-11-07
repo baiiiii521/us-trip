@@ -44,6 +44,9 @@ import { photoDate, tripDayOf } from './lib/exif.js';
 import { makeRecap, loadBitmap } from './lib/recap.js';
 import { drawShareCard } from './lib/sharecard.js';
 
+// 条目首图非自由版权（或没有首图）的景点，用 Commons 上指定文件的照片兜底
+const POI_FILES = Object.fromEntries(POIS.filter((x) => x.wiki && x.photoFile).map((x) => [x.wiki, x.photoFile]));
+
 const VIEWS = {
   home: renderHome, days: renderDays, guide: renderGuide, tickets: renderTickets, money: renderMoney, more: renderMore,
   wallet: renderWallet, cards: renderCards, memories: renderMemories, info: renderInfo
@@ -513,10 +516,14 @@ onRoute();
 loadWalletFiles().then(rerender).catch(() => {});
 loadWeather().then((m) => { ctx.weather = m; rerender(); }).catch(() => {});
 onPhotos(() => render({ keepScroll: true }));
-loadPhotos(POIS.map((p) => p.wiki));
+loadPhotos(POIS.map((p) => p.wiki), POI_FILES);
 registerSW();
 onPwaChange(() => { if (route === 'more') rerender(); });
 armReminders();
-// 今天页面每分钟刷新一次“现在/下一项”
-setInterval(() => { if (route === 'home' && !typing() && !sheet.open && findToday(buildDays(getState()), currentNow(getState()))) rerender(); }, 60000);
+// 今天页面每分钟刷新一次“现在/下一项”；顺手重新排提醒：
+// 行程日期通常离出发还有好几天，只在打开时排一次的话，等事件进入 24 小时窗口时页面已开着也不会响。
+setInterval(() => {
+  armReminders();
+  if (route === 'home' && !typing() && !sheet.open && findToday(buildDays(getState()), currentNow(getState()))) rerender();
+}, 60000);
 void walletFiles;

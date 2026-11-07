@@ -9,7 +9,7 @@ import { VENDORS } from '../src/data/vendors.js';
 import { CITIES, CATEGORIES } from '../src/data/trip.js';
 import { CHECKLIST } from '../src/data/content.js';
 import { DEFAULTS } from '../src/state.js';
-import { parsePageImages, parseCredits } from '../src/lib/photos.js';
+import { parsePageImages, parseCredits, parseCommonsFiles } from '../src/lib/photos.js';
 import { routeUrl, directionsUrl } from '../src/lib/maps.js';
 
 const states = ['A', 'B', 'C'].flatMap((plan) => ['penn', 'lic'].map((hotel) => ({ ...JSON.parse(JSON.stringify(DEFAULTS)), plan, hotel })));
@@ -97,6 +97,30 @@ test('维基图片解析：处理规范化和重定向', () => {
   const credits = parseCredits({ query: { pages: [{ title: 'File:PG.jpg', imageinfo: [{ descriptionurl: 'https://commons.wikimedia.org/wiki/File:PG.jpg', extmetadata: { Artist: { value: '<a href="x">Jane Doe</a>' }, LicenseShortName: { value: 'CC BY-SA 4.0' } } }] }] } });
   assert.equal(credits['PG.jpg'].artist, 'Jane Doe');
   assert.equal(credits['PG.jpg'].license, 'CC BY-SA 4.0');
+});
+
+test('每个景点都有照片来源：维基条目或指定 Commons 文件', () => {
+  for (const p of POIS) {
+    assert.ok(p.wiki || p.photo || p.photoFile, `${p.id} 没有任何照片来源`);
+    if (p.photoFile) assert.ok(p.wiki, `${p.id} 有 photoFile 但没 wiki，兜底照片挂不上`);
+  }
+});
+
+test('Commons 指定文件：解析缩略图和许可', () => {
+  const json = { query: { pages: [{
+    title: 'File:Shooting Charging Bull.jpg',
+    imageinfo: [{ thumburl: 'https://upload.wikimedia.org/t.jpg', thumbwidth: 960, thumbheight: 869,
+      url: 'https://upload.wikimedia.org/f.jpg', width: 1286, height: 1163,
+      descriptionurl: 'https://commons.wikimedia.org/wiki/File:Shooting_Charging_Bull.jpg',
+      extmetadata: { Artist: { value: '<b>Someone</b>' }, LicenseShortName: { value: 'CC BY-SA 4.0' } } }]
+  }] } };
+  const out = parseCommonsFiles(json, [{ key: 'Charging_Bull', file: 'Shooting Charging Bull.jpg' }]);
+  assert.equal(out.Charging_Bull.src, 'https://upload.wikimedia.org/t.jpg');
+  assert.equal(out.Charging_Bull.artist, 'Someone');
+  assert.equal(out.Charging_Bull.license, 'CC BY-SA 4.0');
+  assert.match(out.Charging_Bull.fileUrl, /Shooting_Charging_Bull/);
+  // 文件不存在时不产出空壳
+  assert.deepEqual(parseCommonsFiles({ query: { pages: [{ title: 'File:Nope.jpg' }] } }, [{ key: 'x', file: 'Nope.jpg' }]), {});
 });
 
 test('导航链接', () => {

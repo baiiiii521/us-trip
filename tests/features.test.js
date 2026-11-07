@@ -1,14 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mergeDocs, syncDoc, encodeShare, decodeShare, encryptDoc, decryptDoc, SYNC_KEYS } from '../src/lib/sync.js';
-import { settle, byCategory, toUsd } from '../src/lib/money.js';
+import { settle, byCategory, toUsd, parseRate } from '../src/lib/money.js';
 import { findToday, nowAndNext, itemTime, fmtCountdown, keyEvents } from '../src/lib/today.js';
-import { alertFor, codeLabel, weatherFor } from '../src/lib/weather.js';
+import { alertFor, codeLabel, weatherFor, parseWeather } from '../src/lib/weather.js';
 import { tripDayOf } from '../src/lib/exif.js';
 import { walletSlots, slotsForItem } from '../src/data/bookings.js';
 import { buildDays } from '../src/data/days.js';
 import { DEFAULTS, migrate, isDone, personName } from '../src/state.js';
 import { handle } from '../api/sync.js';
+import { scheduleReminders, notifyPermission } from '../src/lib/notify.js';
+import { pickMime } from '../src/lib/recap.js';
 
 const S = () => JSON.parse(JSON.stringify(DEFAULTS));
 
@@ -81,6 +83,63 @@ test('settle: 两人平分、只算一人、人民币换算', () => {
   assert.equal(settle({}, 6.8).transfer, null);
 });
 
+test('提醒：只有 60 / 15 分钟前、且落在这 24 小时窗口内才排程', () => {
+  // node 里没有浏览器对象，先造一个最小环境（window + Notification）
+  const g = globalThis;
+  const had = { w: 'window' in g, n: 'Notification' in g };
+  const fakeNotif = { permission: 'granted', requestPermission: async () => 'granted' };
+  g.window = g.window || {};
+  g.window.Notification = fakeNotif;
+  g.Notification = fakeNotif;
+  try {
+    const now = new Date('2026-12-20T10:00:00Z');
+    const at = (min) => new Date(now.getTime() + min * 60000);
+    // 75 分钟后：两条都能排（60 分钟前 + 15 分钟前）
+    assert.equal(scheduleReminders([{ at: at(75), title: 't', body: 'b' }], now), 2);
+    // 20 分钟后：只有 15 分钟那条
+    assert.equal(scheduleReminders([{ at: at(20), title: 't', body: 'b' }], now), 1);
+    // 10 分钟后：两条都来不及
+    assert.equal(scheduleReminders([{ at: at(10), title: 't', body: 'b' }], now), 0);
+    // 30 小时后：超出 24 小时窗口，不排（下次打开再算）
+    assert.equal(scheduleReminders([{ at: at(30 * 60), title: 't', body: 'b' }], now), 0);
+    scheduleReminders([], now);
+    // 没授权时一条都不排
+    fakeNotif.permission = 'denied';
+    assert.equal(notifyPermission(), 'denied');
+    assert.equal(scheduleReminders([{ at: at(75), title: 't', body: 'b' }], now), 0);
+  } finally {
+    if (!had.w) delete g.window;
+    if (!had.n) delete g.Notification;
+  }
+});
+
+test('回忆视频：优先 mp4（iPhone Safari 只认 mp4），其次 webm', () => {
+  const g = globalThis;
+  const hadMR = 'MediaRecorder' in g;
+  const stub = (ok) => { g.MediaRecorder = { isTypeSupported: (t) => ok.includes(t) }; };
+  try {
+    stub(['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4']);
+    assert.match(pickMime(), /^video\/mp4/);
+    stub(['video/webm;codecs=vp9,opus', 'video/webm']);
+    assert.match(pickMime(), /^video\/webm/);
+    stub([]);
+    assert.equal(pickMime(), '');
+    delete g.MediaRecorder;
+    assert.equal(pickMime(), null); // 完全不支持录制
+  } finally {
+    if (!hadMR) delete g.MediaRecorder;
+  }
+});
+
+test('实时汇率：v2 数组和 v1 对象两种返回都认，坏数据返回 null', () => {
+  assert.equal(parseRate([{ date: '2026-11-08', base: 'USD', quote: 'CNY', rate: 6.6635 }]), 6.6635);
+  assert.equal(parseRate({ amount: 1, base: 'USD', rates: { CNY: 6.6713 } }), 6.6713);
+  assert.equal(parseRate([{ quote: 'EUR', rate: 0.9 }]), null);
+  assert.equal(parseRate({ rates: {} }), null);
+  assert.equal(parseRate(null), null);
+  assert.equal(parseRate([{ quote: 'CNY', rate: 0 }]), null);
+});
+
 test('今天模式：按日期找到当天，再找当前项和下一项', () => {
   const days = buildDays(S());
   const d = findToday(days, new Date(2026, 11, 19, 10, 0));
@@ -92,6 +151,21 @@ test('今天模式：按日期找到当天，再找当前项和下一项', () =>
   assert.equal(itemTime(d, '落地'), null);
   assert.equal(fmtCountdown(0), '马上'); assert.equal(fmtCountdown(45), '45 分钟后'); assert.equal(fmtCountdown(125), '2 小时 5 分钟后');
   assert.ok(keyEvents(findToday(days, new Date(2026, 11, 20))).length >= 1);
+});
+
+test('天气：Open-Meteo 返回按 城市|日期 归档，行程日期能取到', () => {
+  const map = parseWeather('nyc', { daily: {
+    time: ['2026-12-20', '2026-12-21'],
+    weather_code: [3, 75], temperature_2m_max: [4.2, -1.8], temperature_2m_min: [-2.5, -6.1],
+    snowfall_sum: [0, 12.4], rain_sum: [0, 0], precipitation_probability_max: [10, 95]
+  } });
+  assert.deepEqual(Object.keys(map).sort(), ['nyc|2026-12-20', 'nyc|2026-12-21']);
+  const w = weatherFor(map, 'nyc', { md: '12/21' });
+  assert.equal(w.code, 75);
+  assert.equal(w.snow, 12.4);
+  assert.equal(alertFor(w).level, 'crit');
+  assert.equal(weatherFor(map, 'nyc', { md: '12/25' }), null); // 预报窗口外 → 页面回落到 12 月平均
+  assert.deepEqual(parseWeather('nyc', {}), {});
 });
 
 test('天气预案：大雪、小雪、大雨、严寒才提醒', () => {

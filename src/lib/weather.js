@@ -44,6 +44,19 @@ function readCache() {
   return null;
 }
 
+// Open-Meteo 返回 → { 'bos|2026-12-19': {hi, lo, code, snow, rain, pop} }（纯函数）
+export function parseWeather(city, json) {
+  const out = {};
+  const d = (json && json.daily) || {};
+  (d.time || []).forEach((date, i) => {
+    out[`${city}|${date}`] = {
+      hi: d.temperature_2m_max[i], lo: d.temperature_2m_min[i], code: d.weather_code[i],
+      snow: d.snowfall_sum[i], rain: d.rain_sum[i], pop: d.precipitation_probability_max[i]
+    };
+  });
+  return out;
+}
+
 // 返回 { 'bos|2026-12-19': {hi, lo, code, snow, rain, pop} }
 export async function loadWeather() {
   const cached = readCache(); if (cached) return cached;
@@ -52,10 +65,7 @@ export async function loadWeather() {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&timezone=${encodeURIComponent(tz)}&forecast_days=16&daily=weather_code,temperature_2m_max,temperature_2m_min,snowfall_sum,rain_sum,precipitation_probability_max`;
     try {
       const res = await fetch(url); if (!res.ok) return;
-      const j = await res.json(); const d = j.daily || {};
-      (d.time || []).forEach((date, i) => {
-        out[`${city}|${date}`] = { hi: d.temperature_2m_max[i], lo: d.temperature_2m_min[i], code: d.weather_code[i], snow: d.snowfall_sum[i], rain: d.rain_sum[i], pop: d.precipitation_probability_max[i] };
-      });
+      Object.assign(out, parseWeather(city, await res.json()));
     } catch (e) { /* 网络不通 */ }
   }));
   try { localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: out })); } catch (e) { /* 忽略 */ }

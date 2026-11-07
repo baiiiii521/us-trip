@@ -6,3 +6,6 @@ dist/
 # 视频渲染产物（可用 video/tools/capture.cjs 重新生成）
 video/out/
 data/
+
+# 本地截图（用 Playwright/浏览器在 390×844 下检查用，不进仓库）
+.shots/
