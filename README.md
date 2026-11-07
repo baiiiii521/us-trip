@@ -116,3 +116,15 @@ npm run build:single
 
 数据分两类：方案设置和本机设置只在本机；清单、打卡、记账、订单文字、酒店、座位、名字参与同步。照片和附件永远不离开手机。
 测试：`npm test`（26 项，含同步合并、加密、API、结算、今天模式、天气预案）。
+
+## 自己的服务器部署
+
+需要 Node 18+。在服务器上：
+
+```bash
+git clone https://github.com/baiiiii521/us-trip.git && cd us-trip && bash deploy/deploy.sh
+```
+
+`deploy/server.mjs` 同时提供网页和 `/api/sync`（云同步，数据存在 `data/` 目录，只有密文）。端口用 `PORT` 改，默认 8080。
+前面用 nginx 反代并配 HTTPS：参考 `deploy/nginx.conf`；systemd 服务参考 `deploy/us-trip.service`。离线缓存、通知、添加到主屏幕都要求 HTTPS。
+更新：`git pull && bash deploy/deploy.sh`。

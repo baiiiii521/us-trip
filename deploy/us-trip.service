@@ -1,0 +1,11 @@
+[Unit]
+Description=us-trip
+After=network.target
+[Service]
+WorkingDirectory=/opt/us-trip
+Environment=PORT=8080
+ExecStart=/usr/bin/node deploy/server.mjs
+Restart=always
+User=www-data
+[Install]
+WantedBy=multi-user.target
