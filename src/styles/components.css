@@ -3,7 +3,7 @@
 @media (max-width: 639px) { .card { padding: var(--s-4); border-radius: var(--r-md); } }
 .card__h { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); margin-bottom: var(--s-4); flex-wrap: wrap; }
 .card__h h2 { font-size: 20px; font-weight: 700; }
-.more { font-size: var(--t-small); font-weight: 500; color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; gap: var(--s-1); }
+.more { font-size: var(--t-small); font-weight: 500; color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; gap: var(--s-1); min-height: 40px; }
 .more .ic { width: 16px; height: 16px; }
 .meta { font-size: var(--t-label); font-weight: 500; color: var(--muted); }
 .note { font-size: var(--t-small); color: var(--muted); margin-top: var(--s-3); line-height: 1.6; }
@@ -19,7 +19,7 @@
 .btn--primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .btn-row { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 @media (max-width: 639px) { .btn-row > .btn { flex: 1 1 100%; } }
-.linkbtn { background: none; border: 0; padding: 0; cursor: pointer; font-size: inherit; font-weight: 500; color: var(--ink); }
+.linkbtn { background: none; border: 0; padding: 0 var(--s-1); margin: 0 calc(-1 * var(--s-1)); cursor: pointer; font-size: inherit; font-weight: 500; color: var(--ink); display: inline-flex; align-items: center; gap: var(--s-1); min-height: 40px; }
 
 /* 城市标签：中性底 + 城市色小圆点 */
 .tag {
@@ -107,12 +107,12 @@
 @media (max-width: 400px) { .glance a { grid-template-columns: 48px 26px 1fr auto; } .glance a .tag { display: none; } }
 
 .audit { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
-.audit__item { display: grid; gap: var(--s-1); padding: var(--s-3) var(--s-4); border-left: 3px solid var(--line-strong); background: var(--soft); border-radius: 0 var(--r-sm) var(--r-sm) 0; font-size: 15px; }
+.audit__item { display: grid; gap: var(--s-1); padding: var(--s-3) var(--s-4); border: 1px solid var(--line); background: var(--soft); border-radius: var(--r-sm); font-size: 15px; }
 .audit__item .pill { justify-self: start; background: var(--card); }
 .audit__item span { color: var(--ink-2); }
-.audit--crit { border-left-color: var(--crit); }
-.audit--warn { border-left-color: var(--warn); }
-.audit--ok { border-left-color: var(--ok); }
+.audit--crit { border-color: color-mix(in srgb, var(--crit) 35%, transparent); }
+.audit--warn { border-color: color-mix(in srgb, var(--warn) 35%, transparent); }
+.audit--ok { border-color: color-mix(in srgb, var(--ok) 35%, transparent); }
 .audit__fix { color: var(--ink) !important; font-weight: 500; }
 
 /* 路线图 */
@@ -192,10 +192,11 @@
 .day__stay { padding: 0 var(--s-5) var(--s-4); font-size: var(--t-small); color: var(--ink-2); display: flex; gap: var(--s-2); align-items: center; background: var(--soft); }
 @media (max-width: 639px) { .day__tips { padding-inline: var(--s-4); padding-left: calc(var(--s-4) + 18px); } .day__stay { padding-inline: var(--s-4); } }
 
-/* 交通、球赛：中性底，左边一条状态色细线 */
-.move, .game { border-radius: var(--r-md); padding: var(--s-3) var(--s-4); border: 1px solid var(--line); border-left: 3px solid var(--rail); background: var(--soft); display: grid; gap: var(--s-2); }
-.move--bus { border-left-color: var(--bus); }
-.game { border-left-color: var(--accent); }
+/* 交通、球赛：中性底，状态色放在标题的图标上 */
+.move, .game { border-radius: var(--r-md); padding: var(--s-3) var(--s-4); border: 1px solid var(--line); background: var(--soft); display: grid; gap: var(--s-2); }
+.move .move__h .ic { color: var(--rail); }
+.move--bus .move__h .ic { color: var(--bus); }
+.game .game__h .ic { color: var(--accent); }
 .move__h, .game__h { display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; font-weight: 700; }
 .move__h .linkbtn { margin-left: auto; font-size: var(--t-small); font-weight: 500; }
 .move--train .move__h .ic { color: var(--rail); }
@@ -321,7 +322,7 @@ dialog.sheet::backdrop { background: color-mix(in srgb, #0A0E14 55%, transparent
 .facts dt { font-size: var(--t-label); font-weight: 500; color: var(--muted); }
 .facts dd { margin: 0; font-size: 15px; }
 @media (max-width: 460px) { .facts { grid-template-columns: 1fr; } .facts div:nth-child(2) { border-top: 1px solid var(--line); } .facts div:nth-child(2n) { border-left: 0; } }
-.callout { border-left: 3px solid var(--accent); background: var(--soft); border-radius: 0 var(--r-sm) var(--r-sm) 0; padding: var(--s-3) var(--s-4); display: grid; gap: 2px; }
+.callout { border: 1px solid var(--line); background: var(--accent-soft); border-radius: var(--r-sm); padding: var(--s-3) var(--s-4); display: grid; gap: 2px; }
 .callout b { font-size: var(--t-label); color: var(--accent); }
 .sheet__foot { display: grid; gap: var(--s-2); padding-top: var(--s-4); border-top: 1px solid var(--line); font-size: var(--t-label); color: var(--muted); }
 .sheet__foot a { color: var(--ink-2); }
@@ -425,7 +426,7 @@ dialog.sheet::backdrop { background: color-mix(in srgb, #0A0E14 55%, transparent
 .todo { list-style: none; margin: var(--s-3) 0 0; padding: 0; display: grid; gap: var(--s-2); }
 .todo__i { display: grid; grid-template-columns: 44px 92px 1fr; gap: var(--s-3); align-items: start; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--s-3) var(--s-4); }
 @media (max-width: 560px) { .todo__i { grid-template-columns: 44px 1fr; } .todo__what { grid-column: 2; } }
-.todo__ck { width: 32px; height: 32px; margin: 4px 0 0 4px; border-radius: var(--r-sm); border: 1.5px solid var(--line-strong); background: var(--card); display: grid; place-items: center; cursor: pointer; color: var(--on-accent); }
+.todo__ck { width: 40px; height: 40px; margin: 0; border-radius: var(--r-sm); border: 1.5px solid var(--line-strong); background: var(--card); display: grid; place-items: center; cursor: pointer; color: var(--on-accent); }
 .todo__ck:hover { border-color: var(--ink); }
 .todo__i.is-done .todo__ck { background: var(--ok); border-color: var(--ok); color: #fff; }
 .todo__when { font-size: var(--t-label); color: var(--accent); font-weight: 700; padding-top: 9px; }
@@ -495,7 +496,7 @@ dialog.sheet::backdrop { background: color-mix(in srgb, #0A0E14 55%, transparent
 .tr__nights { color: var(--muted); margin-left: auto; }
 .tr__days { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
 .tr__day {
-  display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 26px; padding: 0 5px;
+  display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 40px; padding: 0 6px;
   border: 1px solid var(--dot, var(--line-strong)); border-radius: var(--r-sm);
   font-family: var(--f-mono); font-size: var(--t-label); font-weight: 600; color: var(--ink); text-decoration: none;
 }

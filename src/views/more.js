@@ -24,13 +24,14 @@ export function renderMore(state) {
   const l = state.local;
   const spent = liveExpenses(state.expenses).length;
   return `
-  <div class="pagehead"><h1>更多</h1><p>订单、大字卡、回忆都在这里。数据只存在你的手机里，两人用同步码或云同步合并。</p></div>
+  <div class="pagehead"><h1>随身</h1><p>柜台、前台、边检要拿出来的东西都在这里；下面是提醒、离线和两人同步。</p></div>
 
   <section class="card">
     <div class="mlist">
       ${entry('#sos', '紧急情况', '911、领事保护电话、酒店电话、丢护照怎么办、英文求助卡', 'phone')}
       ${entry('#vault', '证件和订单（需密码）', '护照号、机票订单号和票号、酒店确认号、入境行程单 PDF', 'info')}
       ${state.rent !== 'none' ? entry('#drive', '自驾', '租车、每段路线、停车、过路费、加油和驾驶规则', 'car') : ''}
+      ${entry('#tickets', '票务', '城际交通对比、6 场 NBA 购票入口、需要预约的景点', 'ball')}
       ${entry('#wallet', '订单夹', `确认号、座位、截图，已填 ${wp.filled}/${wp.total}`, 'ticket')}
       ${entry('#cards', '英文大字卡', '给司机、前台、服务员看的地址和句子', 'bus')}
       ${entry('#memories', '回忆', '导入照片，按天整理，生成回忆视频和每日分享卡', 'sun')}

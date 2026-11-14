@@ -22,7 +22,7 @@
 - **证件和订单（#vault，查询密码在 private/itinerary.json 的 pin）**：护照号、PNR、票号、酒店确认号、公寓房号、行程单 PDF 由 `scripts/build-vault.mjs` 加密成 `private/vault.enc.json`，`deploy/deploy.sh` 把它传到硅谷 `/var/lib/us-trip-sync/vault.enc.json`（不在网站目录）。`/api/vault` 只比对密码证明并限速（同 IP 15 分钟 5 次、全站 1 小时 20 次）。手机本机只缓存密文。附件放 `private/files/`。
 - **提交前跑 `git status`，新建的文件要 `git add`。** 2026-11-07 那次提交漏了 flights.js、hotels.js、map-geo.js（原因：.gitignore 的 `data/` 把 src/data/ 也忽略了，已改成 `/data/`），GitHub 上的 main 一度无法构建（11-14 已重建，flights/hotels 的人民币金额是按房价换算的约数，以携程订单为准）。
 - **个人信息不进仓库、不进 public/。** 护照号、PNR、票号、订单号、邮箱、公寓房号放在 `private/itinerary.json`（已 gitignore，格式见 `private/itinerary.example.json`）。`tests/drive.test.js` 会扫描 src/、public/、scripts/，发现这些号码就失败。生成的行程单 PDF 只存在电脑和订单夹，不放网站。
-- 交通（2026-11-14 起）：默认 `state.rent = 'jfk'`——12/18 JFK 取车、12/24 回纽约 JFK 还车，四段城际全自驾；`bos`=12/18 坐火车、12/21 波士顿取车；`none`=原来的火车/大巴。自驾数据在 `src/data/drive.js`，页面在 `#drive`。纽约住 AVA Fort Greene（343 Gold St, Brooklyn），房号只放订单夹。
+- 交通（2026-11-14 起）：默认 `state.rent = 'jfk'`——已订 Sixt（宝马 X5 级 SUV），12/18 13:00 JFK 取车、12/24 13:00 在曼哈顿下城 Sixt Battery Park（20 Morris St）还车，四段城际全自驾。门店营业时间两个来源不一致（携程 07:00–18:00；Sixt 官网节假日 07:30–13:00），所以 12/24 计划 12:00 还车，测试锁住了 12:30 前；`bos`=12/18 坐火车、12/21 波士顿取车；`none`=原来的火车/大巴。自驾数据在 `src/data/drive.js`，页面在 `#drive`。纽约住 AVA Fort Greene（343 Gold St, Brooklyn），房号只放订单夹。
 - 视觉：taste-skill 规则——中性色加唯一强调色 #C04A0A，不用紫色，正文 16px，间距按 4px 倍数，动效克制并尊重 reduced-motion。不要新增颜色，用 tokens.css 的变量。
 - 新增状态要决定是否同步；同步的集合加进 `SYNC_KEYS`，并为 mergeDocs 补测试。
 - 改行程内容后跑 `npm test`：有测试检查每个行程里的票都有对应订单格子。
@@ -69,6 +69,11 @@ bash deploy/deploy.sh        # 测试 → 构建 → 硅谷 → 经硅谷中转�
 bash deploy/deploy.sh -s     # 只发硅谷（快速预览）
 ```
 Mac 直连 49.233 的 rsync 会卡死（跨境），国内节点必须经硅谷中转，脚本已处理。云同步服务在硅谷 `us-trip-sync.service`（:8796，只存密文），`deploy/sync-server.mjs` 没变就不会重启。
+
+## 界面（2026-11-14）
+- 底部导航 5 个：总览、行程、景点、花费、随身（原“更多”）。票务、自驾是“随身”下的子页，旧链接 #tickets、#drive 照常能开。
+- 触控区域：按钮 ≥40px，主要控件 44px。不用粗的彩色左竖线（impeccable 检测会报），状态色放在图标或细边上。
+- 今天卡片：导航主按钮 → 一行三个常用入口 → 订单 → 可折叠的实时路况、退房清单、停车；花费是一行链接。
 
 ## 做事方式
 先复现或读代码，再改；每次改动跑 `npm test`、`npm run build`、`node scripts/verify-network.mjs`；界面改动用浏览器在 390×844 手机尺寸截图检查，确认无横向溢出；完成后提交并推送到 main。提交信息用英文祈使句。

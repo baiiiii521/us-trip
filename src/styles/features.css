@@ -26,7 +26,7 @@
 .pillradio.is-on span { background: var(--ink); border-color: var(--ink); color: var(--card); }
 .pillradio input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.btn--sm { min-height: 36px; padding: 0 var(--s-3); font-size: var(--t-small); }
+.btn--sm { min-height: 40px; padding: 0 var(--s-3); font-size: var(--t-small); }
 .filebtn { cursor: pointer; }
 .iconbtn--sm { width: 36px; height: 36px; }
 
@@ -54,7 +54,7 @@
 .wrow__main small { color: var(--muted); font-size: var(--t-label); overflow-wrap: anywhere; }
 .wrow__st { flex: none; font-size: var(--t-label); font-weight: 600; color: var(--muted); display: inline-flex; align-items: center; gap: 4px; }
 .wrow__st.is-on { color: var(--ok); }
-.wchip { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 var(--s-3); border: 1px dashed var(--line-strong); border-radius: 999px; font-size: var(--t-small); font-weight: 500; color: var(--ink-2); text-decoration: none; }
+.wchip { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 var(--s-3); border: 1px dashed var(--line-strong); border-radius: 999px; font-size: var(--t-small); font-weight: 500; color: var(--ink-2); text-decoration: none; }
 .wchip .ic { width: 16px; height: 16px; }
 .wchip.is-on { border-style: solid; border-color: var(--ok); color: var(--ok); }
 .files { display: grid; gap: var(--s-2); }
@@ -88,16 +88,15 @@ dialog.sheet.sheet--big { margin: 0; max-width: none; width: 100vw; height: 100d
 .today2 { border-color: var(--accent); }
 .today2__title { font-size: 20px; font-weight: 700; margin-top: calc(-1 * var(--s-2)); margin-bottom: var(--s-3); }
 .nownext { display: grid; gap: var(--s-3); margin: 0 0 var(--s-4); }
-.nownext > div { display: grid; gap: 2px; padding-left: var(--s-3); border-left: 3px solid var(--line-strong); }
-.nownext > div:nth-child(2) { border-left-color: var(--accent); }
+.nownext > div { display: grid; gap: 2px; }
 .nownext dt { font-size: var(--t-label); font-weight: 600; color: var(--muted); }
 .nownext dd { margin: 0; line-height: 1.6; }
 .today2 .buys, .today2 .btn-row { margin-top: var(--s-3); }
 
 /* 天气提醒 */
-.alert { display: grid; gap: 2px; padding: var(--s-3) var(--s-4); border-radius: var(--r-sm); border-left: 4px solid var(--warn); background: color-mix(in srgb, var(--warn) 10%, var(--card)); font-size: var(--t-small); line-height: 1.6; margin: var(--s-2) 0; }
+.alert { display: grid; gap: 2px; padding: var(--s-3) var(--s-4); border-radius: var(--r-sm); border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent); background: color-mix(in srgb, var(--warn) 10%, var(--card)); font-size: var(--t-small); line-height: 1.6; margin: var(--s-2) 0; }
 .alert b { font-size: var(--t-label); color: var(--warn); }
-.alert--crit { border-left-color: var(--crit); background: color-mix(in srgb, var(--crit) 9%, var(--card)); }
+.alert--crit { border-color: color-mix(in srgb, var(--crit) 35%, transparent); background: color-mix(in srgb, var(--crit) 9%, var(--card)); }
 .alert--crit b { color: var(--crit); }
 .tag--ok { color: var(--ok); }
 
@@ -140,14 +139,13 @@ dialog.sheet.sheet--big { margin: 0; max-width: none; width: 100vw; height: 100d
 }
 
 /* 自驾：用强调色标出“开车”这条线，和火车蓝、大巴绿区分 */
-.move--car { border-left-color: var(--accent); }
 .move--car .move__h .ic { color: var(--accent); }
 .move__h a.linkbtn { margin-left: auto; font-size: var(--t-small); font-weight: 500; }
 .pill--car { --pc: var(--accent); }
 .tr__move--car .tr__mode { color: var(--accent); }
 .trmap__seg--car { stroke: var(--accent); }
 .trmap__arrow--car { fill: var(--accent); }
-.set__warn { margin-top: var(--s-2); font-size: var(--t-small); line-height: 1.6; color: var(--ink-2); padding: var(--s-2) var(--s-3); border-left: 3px solid var(--warn); background: color-mix(in srgb, var(--warn) 8%, var(--card)); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.set__warn { margin-top: var(--s-2); font-size: var(--t-small); line-height: 1.6; color: var(--ink-2); padding: var(--s-2) var(--s-3); border: 1px solid color-mix(in srgb, var(--warn) 30%, transparent); border-radius: var(--r-sm); background: color-mix(in srgb, var(--warn) 8%, var(--card)); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
 .drivecard { display: flex; align-items: center; gap: var(--s-4); text-decoration: none; color: var(--ink); }
 .drivecard__ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: var(--r-md); background: var(--accent-soft); color: var(--accent); flex: none; }
 .drivecard__ic .ic { width: 24px; height: 24px; }
@@ -226,8 +224,6 @@ dialog.sheet.sheet--big { margin: 0; max-width: none; width: 100vw; height: 100d
 .bill__out span { font-size: var(--t-label); color: var(--muted); }
 
 /* 今天卡片里的清单、停车、花费 */
-.today2 .nownext > div.is-next { border-left-color: var(--accent); }
-.today2 .nownext > div:nth-child(2):not(.is-next) { border-left-color: var(--line-strong); }
 .outlist { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: grid; gap: var(--s-1); }
 .outlist label { display: flex; gap: var(--s-2); align-items: flex-start; min-height: 40px; padding: var(--s-2) 0; line-height: 1.5; cursor: pointer; }
 .outlist input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); flex: none; }
@@ -245,3 +241,24 @@ dialog.sheet.sheet--big { margin: 0; max-width: none; width: 100vw; height: 100d
 .xmas--open b { color: var(--ok); }
 .xmas--check b { color: var(--warn); }
 .xmas--closed b { color: var(--crit); }
+
+/* 今天卡片：常用入口一行三个；次要信息折叠，标题行直接看状态 */
+.qa { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); margin-top: var(--s-3); }
+.qa__i { display: grid; justify-items: center; align-content: center; gap: var(--s-1); min-height: 64px; padding: var(--s-2); border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--card); color: var(--ink); text-decoration: none; font-size: var(--t-small); font-weight: 500; text-align: center; }
+.qa__i .ic { width: 22px; height: 22px; color: var(--ink-2); }
+.qa__i:active { background: var(--soft); }
+details.tbox > summary { display: flex; align-items: center; gap: var(--s-2); min-height: 44px; cursor: pointer; list-style: none; }
+details.tbox > summary::-webkit-details-marker { display: none; }
+details.tbox > summary h3 { margin: 0; display: inline-flex; align-items: center; gap: var(--s-1); }
+details.tbox > summary::after { content: ""; width: 8px; height: 8px; margin-left: var(--s-1); border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(45deg) translateY(-2px); transition: transform var(--m-in, .15s) ease-out; flex: none; }
+details.tbox[open] > summary::after { transform: rotate(-135deg) translateY(-2px); }
+.tbox__st { margin-left: auto; font-size: var(--t-small); color: var(--ink-2); text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tbox--link { display: flex; align-items: center; gap: var(--s-2); min-height: 44px; color: inherit; text-decoration: none; }
+.tbox--link h3 { margin: 0 !important; }
+.tbox--link .ic { width: 16px; height: 16px; color: var(--muted); flex: none; }
+.today2 .buys__list { margin-top: var(--s-2); }
+/* 现在 / 下一项：圆点代替彩色竖线 */
+.today2 .nownext dt { display: flex; align-items: center; gap: var(--s-2); }
+.today2 .nownext dt::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); flex: none; }
+.today2 .nownext .is-next dt::before { background: var(--accent); }
+.today2 .nownext .is-next dd { font-weight: 600; }

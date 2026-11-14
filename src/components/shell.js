@@ -7,13 +7,13 @@ export const ROUTES = [
   { id: 'home', label: '总览', icon: 'home' },
   { id: 'days', label: '行程', icon: 'days' },
   { id: 'guide', label: '景点', icon: 'guide' },
-  { id: 'tickets', label: '票务', icon: 'ticket' },
   { id: 'money', label: '花费', icon: 'wallet' },
-  { id: 'more', label: '更多', icon: 'info' }
+  { id: 'more', label: '随身', icon: 'ticket' }
 ];
 // 不在导航栏里的页面：标题 + 点亮哪个导航项
 export const SUBPAGES = {
-  drive: { label: '自驾', parent: 'tickets' },
+  tickets: { label: '票务', parent: 'more' },
+  drive: { label: '自驾', parent: 'more' },
   vault: { label: '证件和订单', parent: 'more' },
   sos: { label: '紧急情况', parent: 'more' },
   wallet: { label: '订单夹', parent: 'more' },

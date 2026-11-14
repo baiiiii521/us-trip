@@ -17,3 +17,7 @@ button, input { font: inherit; color: inherit; }
 .ic { width: 18px; height: 18px; flex: none; vertical-align: -3px; }
 .ic--ball { color: var(--accent); }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* 浏览器自带的部分也跟主题走 */
+::selection { background: color-mix(in srgb, var(--accent) 24%, transparent); color: var(--ink); }
+:root { caret-color: var(--accent); accent-color: var(--accent); }

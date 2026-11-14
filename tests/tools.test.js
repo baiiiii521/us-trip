@@ -94,3 +94,13 @@ test('圣诞营业：12/24、12/25 去景点的条目都标了照常或待确认
     }
   }
 });
+
+test('导航：底部 5 个，票务和自驾挂在“随身”下，旧链接 #tickets 照样能开', async () => {
+  const { ROUTES, SUBPAGES } = await import('../src/components/shell.js');
+  assert.deepEqual(ROUTES.map((r) => r.id), ['home', 'days', 'guide', 'money', 'more']);
+  assert.equal(SUBPAGES.tickets.parent, 'more');
+  assert.equal(SUBPAGES.drive.parent, 'more');
+  const { shortTitle } = await import('../src/views/home.js');
+  assert.equal(shortTitle('租车：12/18 JFK 取 → 12/24 曼哈顿 Battery Park 还（Sixt）'), '租车');
+  assert.equal(shortTitle('郑州 → 纽约 JFK（MF8280 / MF849）'), '郑州 → 纽约 JFK');
+});
