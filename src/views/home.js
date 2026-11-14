@@ -13,35 +13,62 @@ import { weatherFor, alertFor, codeLabel } from '../lib/weather.js';
 import { CITY_STATUS, LEG_STATUS } from '../data/travelcards.js';
 import { POI } from '../data/pois.js';
 import { directionsUrl } from '../lib/maps.js';
-import { slotsForItem } from '../data/bookings.js';
+import { slotsForItem, walletSlots } from '../data/bookings.js';
 import { slotChip } from './wallet.js';
+import { LEGS } from '../data/legs.js';
+import { HOTEL_OF } from '../data/hotels.js';
+import { PICKUP, DROPOFF } from '../data/drive.js';
+
+// 某一项该导航去哪：景点 → 球馆 → 开车段的目的地酒店 → 取车/还车点
+export function navTarget(state, day, it) {
+  if (!it) return null;
+  if (it.nav) return it.nav;
+  const poi = (it.pois || []).map((id) => POI[id]).find(Boolean);
+  if (poi) return { name: poi.name, q: poi.q };
+  if (it.game && GAMES[it.game]) { const a = POI[GAMES[it.game].arena]; if (a) return { name: a.name, q: a.q }; }
+  if (it.leg && choiceFor(state, it.leg) === 'car' && HOTEL_OF[day.city]) return { name: HOTEL_OF[day.city].zh, q: HOTEL_OF[day.city].addr };
+  if (it.drive === 'pickup' && PICKUP[state.rent]) return { name: '取车点', q: PICKUP[state.rent].q };
+  if (it.drive === 'dropoff') return { name: '还车点', q: DROPOFF.q };
+  return null;
+}
+
+// 现在 / 下一项的一句话：球赛写清对手和球馆，开车写清从哪到哪
+export function itemLine(state, it) {
+  if (it.game && GAMES[it.game]) { const G = GAMES[it.game]; const a = POI[G.arena]; return `${G.title}${a ? ' · ' + a.name : ''}`; }
+  if (it.leg && LEGS[it.leg]) return `${choiceFor(state, it.leg) === 'car' ? '开车' : '城际交通'}：${LEGS[it.leg].route}`;
+  return String(it.text || it.title || '').slice(0, 60);
+}
 
 // 今天模式：当前在做什么、下一项几点、去哪、订单、实时状态
 function todayCard(state, days, ctx) {
   const day = findToday(days, ctx.now);
   if (!day) return '';
-  const { current, next, minutes } = nowAndNext(day, ctx.now);
+  const { current, next, between, minutes } = nowAndNext(day, ctx.now);
   const w = weatherFor(ctx.weather, day.city, day);
   const al = alertFor(w);
-  const nextPoi = next && (next.it.pois || []).map((id) => POI[id]).find(Boolean);
+  // 导航：先找下一项及其后两项，再退回到正在进行的那一项
+  const ahead = next ? day.items.slice(next.i, next.i + 3) : [];
+  const go = ahead.map((it) => navTarget(state, day, it)).find(Boolean) || navTarget(state, day, current && current.it);
   const slots = [...new Set(day.items.flatMap((it) => slotsForItem(it, state)))];
+  const slotTitle = Object.fromEntries(walletSlots(state).map((x) => [x.id, x.title.replace(/（.*?）/g, '').slice(0, 16)]));
   const leg = day.items.find((i) => i.leg);
   const status = [...(CITY_STATUS[day.city] || []), ...(leg ? LEG_STATUS[choiceFor(state, leg.leg)] || [] : [])];
-  const line = (x) => x ? `<b>${esc(x.it.t)}</b> ${esc((x.it.text || x.it.title || (x.it.leg ? (choiceFor(state, x.it.leg) === 'car' ? '开车' : '城际交通') : x.it.game ? '球赛' : '')).slice(0, 60))}` : '';
+  const line = (x) => x ? `<b>${esc(x.it.t)}</b> ${esc(itemLine(state, x.it))}` : '';
   return `<section class="card today2">
     <div class="card__h"><h2>今天 ${day.md} ${esc(day.wd)}</h2><span class="meta">${esc(CITIES[day.city].zh)}${w ? ` · ${codeLabel(w.code)} ${Math.round(w.hi)}°/${Math.round(w.lo)}°C` : ''}</span></div>
     <p class="today2__title">${esc(day.title)}</p>
     ${al ? `<p class="alert alert--${al.level}" role="alert"><b>天气提醒</b>${esc(al.text)}。室外项目改成室内：${esc(STORM[day.city] || '博物馆、图书馆、商场')}。出发前再看一次交通是否正常。</p>` : ''}
     <dl class="nownext">
       <div><dt>现在</dt><dd>${current ? line(current) : '今天还没开始'}</dd></div>
+      ${between.length ? `<div><dt>接着按顺序</dt><dd>${between.map((it) => `<b>${esc(it.t)}</b> ${esc(itemLine(state, it).slice(0, 24))}`).join('<br>')}</dd></div>` : ''}
       <div><dt>下一项${minutes != null ? ' · ' + fmtCountdown(minutes) : ''}</dt><dd>${next ? line(next) : '今天的安排都结束了'}</dd></div>
     </dl>
     <div class="btn-row">
-      ${nextPoi ? `<a class="btn btn--primary" href="${esc(directionsUrl(nextPoi.q, state.nav))}" target="_blank" rel="noopener">${icon('nav')}导航到 ${esc(nextPoi.name)}</a>` : ''}
+      ${go ? `<a class="btn btn--primary" href="${esc(directionsUrl(go.q, state.nav))}" target="_blank" rel="noopener">${icon('nav')}导航到 ${esc(go.name)}</a>` : ''}
       <a class="btn btn--secondary" href="#day-${day.id}">看全天行程</a>
       <a class="btn btn--secondary" href="#cards">英文大字卡</a>
     </div>
-    ${slots.length ? `<div class="buys"><span class="buys__label">今天要出示的订单</span><div class="buys__list">${slots.map((id) => slotChip(state, id)).join('')}</div></div>` : ''}
+    ${slots.length ? `<div class="buys"><span class="buys__label">今天要出示的订单</span><div class="buys__list">${slots.map((id) => slotChip(state, id, slotTitle[id])).join('')}</div></div>` : ''}
     ${status.length ? `<div class="buys"><span class="buys__label">实时状态</span><div class="buys__list">${status.map((l) => ext(l.label, l.url)).join('')}</div></div>` : ''}
   </section>`;
 }
@@ -68,8 +95,10 @@ export function renderHome(state, ctx = { now: new Date(), weather: null }) {
   else when = ['14', '天行程已结束'];
 
 
+  const today = todayCard(state, days, ctx);
   return `
-  <section class="hero">
+  ${today}
+  <section class="hero${today ? ' hero--during' : ''}">
     <div>
       <h1 class="hero__h1">两人 14 天美东圣诞篮球行</h1>
       <p class="hero__lead">${heroLead(state)}</p>
@@ -80,8 +109,6 @@ export function renderHome(state, ctx = { now: new Date(), weather: null }) {
       <div class="fact"><span class="fact__n">${usd(total)}</span><span class="fact__l">两人预算${state.budget.flights ? '' : '，未含机票'}</span></div>
     </div>
   </section>
-
-  ${todayCard(state, days, ctx)}
 
   <section class="grid2">
     <div class="m-nolift card next">

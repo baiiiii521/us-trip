@@ -1,4 +1,4 @@
-// NBA 比赛。时间来自转售网站与 NBA 官方圣诞赛程（2026-11-05 查询）
+// NBA 比赛。日期、主客场、开球时间（美东时间）2026-11-14 按 ESPN 各队赛程页逐场核对过；出发前 48 小时用 NBA App 再看一次
 const enc = encodeURIComponent;
 const tmSearch = (q) => 'https://www.ticketmaster.com/search?q=' + enc(q);
 const shSearch = (q) => 'https://www.stubhub.com/search?q=' + enc(q);
@@ -41,7 +41,7 @@ export const GAMES = {
     vv: 'https://www.vividseats.com/brooklyn-nets-tickets--sports-nba-basketball/performer/29773'
   },
   nyk27: {
-    date: '12/27', wd: '周日', time: '待定', title: '尼克斯 vs 篮网', arena: 'msg', price: '德比偏贵', est: 0,
+    date: '12/27', wd: '周日', time: '18:00', title: '尼克斯 vs 篮网', arena: 'msg', price: '德比偏贵', est: 0,
     team: 'new-york-knicks', official: 'https://www.nba.com/knicks/schedule',
     tm: tmSearch('New York Knicks Brooklyn Nets'), tp: 'https://www.tickpick.com/nba/new-york-knicks-tickets/',
     sh: shSearch('New York Knicks Brooklyn Nets'),

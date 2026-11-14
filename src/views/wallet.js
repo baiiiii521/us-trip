@@ -20,11 +20,13 @@ export function walletProgress(state) {
   return { filled, total: slots.length };
 }
 
-export function slotChip(state, id) {
+// label：同一处出现好几个格子时，写清是哪一张（例如“今天要出示的订单”）
+export function slotChip(state, id, label = '') {
   const w = walletOf(state, id);
   const n = (walletFiles.map[id] || []).length;
   const has = (w && w.code) || n;
-  return `<a class="wchip${has ? ' is-on' : ''}" href="#order-${esc(id)}">${icon(has ? 'check' : 'ticket')}${has ? `订单 ${esc((w && w.code) || n + ' 个附件')}` : '存订单号'}</a>`;
+  const pre = label ? `${esc(label)} · ` : '';
+  return `<a class="wchip${has ? ' is-on' : ''}" href="#order-${esc(id)}">${icon(has ? 'check' : 'ticket')}${pre}${has ? `订单 ${esc((w && w.code) || n + ' 个附件')}` : '存订单号'}</a>`;
 }
 
 export function renderWallet(state) {

@@ -7,9 +7,9 @@ export function dayStart(day) {
   return new Date(Number(TRIP.start.slice(0, 4)), m - 1, d);
 }
 
-// “09:30”→ 当天的 Date；“落地”“晚上”这类没有具体时间的返回 null
+// “09:30”“10:55 落地”“02:30 叫车”→ 当天的 Date；“落地”“晚上”“+2h”这类没有具体时间的返回 null
 export function itemTime(day, t) {
-  const m = /^(\d{1,2}):(\d{2})$/.exec(String(t || '').trim());
+  const m = /^(\d{1,2}):(\d{2})(?!\d)/.exec(String(t || '').trim());
   if (!m) return null;
   const base = dayStart(day);
   base.setHours(Number(m[1]), Number(m[2]), 0, 0);
@@ -19,11 +19,17 @@ export function itemTime(day, t) {
 }
 
 export function findToday(days, now) {
-  const key = `${now.getMonth() + 1}/${now.getDate()}`;
-  return days.find((d) => {
+  const year = Number(TRIP.start.slice(0, 4));
+  const byDate = (t) => days.find((d) => {
     const [m, dd] = d.md.split('/').map(Number);
-    return `${m}/${dd}` === key && now.getFullYear() === Number(TRIP.start.slice(0, 4));
+    return m === t.getMonth() + 1 && dd === t.getDate() && t.getFullYear() === year;
   }) || null;
+  // 凌晨 0–5 点：前一天还有没做完的“凌晨”安排（例如 12/30 的 02:30 叫车），就仍算前一天
+  if (now.getHours() < 5) {
+    const prev = byDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1));
+    if (prev && prev.items.some((it) => { const at = itemTime(prev, it.t); return at && at >= now && at.getDate() === now.getDate(); })) return prev;
+  }
+  return byDate(now);
 }
 
 // 当前项和下一项（只看有具体时间的条目）
@@ -34,14 +40,19 @@ export function nowAndNext(day, now) {
     if (x.at <= now) current = x;
     else { next = x; break; }
   }
-  return { current, next, minutes: next ? Math.round((next.at - now) / 60000) : null };
+  // 现在和下一项之间没写具体时间的安排（“落地”“午后”），按顺序列出来，免得看漏
+  const from = current ? current.i + 1 : 0, to = next ? next.i : day.items.length;
+  const between = current ? day.items.slice(from, to).filter((it) => !itemTime(day, it.t)) : [];
+  return { current, next, between, minutes: next ? Math.round((next.at - now) / 60000) : null };
 }
 
-// 今天需要准点的事（城际交通、球赛），用于提醒
+// 今天需要准点的事，用于提醒：城际交通、球赛、取车、航班（起飞、叫车去机场、到柜台）
+const FLIGHT_RE = /起飞|叫车|到柜台/;
 export function keyEvents(day) {
   return day.items
     .map((it) => ({ it, at: itemTime(day, it.t) }))
-    .filter((x) => x.at && (x.it.leg || x.it.game));
+    .filter((x) => x.at && (x.it.leg || x.it.game || x.it.drive || FLIGHT_RE.test(String(x.it.t))))
+    .map((x) => ({ ...x, kind: x.it.leg ? 'leg' : x.it.game ? 'game' : x.it.drive ? 'drive' : 'flight' }));
 }
 
 export function fmtCountdown(min) {

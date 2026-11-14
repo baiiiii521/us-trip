@@ -61,6 +61,7 @@ export function walletSlots(state) {
 // 某天、某个条目对应哪些订单格子
 export function slotsForItem(it, state) {
   const ids = [];
+  if (it.slot) ids.push(it.slot);
   if (it.drive) ids.push('car-rental');
   if (it.leg) ids.push(state && isDriveLeg(state, it.leg) ? 'car-rental' : 'leg-' + it.leg);
   if (it.game && it.game !== 'nyk25') ids.push('game-' + it.game);

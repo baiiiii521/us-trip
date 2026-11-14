@@ -5,6 +5,10 @@ import { TRIP } from './trip.js';
 import { stayText, HOTEL_OF } from './hotels.js';
 import { DRIVES, PICKUP, DROPOFF } from './drive.js';
 
+// 去机场的导航目的地（今天模式的“导航到”按钮用）
+const EWR_C = { name: '纽瓦克机场 C 航站楼', q: 'Newark Liberty International Airport Terminal C, Newark, NJ' };
+const LAX_T7 = { name: '洛杉矶机场 T7', q: 'LAX Terminal 7, Los Angeles, CA' };
+
 // 已订酒店的“最后一公里”提示，前面注明最近的地铁站
 const T = {
   bos: '橙线 Massachusetts Ave 站（走 8 分钟）',
@@ -23,7 +27,7 @@ export function buildDays(state) {
     days.push({
       id: '1218', md: '12/18', wd: '周五', city: 'bos', from: 'nyc', title: '落地取车，开去波士顿',
       items: [
-        { t: '10:55 落地', text: 'MF849 从福州 09:20 起飞，JFK T4 10:55 落地。前一段是 12/17 13:45 郑州 CGO T2（MF8280），福州跨夜中转 17h25m，行李要在福州取出来重新托运。入境排队 1.5–2 小时，食品如实申报。' },
+        { t: '10:55 落地', slot: 'flight-in', text: 'MF849 从福州 09:20 起飞，JFK T4 10:55 落地。前一段是 12/17 13:45 郑州 CGO T2（MF8280），福州跨夜中转 17h25m，行李要在福州取出来重新托运。入境排队 1.5–2 小时，食品如实申报。' },
         { t: '12:45', text: '出关后先别急着上路：到达层吃点东西、买咖啡，手机连上 eSIM，把导航目的地设成波士顿酒店。' },
         { t: '13:15 取车', drive: 'pickup', text: `${PICKUP.jfk.how} 准备好驾照原件 + 翻译件、护照、主驾驶的信用卡；两人都登记为驾驶员，确认含过路费电子收费服务。取车时绕车拍一圈视频。` },
         { t: '14:00', leg: 's1' },
@@ -37,7 +41,7 @@ export function buildDays(state) {
     days.push({
       id: '1218', md: '12/18', wd: '周五', city: 'bos', from: 'nyc', title: '落地，直奔波士顿',
       items: [
-        { t: '10:55 落地', text: 'MF849 从福州 09:20 起飞，JFK T4 10:55 落地。前一段是 12/17 13:45 郑州 CGO T2（MF8280），福州跨夜中转 17h25m，行李要在福州取出来重新托运。入境排队 1.5–2 小时，食品如实申报。' },
+        { t: '10:55 落地', slot: 'flight-in', text: 'MF849 从福州 09:20 起飞，JFK T4 10:55 落地。前一段是 12/17 13:45 郑州 CGO T2（MF8280），福州跨夜中转 17h25m，行李要在福州取出来重新托运。入境排队 1.5–2 小时，食品如实申报。' },
         { t: '+2h', text: 'AirTrain 到 Jamaica，换长岛铁路 LIRR 到 Penn Station。AirTrain 约 $8.75，LIRR 市内票 $5.25–7.25，刷卡进出。', pois: ['moynihan'] },
         { t: '+3h', leg: 's1' },
         { t: '到站', text: 'South Station 到酒店（811 Massachusetts Ave，South End 边上）约 2 英里：带行李直接打车 10 分钟（$12–15）；想省钱就走到 Downtown Crossing 坐橙线两站到 Massachusetts Ave，再走 8 分钟。', pois: ['south-station'] },
@@ -225,7 +229,7 @@ export function buildDays(state) {
       { t: '15:30', text: '（可选）Summit One Vanderbilt 看日落（16:30）。', pois: ['summit'], buy: ['summit'] },
       { t: '18:00', text: '中央车站：耳语廊、星空天花。', pois: ['grand-central'] },
       { t: '19:30', text: '时代广场夜景，然后 2/3 或 N/Q/R 回布鲁克林。', pois: ['times-square'] },
-      { t: '可选', game: 'nyk27', text: '加看一场：尼克斯 vs 篮网，开球时间以 NBA App 为准，德比票价偏高。' }
+      { t: '可选', game: 'nyk27', text: '加看一场：尼克斯 vs 篮网，18:00 开球（麦迪逊广场花园，17:00 开门），德比票价偏高。去看球就把 18:00 中央车站提到 15:30（跳过 Summit），时代广场改到散场后，从球馆步行约 10 分钟。' }
     ],
     tips: ['大都会周三和 12/25 闭馆，只能排在这天前后的周日、周一、周二。', '时代广场人偶合影要给钱。'],
     stay: nycHotel
@@ -266,7 +270,7 @@ export function buildDays(state) {
       { t: '12:00', text: '第五大道 NBA Store：篮球之旅的纪念品，购物只排这天。', pois: ['nba-store'] },
       { t: '14:00', text: '最后一顿网红小吃：Levain 曲奇、Joe\'s Pizza。' },
       { t: '18:00', text: '回公寓取行李。' },
-      { t: '19:00', text: 'NJ Transit 从 Penn Station 到 Newark Airport 站，换 AirTrain 到航站楼，约 $16.80/人（票里含 AirTrain 费）。', buy: ['njt', 'booking', 'trip'], pois: ['moynihan'] }
+      { t: '19:00', nav: { name: '纽瓦克机场', q: 'Newark Liberty International Airport, Newark, NJ' }, text: 'NJ Transit 从 Penn Station 到 Newark Airport 站，换 AirTrain 到航站楼，约 $16.80/人（票里含 AirTrain 费）。', buy: ['njt', 'booking', 'trip'], pois: ['moynihan'] }
     ] : [
       { t: '上午', text: '不用退房：公寓订到 12/31，行李留在房间里，今天照常玩。' },
       { t: '11:00', text: '时代广场：往年 12/30 上午有跨年彩纸“试飞”。', pois: ['times-square'] },
@@ -274,7 +278,7 @@ export function buildDays(state) {
       { t: '14:00', text: '最后一顿网红小吃：Levain 曲奇、Joe\'s Pizza。' },
       { t: '16:00', text: '回布鲁克林，收拾行李、把护照和充电宝放随身包。' },
       { t: '21:00', text: '早睡。04:00 前要到纽瓦克机场，等于半夜出发。' },
-      { t: '02:30 叫车', text: 'UA2434 06:00 从纽瓦克 C 航站楼起飞，布鲁克林打车过去约 40–50 分钟。夜里 NJ Transit 班次很稀，别赌地铁；提前一晚在叫车 App 里预约 02:30 的车（跨夜车费大约 $100–130）。' }
+      { t: '02:30 叫车', nav: EWR_C, slot: 'flight-lax', text: 'UA2434 06:00 从纽瓦克 C 航站楼起飞，布鲁克林打车过去约 40–50 分钟。夜里 NJ Transit 班次很稀，别赌地铁；提前一晚在叫车 App 里预约 02:30 的车（跨夜车费大约 $100–130）。' }
     ],
     tips: state.opts.ewr
       ? ['大都会周三闭馆，别挪到这天。', '住机场酒店：晚饭后就动身，NJ Transit 末班在午夜前后；酒店通常有免费接驳，入住时问清楚次日航站楼接驳时间。']
@@ -285,12 +289,12 @@ export function buildDays(state) {
   days.push({
     id: '1231', md: '12/31', wd: '周四', city: 'la', from: 'nyc', title: '转机半天：圣莫尼卡到威尼斯',
     items: [
-      { t: '06:00 起飞', text: 'UA2434 纽瓦克 C 航站楼 06:00 → 洛杉矶 T7 09:12。这两段是同一张票，行李只托运到洛杉矶，落地要取出来。' },
+      { t: '06:00 起飞', nav: EWR_C, slot: 'flight-lax', text: 'UA2434 纽瓦克 C 航站楼 06:00 → 洛杉矶 T7 09:12。这两段是同一张票，行李只托运到洛杉矶，落地要取出来。' },
       { t: '落地', text: '免费接驳车到 LAX/Metro 交通中心 → K 线北行 → Expo/Crenshaw 换 E 线西行 → Downtown Santa Monica，约 60–75 分钟，$1.75。', pois: ['lax-transit'], buy: ['lametro'] },
       { t: '+1.5h', text: '圣莫尼卡用 App 预约行李寄存。', buy: ['bounce', 'lh'] },
       { t: '午后', text: '圣莫尼卡码头 → 沿海滩步道走到威尼斯海滩（约 3 公里）→ 威尼斯运河。', pois: ['santa-monica-pier', 'venice-beach', 'venice-canals'] },
-      { t: '起飞前 5h', text: '取行李回机场：E 线 → K 线 → 接驳车，或打车约 $30–45。12/31 傍晚路况差。' },
-      { t: '20:35 到柜台', text: 'UA771 洛杉矶 T7 23:35 起飞，01/02 06:35 到北京首都 T3（票面只印 06:35，跨 2 天）。国际柜台起飞前 3 小时开。' }
+      { t: '起飞前 5h', nav: LAX_T7, text: '取行李回机场：E 线 → K 线 → 接驳车，或打车约 $30–45。12/31 傍晚路况差。' },
+      { t: '20:35 到柜台', nav: LAX_T7, slot: 'flight-home', text: 'UA771 洛杉矶 T7 23:35 起飞，01/02 06:35 到北京首都 T3（票面只印 06:35，跨 2 天）。国际柜台起飞前 3 小时开。' }
     ],
     tips: ['LAX 机场捷运最新目标 2027-01-06 才通，这次还是坐接驳车。', '跨年夜圣莫尼卡人多，看好手机和钱包。'],
     stay: '国际航班'

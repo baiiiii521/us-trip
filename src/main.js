@@ -248,8 +248,15 @@ function armReminders() {
   const events = [];
   for (const d of buildDays(state)) {
     for (const x of keyEvents(d)) {
-      const title = x.it.leg ? `${LEGS[x.it.leg].route}` : GAMES[x.it.game].title;
-      events.push({ at: x.at, title, body: x.it.leg ? (choiceFor(state, x.it.leg) === 'car' ? '看一眼天气和路况，油箱过半再上高速' : '带好订单号和证件，提前到车站') : '带好电子票和证件，注意包袋规定' });
+      const short = (s) => String(s || '').split(/[。：]/)[0].slice(0, 40);
+      const title = x.kind === 'leg' ? `${LEGS[x.it.leg].route}`
+        : x.kind === 'game' ? GAMES[x.it.game].title
+        : x.kind === 'drive' ? '取车' : `${d.md} ${x.it.t}`;
+      const body = x.kind === 'leg' ? (choiceFor(state, x.it.leg) === 'car' ? '看一眼天气和路况，油箱过半再上高速' : '带好订单号和证件，提前到车站')
+        : x.kind === 'game' ? '带好电子票和证件，注意包袋规定'
+        : x.kind === 'drive' ? '驾照原件 + 翻译件、护照、主驾驶信用卡'
+        : short(x.it.text) + '。护照、登机牌、充电宝放随身包';
+      events.push({ at: x.at, title, body });
     }
   }
   return scheduleReminders(events, now);

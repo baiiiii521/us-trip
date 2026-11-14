@@ -11,6 +11,7 @@ import { DEFAULTS, migrate, isDone, personName } from '../src/state.js';
 import { handle } from '../api/sync.js';
 import { scheduleReminders, notifyPermission } from '../src/lib/notify.js';
 import { pickMime } from '../src/lib/recap.js';
+import { renderHome } from '../src/views/home.js';
 
 const S = () => JSON.parse(JSON.stringify(DEFAULTS));
 
@@ -94,6 +95,48 @@ test('今天模式：按日期找到当天，再找当前项和下一项', () =>
   assert.equal(itemTime(d, '落地'), null);
   assert.equal(fmtCountdown(0), '马上'); assert.equal(fmtCountdown(45), '45 分钟后'); assert.equal(fmtCountdown(125), '2 小时 5 分钟后');
   assert.ok(keyEvents(findToday(days, new Date(2026, 11, 20))).length >= 1);
+});
+
+test('今天模式：带文字的时间也算数，凌晨叫车仍算前一天，航班有提醒', () => {
+  for (const rent of ['jfk', 'bos', 'none']) {
+    const st = S(); st.rent = rent;
+    const days = buildDays(st);
+    const d18 = findToday(days, new Date(2026, 11, 18, 11, 0));
+    assert.equal(nowAndNext(d18, new Date(2026, 11, 18, 11, 0)).current.it.t, '10:55 落地');
+    // 12/31 凌晨 01:30：12/30 的 02:30 叫车还没到，仍显示 12/30
+    const late = findToday(days, new Date(2026, 11, 31, 1, 30));
+    assert.equal(late.id, '1230');
+    assert.equal(nowAndNext(late, new Date(2026, 11, 31, 1, 30)).next.it.t, '02:30 叫车');
+    // 叫车过后就是 12/31，下一项是 06:00 起飞
+    const d31 = findToday(days, new Date(2026, 11, 31, 3, 0));
+    assert.equal(d31.id, '1231');
+    assert.equal(nowAndNext(d31, new Date(2026, 11, 31, 3, 0)).next.it.t, '06:00 起飞');
+    // 下午：没写具体时间的“落地”“午后”按顺序列出来
+    const mid = nowAndNext(d31, new Date(2026, 11, 31, 13, 0));
+    assert.ok(mid.between.some((it) => it.t === '午后'));
+    assert.equal(mid.next.it.t, '20:35 到柜台');
+    const kinds = keyEvents(d31).map((x) => x.kind);
+    assert.ok(kinds.includes('flight'));
+  }
+  const ewr = S(); ewr.opts.ewr = true;
+  assert.equal(findToday(buildDays(ewr), new Date(2026, 11, 31, 1, 30)).id, '1231');
+  assert.equal(itemTime({ md: '12/31' }, '+1.5h'), null);
+  assert.equal(itemTime({ md: '12/31' }, '起飞前 5h'), null);
+});
+
+test('今天模式：导航按钮指向景点、球馆、开车目的地酒店、机场', () => {
+  const st = S(); st.rent = 'jfk';
+  const days = buildDays(st);
+  const html = (at) => renderHome(st, { now: at, weather: null });
+  assert.match(html(new Date(2026, 11, 18, 14, 30)), /导航到 克罗斯敦中心欢朋酒店/);
+  assert.match(html(new Date(2026, 11, 20, 19, 15)), /导航到 TD Garden/);
+  assert.match(html(new Date(2026, 11, 20, 19, 15)), /凯尔特人 vs 活塞 · TD Garden/);
+  assert.match(html(new Date(2026, 11, 30, 23, 0)), /导航到 纽瓦克机场 C 航站楼/);
+  assert.match(html(new Date(2026, 11, 31, 19, 0)), /导航到 洛杉矶机场 T7/);
+  // 行程中“今天”卡片排在最上面；出发前没有这张卡片
+  assert.ok(html(new Date(2026, 11, 22, 9, 0)).trim().startsWith('<section class="card today2"'));
+  assert.ok(!html(new Date(2026, 10, 14, 9, 0)).includes('today2'));
+  assert.ok(days.length === 14);
 });
 
 test('天气预案：大雪、小雪、大雨、严寒才提醒', () => {
