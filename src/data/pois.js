@@ -344,6 +344,22 @@ export const POIS = [
     tip: '按规则不购物，看橱窗就好。'
   },
   {
+    id: 'lotte-palace', city: 'nyc', cat: 'sight', name: '乐天纽约皇宫酒店中庭', en: 'Lotte New York Palace',
+    wiki: 'Lotte_New_York_Palace_Hotel', q: 'Lotte New York Palace, 455 Madison Ave, New York, NY',
+    tag: '镀金年代豪宅的圣诞中庭',
+    intro: '1880 年代的维拉德宅邸改成的酒店，从麦迪逊大道 50 街一侧的铁门进去就是带拱廊的中庭，12 月有大型圣诞布置，免费进去看。',
+    open: '中庭全天开放（以酒店当天安排为准）', ticket: '免费', stay: '约 15 分钟', transit: 'E/M 线 5 Av/53 St 或 6 号线 51 St',
+    tip: '正对圣帕特里克大教堂的背面，看完过马路就是第五大道。'
+  },
+  {
+    id: 'plaza-hotel', city: 'nyc', cat: 'sight', name: '广场酒店', en: 'The Plaza',
+    wiki: 'Plaza_Hotel', q: 'The Plaza, 768 5th Ave, New York, NY',
+    tag: '《小鬼当家 2》里的那家酒店',
+    intro: '1907 年开业的法式城堡风格酒店，在第五大道和中央公园东南角。大堂每年有圣诞布置，门口就是中央公园和马车。',
+    open: '大堂对外开放，人多时可能限流', ticket: '免费', stay: '约 20 分钟', transit: 'N/R/W 线 5 Av/59 St',
+    tip: '平安夜晚上人多，大堂看不进去就在门口喷泉广场拍照。'
+  },
+  {
     id: 'central-park', city: 'nyc', cat: 'sight', name: '中央公园 · 贝塞斯达喷泉', en: 'Bethesda Terrace, Central Park',
     wiki: 'Bethesda_Terrace_and_Fountain', q: 'Bethesda Terrace, Central Park, New York, NY',
     tag: '电影里最常见的那座喷泉',
