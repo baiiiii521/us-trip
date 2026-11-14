@@ -14,6 +14,7 @@ export const ROUTES = [
 // 不在导航栏里的页面：标题 + 点亮哪个导航项
 export const SUBPAGES = {
   drive: { label: '自驾', parent: 'tickets' },
+  vault: { label: '证件和订单', parent: 'more' },
   wallet: { label: '订单夹', parent: 'more' },
   cards: { label: '英文大字卡', parent: 'more' },
   memories: { label: '回忆', parent: 'more' },

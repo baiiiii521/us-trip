@@ -32,6 +32,8 @@ import { renderInfo, infoUi } from './views/info.js';
 import { renderMoney, moneyUi } from './views/money.js';
 import { renderMore, moreUi } from './views/more.js';
 import { renderDrive } from './views/drive.js';
+import { renderVault, vaultUi, lockVault, vaultFileUrl } from './views/vault.js';
+import { unlockVault } from './lib/vault.js';
 import { renderWallet, slotSheetHtml, walletFiles, loadWalletFiles } from './views/wallet.js';
 import { renderCards, cardsUi, hotelSheetHtml, bigCardHtml } from './views/cards.js';
 import { renderMemories, memUi, loadMemories } from './views/memories.js';
@@ -51,7 +53,7 @@ const POI_FILES = Object.fromEntries(POIS.filter((x) => x.wiki && x.photoFile).m
 
 const VIEWS = {
   home: renderHome, days: renderDays, guide: renderGuide, tickets: renderTickets, money: renderMoney, more: renderMore,
-  wallet: renderWallet, cards: renderCards, memories: renderMemories, info: renderInfo, drive: renderDrive
+  wallet: renderWallet, cards: renderCards, memories: renderMemories, info: renderInfo, drive: renderDrive, vault: renderVault
 };
 const TITLES = { ...Object.fromEntries(ROUTES.map((r) => [r.id, r.label])), ...Object.fromEntries(Object.entries(SUBPAGES).map(([k, v]) => [k, v.label])) };
 
@@ -266,6 +268,7 @@ const ACTIONS = {
     await copyText(el.dataset.text);
     const ic = el.querySelector('.ic');
     const label = el.querySelector('span');
+    const oldLabel = label ? label.textContent : '';
     if (!ic) return;
     const old = ic.outerHTML;
     ic.outerHTML = icon('check');
@@ -274,7 +277,7 @@ const ACTIONS = {
     setTimeout(() => {
       const cur = el.querySelector('.ic'); if (cur) cur.outerHTML = old;
       el.removeAttribute('data-copied');
-      if (label) label.textContent = '复制地址';
+      if (label) label.textContent = oldLabel;
     }, 1600);
   },
   set: (el) => {
@@ -346,6 +349,8 @@ const ACTIONS = {
     await warmUrls(urls, (p) => { moreUi.warm = p; if (Math.round(p * 20) % 2 === 0) rerender(); });
     moreUi.busy = ''; rerender(); toast(`已下载 ${urls.length} 张景点照片`);
   },
+  'vault-lock': () => { lockVault(); rerender(); toast('已锁上'); },
+  'vault-file': (el) => { if (vaultUi.data) window.open(vaultFileUrl(Number(el.dataset.i)), '_blank'); },
   'preview-clear': () => { update((s) => { s.local.preview = ''; }); toast('已回到真实时间'); },
 
   'share-make': async () => { moreUi.share = await encodeShare(syncDoc(getState())); rerender(); },
@@ -459,6 +464,15 @@ const FORMS = {
     update((s) => { s.wallet[id] = { code: val(f, 'code'), note: val(f, 'note'), u: stamp() }; });
     closeSheet(); toast('订单已保存');
   },
+  vault: async (f) => {
+    const pin = val(f, 'pin');
+    vaultUi.busy = true; vaultUi.err = ''; rerender();
+    try {
+      const r = await unlockVault(pin);
+      Object.assign(vaultUi, { data: r.data, from: r.from, at: r.at, err: '' });
+    } catch (e) { vaultUi.err = e.message; }
+    vaultUi.busy = false; rerender();
+  },
   preview: (f) => { update((s) => { s.local.preview = val(f, 'at'); }); toast(val(f, 'at') ? '预览模式已开' : '已回到真实时间'); },
   cloud: async (f) => {
     const room = val(f, 'room'), pass = val(f, 'pass');
@@ -529,6 +543,13 @@ document.addEventListener('change', async (e) => {
 
 subscribe(() => { render({ keepScroll: true }); armReminders(); });
 window.addEventListener('hashchange', onRoute);
+
+// 证件和订单：切到后台超过 5 分钟自动锁上
+let hiddenAt = 0;
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { hiddenAt = Date.now(); return; }
+  if (vaultUi.data && hiddenAt && Date.now() - hiddenAt > 5 * 60000) { lockVault(); if (route === 'vault') rerender(); }
+});
 
 // 日期条跟随滚动高亮
 let stripRaf;

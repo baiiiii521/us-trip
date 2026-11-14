@@ -20,7 +20,7 @@ export function walletSlots(state) {
   const o = state.opts;
   const s = [];
   s.push({ id: 'doc-passport', group: 'doc', md: null, title: '两人护照首页和签证页', hint: '拍照存在这里，丢失补办时要用' });
-  s.push({ id: 'doc-itinerary', group: 'doc', md: null, title: '入境用英文行程单（PDF）', hint: '电脑上 npm run itinerary 生成，附件存在这里' });
+  s.push({ id: 'doc-itinerary', group: 'doc', md: null, title: '入境用英文行程单（PDF）', hint: '已放在“证件和订单”（需密码）；也可以在这里再存一份' });
   s.push({ id: 'doc-evus', group: 'doc', md: null, title: 'EVUS 登记确认', hint: '登记号、有效期', vendors: ['evus'] });
   if (o.ins) s.push({ id: 'doc-ins', group: 'doc', md: null, title: '旅行保险保单', hint: '保单号、紧急援助电话' });
   s.push({ id: 'flight-in', group: 'flight', md: '12/18', title: '郑州 → 纽约 JFK（MF8280 / MF849）', hint: '订单号、座位、福州重新托运（订单号只存在这台手机里）' });

@@ -27,7 +27,7 @@ function flightCard(f) {
     <ol class="fl__segs">${segs}</ol>
     ${f.note ? `<p class="fl__note">${esc(f.note)}</p>` : ''}
     <p class="fl__meta">${esc(f.airline)} · ${esc(f.cabin)}</p>
-    <p class="fl__meta">${esc(f.record)}</p>
+    <p class="fl__meta">订单号、PNR、票号：<a class="link" href="#vault">证件和订单（需密码）</a></p>
     <p class="fl__meta">行李：${esc(f.bags)}</p>
   </article>`;
 }
@@ -132,7 +132,7 @@ export function renderTickets(state) {
   <section class="sec" id="tk-hotels">
     <div class="sec__h"><h2>住宿</h2><span class="meta">${HOTELS.filter((h) => h.status === '已订').length} 处全部已订</span></div>
     <div class="hotels">${HOTELS.map((h) => hotelCard(h, state)).join('')}</div>
-    <p class="note">前三家是携程「在线付（含税费）」订单，金额按每晚房价换算，以订单为准；纽约公寓房价还没填，先按 $90/晚估算，可以在“花费 → 预算”里改。房号和门禁信息请填在订单夹里，不放在公开网页上。</p>
+    <p class="note">前三家是携程「在线付（含税费）」订单，金额按每晚房价换算，以订单为准；纽约公寓房价还没填，先按 $90/晚估算，可以在“花费 → 预算”里改。确认号和公寓房号在<a class="link" href="#vault">证件和订单（需密码）</a>里。</p>
     <div class="btn-row"><button type="button" class="btn btn--secondary btn--sm" data-action="budget-actual">${icon('check')}把预算里的房价改成订单价</button></div>
   </section>
 

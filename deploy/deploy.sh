@@ -19,7 +19,12 @@ ONLY_SV=0
 echo "== 1/6 测试"
 npm test 2>&1 | tail -5
 
-echo "== 2/6 构建"
+echo "== 2/6 构建（含证件和订单保险箱：private/ 里的个人信息加密后只传服务器数据目录）"
+if [[ -f private/itinerary.json ]]; then
+  CHROME_PATH="${CHROME_PATH:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}" OUT_DIR=private/files node scripts/itinerary-pdf.mjs >/dev/null 2>&1 || echo "   行程单 PDF 没生成（找不到 Chrome？），保险箱里先不带 PDF"
+  rm -f private/files/US-Itinerary-2026-12.html
+  node scripts/build-vault.mjs
+fi
 npm run build:single 2>&1 | tail -3
 cp deploy/robots.txt dist/robots.txt
 [[ -f dist/index.html ]] || { echo "构建产物缺失"; exit 1; }
@@ -27,6 +32,10 @@ cp deploy/robots.txt dist/robots.txt
 echo "== 3/6 发到硅谷"
 rsync -az --delete dist/ "$SV":/tmp/us-trip-dist/
 scp -q deploy/sync-server.mjs deploy/us-trip-sync.service deploy/nginx-us-trip.conf "$SV":/tmp/
+if [[ -f private/vault.enc.json ]]; then
+  scp -q private/vault.enc.json "$SV":/tmp/vault.enc.json
+  ssh "$SV" 'sudo mkdir -p /var/lib/us-trip-sync && sudo install -m 600 -o www-data -g www-data /tmp/vault.enc.json /var/lib/us-trip-sync/vault.enc.json && rm -f /tmp/vault.enc.json && echo "   保险箱密文已更新"'
+fi
 ssh "$SV" '
 set -e
 sudo mkdir -p /var/www/us-trip /opt/us-trip-sync
@@ -71,6 +80,9 @@ for host in 43.153.33.188 49.233.168.199; do
   if [[ "$LOCAL_HASH" == "$live" ]]; then echo "  一致 $LOCAL_HASH"; else echo "  !! 不一致 本地=$LOCAL_HASH 线上=$live"; exit 1; fi
   printf "%-15s " ""
   curl -s --max-time 30 --resolve trip.byb521.com:443:$host -o /dev/null -w "api/sync GET=%{http_code}\n" "https://trip.byb521.com/api/sync?id=$ID"
+  printf "%-15s " ""
+  # 用格式不对的证明探活：400 = 保险箱服务在线（不计入错误次数）
+  curl -s --max-time 30 --resolve trip.byb521.com:443:$host -o /dev/null -w "api/vault=%{http_code}（400 正常）\n" -X POST -H 'Content-Type: application/json' -d '{"proof":"x"}' https://trip.byb521.com/api/vault
 done
 
 echo "完成：https://trip.byb521.com"

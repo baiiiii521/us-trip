@@ -6,7 +6,7 @@
 - 仓库：https://github.com/baiiiii521/us-trip（私有，main 分支）
 - 线上：https://trip.byb521.com （硅谷 43.153.33.188 是主入口，49.233.168.199 是国内节点，两条线路内容一致；HTTPS 证书到 2027-02-03）
 - 用途：2 人，2026-12-18 至 12-31，波士顿 → 华盛顿 → 费城 → 纽约 → 洛杉矶，看 NBA 圣诞球赛。移动端优先，旅途中用。
-- 技术：Vite 6 原生 JS 单页应用，哈希路由，无框架。测试：`npm test`（node:test，65 项）。构建：`npm run build`。单文件版：`npm run build:single`。
+- 技术：Vite 6 原生 JS 单页应用，哈希路由，无框架。测试：`npm test`（node:test，66 项）。构建：`npm run build`。单文件版：`npm run build:single`。
 
 ## 目录
 - `src/data/`：行程（days.js 的 buildDays(state)）、景点 pois.js（66 个）、球赛 games.js、机票 flights.js、住宿 hotels.js、交通 legs.js、路线几何 map-geo.js、订单格子 bookings.js、大字卡 travelcards.js
@@ -19,6 +19,7 @@
 - `video/`：介绍视频源码（huashu 流程）；`video/out/` 不在 git 里
 
 ## 必须遵守
+- **证件和订单（#vault，查询密码在 private/itinerary.json 的 pin）**：护照号、PNR、票号、酒店确认号、公寓房号、行程单 PDF 由 `scripts/build-vault.mjs` 加密成 `private/vault.enc.json`，`deploy/deploy.sh` 把它传到硅谷 `/var/lib/us-trip-sync/vault.enc.json`（不在网站目录）。`/api/vault` 只比对密码证明并限速（同 IP 15 分钟 5 次、全站 1 小时 20 次）。手机本机只缓存密文。附件放 `private/files/`。
 - **提交前跑 `git status`，新建的文件要 `git add`。** 2026-11-07 那次提交漏了 flights.js、hotels.js、map-geo.js（原因：.gitignore 的 `data/` 把 src/data/ 也忽略了，已改成 `/data/`），GitHub 上的 main 一度无法构建（11-14 已重建，flights/hotels 的人民币金额是按房价换算的约数，以携程订单为准）。
 - **个人信息不进仓库、不进 public/。** 护照号、PNR、票号、订单号、邮箱、公寓房号放在 `private/itinerary.json`（已 gitignore，格式见 `private/itinerary.example.json`）。`tests/drive.test.js` 会扫描 src/、public/、scripts/，发现这些号码就失败。生成的行程单 PDF 只存在电脑和订单夹，不放网站。
 - 交通（2026-11-14 起）：默认 `state.rent = 'jfk'`——12/18 JFK 取车、12/24 回纽约 JFK 还车，四段城际全自驾；`bos`=12/18 坐火车、12/21 波士顿取车；`none`=原来的火车/大巴。自驾数据在 `src/data/drive.js`，页面在 `#drive`。纽约住 AVA Fort Greene（343 Gold St, Brooklyn），房号只放订单夹。

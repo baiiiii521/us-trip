@@ -195,3 +195,13 @@ dialog.sheet.sheet--big { margin: 0; max-width: none; width: 100vw; height: 100d
 .more-links { margin-top: var(--s-2); }
 .more-links > summary { cursor: pointer; font-size: var(--t-small); color: var(--muted); padding: var(--s-2) 0; min-height: 36px; }
 .more-links[open] > summary { margin-bottom: var(--s-2); }
+
+/* 证件和订单 */
+.vault .form { max-width: 360px; }
+.vault input[name="pin"] { font-family: var(--f-mono); font-size: 24px; letter-spacing: .3em; }
+.vlist { list-style: none; margin: 0; padding: 0; }
+.vrow { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) 0; border-bottom: 1px solid var(--line); }
+.vrow:last-child { border-bottom: 0; }
+.vrow__main { display: grid; gap: 2px; flex: 1; min-width: 0; }
+.vrow__main b { font-size: 17px; overflow-wrap: anywhere; }
+.vrow__main small { color: var(--muted); font-size: var(--t-label); line-height: 1.5; }
