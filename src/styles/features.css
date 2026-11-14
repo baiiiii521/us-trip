@@ -262,3 +262,6 @@ details.tbox[open] > summary::after { transform: rotate(-135deg) translateY(-2px
 .today2 .nownext dt::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); flex: none; }
 .today2 .nownext .is-next dt::before { background: var(--accent); }
 .today2 .nownext .is-next dd { font-weight: 600; }
+/* 今天卡片里各行标题统一：15px 中等字重，比卡片标题轻、比小标签重 */
+.today2 .tbox h3, .today2 details.tbox > summary h3, .today2 .tbox--link h3 { font-size: 15px; font-weight: 600; color: var(--ink); white-space: nowrap; flex: none; }
+.today2 .tbox--link .tbox__st { white-space: normal; line-height: 1.45; }
