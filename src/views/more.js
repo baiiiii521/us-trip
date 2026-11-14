@@ -28,6 +28,7 @@ export function renderMore(state) {
 
   <section class="card">
     <div class="mlist">
+      ${state.rent !== 'none' ? entry('#drive', '自驾', '租车、每段路线、停车、过路费、加油和驾驶规则', 'car') : ''}
       ${entry('#wallet', '订单夹', `确认号、座位、截图，已填 ${wp.filled}/${wp.total}`, 'ticket')}
       ${entry('#cards', '英文大字卡', '给司机、前台、服务员看的地址和句子', 'bus')}
       ${entry('#memories', '回忆', '导入照片，按天整理，生成回忆视频和每日分享卡', 'sun')}
@@ -37,8 +38,8 @@ export function renderMore(state) {
 
   <section class="card">
     <div class="card__h"><h2>入境用行程单</h2><span class="meta">英文 · A4 两页</span></div>
-    <p class="note">给边检看的英文行程单：旅客证件、进出境航班、酒店地址和逐日安排，都在两页里。出发前一周再生成一次，把最新的酒店和航班带上。</p>
-    <div class="btn-row"><a class="btn btn--secondary" href="US-Itinerary-2026-12.pdf" target="_blank" rel="noopener">打开 PDF</a></div>
+    <p class="note">给边检看的英文行程单：旅客证件、进出境航班、住宿地址、租车和逐日安排。它含护照号和订单号，所以不放在网站上：在电脑上运行 <code>npm run itinerary</code> 生成，再把 PDF 存进订单夹，没网也能打开。</p>
+    <div class="btn-row"><a class="btn btn--secondary" href="#order-doc-itinerary">存进订单夹</a></div>
   </section>
 
   <section class="card">

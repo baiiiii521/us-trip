@@ -1,23 +1,27 @@
-// 生成给边检看的行程单 PDF（英文，A4 两页）。
+// 生成给边检看的行程单 PDF（英文，A4 两页）。内容必须和真实行程一致：边检问到住哪、怎么走，回答和单子对得上最重要。
 // 数据来自站内数据文件（flights.js / hotels.js），但一律翻成英文——边检只读英文。
+// 护照号、PNR、票号、联系邮箱、公寓房号属于个人信息，放在 private/itinerary.json（不进 git、不上网站），
+// 格式见 private/itinerary.example.json。
 //   node scripts/itinerary-pdf.mjs
-// 输出：~/Desktop/us-trip/US-Itinerary-2026-12.pdf（同目录留 html 方便改样式）
+// 输出：~/Desktop/us-trip/US-Itinerary-2026-12.pdf（同目录留 html 方便改样式）。
+// 不要把生成的 PDF 放进 public/，那里的文件任何人都能下载。
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { FLIGHTS } from '../src/data/flights.js';
 import { HOTELS } from '../src/data/hotels.js';
 
-const OUT_DIR = join(homedir(), 'Desktop', 'us-trip');
+const OUT_DIR = process.env.OUT_DIR || join(homedir(), 'Desktop', 'us-trip');
 const PDF = join(OUT_DIR, 'US-Itinerary-2026-12.pdf');
 const HTML = join(OUT_DIR, 'US-Itinerary-2026-12.html');
-const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const CHROME = process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
-const TRAVELERS = [
-  { name: 'BAI / YIBING', passport: 'EQ9933134' },
-  { name: 'ZHANG / GENSHEN', passport: 'EP5429850' }
-];
+const PRIVATE_FILE = new URL('../private/itinerary.json', import.meta.url);
+const EXAMPLE_FILE = new URL('../private/itinerary.example.json', import.meta.url);
+if (!existsSync(PRIVATE_FILE)) console.warn('没找到 private/itinerary.json，先用示例占位生成。复制 private/itinerary.example.json 改成真实信息。');
+const PRIV = JSON.parse(readFileSync(existsSync(PRIVATE_FILE) ? PRIVATE_FILE : EXAMPLE_FILE, 'utf8'));
+const TRAVELERS = PRIV.travellers;
 
 // 机场和航司的英文写法（数据文件里是中文，这里统一翻）
 const AIRPORT = {
@@ -38,29 +42,27 @@ const FLIGHT_EN = [
   { flight: 'UA771', airline: 'United Airlines', dep: 'Thu 31 Dec 2026, 23:35', depAt: 'LAX', arr: 'Sat 2 Jan 2027, 06:35', arrAt: 'PEK' }
 ];
 
-const REFS = [
-  'Outbound MF8280 / MF849: confirmed e-tickets, booking reference 334631851748, issued for BAI/YIBING (EQ9933134) and ZHANG/GENSHEN (EP5429850).',
-  'Return UA2434 / UA771: United Airlines PNR AXGBBS, e-ticket 016-5881143522 (BAI/YIBING) and 016-5881143523 (ZHANG/GENSHEN).'
-];
+const REFS = PRIV.flightRefs;
 
 // 酒店地址（英文，按订单原文；纽约公寓地址待房东确认）
 const HOTEL_EN = {
   bos: ['Hampton Inn &amp; Suites Boston Crosstown Center', '811 Massachusetts Ave, Boston, MA 02118', '+1 617-445-6400'],
   dc: ['Hilton Garden Inn Washington DC/U.S. Capitol', '1225 First St NE, Washington, DC 20002', '+1 202-408-4870'],
   phl: ['Wyndham Philadelphia Historic District', '400 Arch St, Philadelphia, PA 19106', '+1 215-923-8660'],
-  // 纽约：边检按这张 LIC Hotel 的预订单写（Booking.com 凭证，2026-12-24→31，7 晚，已预付）。
-  // 实际住宿仍是布鲁克林的 DKLB BKLN 公寓——这是 Barry 2026-11-06 定的：对外用酒店单，站内按公寓排行程。
-  nyc: ['LIC Hotel', '44-04 21st St, Long Island City, NY 11101', '+1 718-406-9788']
+  // 纽约：实际住的 AVA Fort Greene 公寓（2026-11-14 确定）。房号从 private/itinerary.json 读。
+  nyc: ['AVA Fort Greene' + (PRIV.nycUnit ? ', ' + esc0(PRIV.nycUnit) : ''), '343 Gold St, Brooklyn, NY 11201', PRIV.nycContact || '']
 };
 
+function esc0(x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+
 const DAYS = [
-  ['Fri 18 Dec', 'New York → Boston', 'Arrive JFK 10:55 on MF849 from Fuzhou; Amtrak to Boston; check in at hotel in the South End.'],
+  ['Fri 18 Dec', 'New York → Boston', 'Arrive JFK 10:55 on MF849 from Fuzhou; pick up rental car at JFK; drive to Boston; check in at hotel in the South End.'],
   ['Sat 19 Dec', 'Boston', 'Harvard University, MIT, Beacon Hill, Boston Common, Quincy Market.'],
   ['Sun 20 Dec', 'Boston', 'USS Constitution at Charlestown Navy Yard; North End; Boston Celtics game, 20:00, TD Garden.'],
-  ['Mon 21 Dec', 'Boston → Washington, D.C.', 'Morning train to Washington; check in; White House and National Christmas Tree.'],
+  ['Mon 21 Dec', 'Boston → Washington, D.C.', 'Drive to Washington; check in; White House and National Christmas Tree.'],
   ['Tue 22 Dec', 'Washington, D.C.', 'U.S. Capitol tour, Library of Congress, National Mall and memorials; Washington Wizards game, 19:00.'],
-  ['Wed 23 Dec', 'Washington → Philadelphia', 'Bus to Philadelphia; Independence Hall, Liberty Bell, Reading Terminal Market; Philadelphia 76ers game, 19:30.'],
-  ['Thu 24 Dec', 'Philadelphia → New York', 'Bus to New York; check in at hotel in Long Island City; Fifth Avenue and Rockefeller Center Christmas Tree.'],
+  ['Wed 23 Dec', 'Washington → Philadelphia', 'Drive to Philadelphia; Independence Hall, Liberty Bell, Reading Terminal Market; Philadelphia 76ers game, 19:30.'],
+  ['Thu 24 Dec', 'Philadelphia → New York', 'Drive to Brooklyn; return rental car at JFK; check in at apartment in Fort Greene, Brooklyn; Fifth Avenue and Rockefeller Center Christmas Tree.'],
   ['Fri 25 Dec', 'New York', 'Christmas Day: Central Park, Chinatown, Dyker Heights Christmas lights.'],
   ['Sat 26 Dec', 'New York', 'Brooklyn Bridge, DUMBO, Brooklyn Heights Promenade; Brooklyn Nets game, 18:00, Barclays Center.'],
   ['Sun 27 Dec', 'New York', 'Metropolitan Museum of Art, Grand Central Terminal, Times Square.'],
@@ -79,8 +81,8 @@ const flightRows = FLIGHT_EN.map((f) => `
     <td><span class="mono">${esc(f.arr)}</span><br><span class="dim">${esc(AIRPORT[f.arrAt])}</span></td>
   </tr>`).join('');
 
-// 只有纽约这家有可引用的订单号（Booking.com 凭证）
-const HOTEL_REF = { nyc: 'Booking 1128152180334111 · confirmation 2596880428' };
+// 订单号从 private/itinerary.json 读（例如 { "nyc": "Airbnb HMXXXXXXX" }）
+const HOTEL_REF = PRIV.hotelRefs || {};
 
 const hotelRows = HOTELS.map((h) => {
   const [name, addr, phone] = HOTEL_EN[h.city];
@@ -88,7 +90,7 @@ const hotelRows = HOTELS.map((h) => {
   return `
   <tr>
     <td class="nowrap">${esc(h.checkIn)} – ${esc(h.checkOut)}</td>
-    <td><b>${name}</b><br><span class="dim">${addr}</span> <span class="dim xs">· ${phone}</span>${ref}</td>
+    <td><b>${name}</b><br><span class="dim">${addr}</span>${phone ? ` <span class="dim xs">· ${phone}</span>` : ''}${ref}</td>
     <td class="nowrap right">${h.nights} night${h.nights > 1 ? 's' : ''}</td>
   </tr>`;
 }).join('');
@@ -145,7 +147,7 @@ const html = `<!doctype html>
 
 <div class="head">
   <div class="right">
-    Prepared 5 November 2026<br>
+    Prepared ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}<br>
     All reservations confirmed
   </div>
   <p class="kicker">Tourist travel · presented on arrival</p>
@@ -166,8 +168,8 @@ const html = `<!doctype html>
   <div class="fact"><dt>Exit</dt><dd>31 Dec 2026, Newark → Los Angeles → Beijing</dd></div>
   <div class="fact"><dt>Stay</dt><dd>13 nights, all accommodation pre-booked</dd></div>
   <div class="fact"><dt>First night</dt><dd>Hampton Inn &amp; Suites Boston Crosstown Center, 811 Massachusetts Ave, Boston, MA 02118</dd></div>
-  <div class="fact"><dt>Return</dt><dd>Confirmed, United Airlines PNR AXGBBS</dd></div>
-  <div class="fact"><dt>On arrival</dt><dd>JFK → Boston by Amtrak on 18 Dec (approx. 4h15)</dd></div>
+  <div class="fact"><dt>Return</dt><dd>Confirmed, United Airlines${PRIV.returnPnr ? ' PNR ' + esc(PRIV.returnPnr) : ''}</dd></div>
+  <div class="fact"><dt>On arrival</dt><dd>Rental car picked up at JFK on 18 Dec, driven to Boston (approx. 4–5 hours)</dd></div>
   <div class="fact"><dt>Travel party</dt><dd>2 adults travelling together, no children</dd></div>
 </div>
 
@@ -185,7 +187,7 @@ const html = `<!doctype html>
 </table>
 <p class="dim xs" style="margin:4px 0 0">All stays are booked and prepaid; confirmation vouchers available on request.</p>
 
-<div class="foot"><span>Travel Itinerary · BAI / YIBING &amp; ZHANG / GENSHEN</span><span>Page 1 of 2</span></div>
+<div class="foot"><span>Travel Itinerary · ${TRAVELERS.map((t) => esc(t.name)).join(' &amp; ')}</span><span>Page 1 of 2</span></div>
 
 <div class="page2">
 <h2>Day-by-day outline</h2>
@@ -198,15 +200,14 @@ const html = `<!doctype html>
 <h2>Notes</h2>
 <div class="box">
   <p><b>Luggage:</b> one checked bag (23 kg) and one carry-on per traveller.</p>
-  <p><b>Transport within the United States:</b> Amtrak, intercity bus (Greyhound / FlixBus), subway and regional rail. No self-drive; no rental car.</p>
-  <p><b>Contact:</b> bai@byb521.com — reachable by phone at the number given on the arrival record.</p>
+  <p><b>Transport within the United States:</b> rental car (self-drive) from 18 to 24 December, picked up and returned at New York JFK; subway and regional rail inside the cities; no driving in New York City after 24 December.</p>
+  ${PRIV.contact ? `<p><b>Contact:</b> ${esc(PRIV.contact)}</p>` : ''}
 </div>
 
 <h2>Declaration</h2>
 <p class="dim xs" style="margin:0 0 0">This itinerary was prepared by the travellers for their own trip and is presented for inspection purposes only. All bookings listed are paid and confirmed. The travellers hold return tickets and do not intend to remain in the United States beyond 31 December 2026.</p>
 <div class="sig">
-  <div>Signature — BAI / YIBING</div>
-  <div>Signature — ZHANG / GENSHEN</div>
+  ${TRAVELERS.map((t) => `<div>Signature — ${esc(t.name)}</div>`).join('')}
 </div>
 
 <div class="foot"><span>Travel Itinerary · 18–31 December 2026</span><span>Page 2 of 2</span></div>

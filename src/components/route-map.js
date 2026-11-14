@@ -4,7 +4,7 @@ import { choiceFor } from '../lib/calc.js';
 import { esc } from '../lib/dom.js';
 
 const STOPS = {
-  bos: { x: 262, y: 64, label: '波士顿', sub: '12/18–20', day: '1218', game: '凯尔特人 12/20' },
+  bos: { x: 262, y: 64, label: '波士顿', sub: '12/18–21', day: '1218', game: '凯尔特人 12/20' },
   nyc: { x: 204, y: 178, label: '纽约', sub: '12/24–30', day: '1224', game: '篮网 12/26' },
   phl: { x: 158, y: 262, label: '费城', sub: '12/23', day: '1223', game: '76人 12/23' },
   dc:  { x: 110, y: 350, label: '华盛顿', sub: '12/21–22', day: '1221', game: '奇才 12/22' }
@@ -18,6 +18,12 @@ function offset(a, b, d) {
   return [{ x: a.x + nx, y: a.y + ny }, { x: b.x + nx, y: b.y + ny }];
 }
 
+const KIND_ZH = { car: '自驾', train: '火车', bus: '大巴' };
+// 图例只列实际用到的交通方式
+export function legendHtml(kinds) {
+  return ['car', 'train', 'bus'].filter((x) => kinds.includes(x)).map((x) => `<span><i class="lg lg-${x}"></i>${KIND_ZH[x]}</span>`).join('');
+}
+
 const pts = (arr) => arr.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
 
 export function routeMapHtml(state) {
@@ -26,7 +32,7 @@ export function routeMapHtml(state) {
   const legs = [
     // 12/18 北上：走东侧
     ['s1', offset(S.bos, S.nyc, -9)],
-    // 12/20 南下（过夜）：走西侧
+    // 12/21 南下：走西侧，绕开纽约市区
     ['s2', [offset(S.bos, S.nyc, 9)[0], offset(S.nyc, S.phl, 9)[0], offset(S.phl, S.dc, 9)[0], offset(S.phl, S.dc, 9)[1]]],
     // 12/23、12/24 北上：压在主线上
     ['s3', [S.dc, S.phl]],
@@ -53,5 +59,5 @@ export function routeMapHtml(state) {
     <polyline class="rm-base" points="${pts([S.bos, S.nyc, S.phl, S.dc])}"/>
     ${lines}${stops}
   </svg>
-  <div class="rm-legend"><span><i class="lg lg-train"></i>火车</span><span><i class="lg lg-bus"></i>大巴</span><span><i class="lg lg-night"></i>过夜车</span><span><i class="lg lg-ball"></i>有球赛</span><span>点城市看那几天</span></div>`;
+  <div class="rm-legend">${legendHtml(legs.map(([id]) => k(id)))}<span><i class="lg lg-ball"></i>有球赛</span><span>点城市看那几天</span></div>`;
 }

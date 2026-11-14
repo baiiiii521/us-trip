@@ -6,7 +6,7 @@ export const TRIP = {
   end: '2026-12-31',
   people: 2,
   nights: 13,
-  checkedOn: '2026-11-05'
+  checkedOn: '2026-11-14'
 };
 
 // 城市：颜色用于占位图和路线图；气温/日落是 12 月下旬历史平均

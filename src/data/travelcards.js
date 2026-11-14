@@ -24,6 +24,14 @@ export const PHRASES = [
   { group: '交通', en: 'Is this the train to Washington, D.C.?', zh: '这是去华盛顿的火车吗' },
   { group: '交通', en: 'Could you tell me when we get to this stop?', zh: '到这一站时请告诉我' },
   { group: '交通', en: 'Which track does this train leave from?', zh: '这班车从几号站台开' },
+  { group: '租车', en: 'I have a reservation. Here is my confirmation number.', zh: '我有预订，这是确认号' },
+  { group: '租车', en: 'We will both drive. Please add a second driver.', zh: '我们两个人都开，请加第二驾驶人' },
+  { group: '租车', en: 'Is the toll pass included? We want to use it.', zh: '车上有过路费电子标签吗？我们要用' },
+  { group: '租车', en: 'Please note this scratch on the contract.', zh: '请把这道划痕写进合同' },
+  { group: '租车', en: 'Where is the rental car return?', zh: '还车点在哪里' },
+  { group: '加油', en: 'Pump number ___, forty dollars, regular, please.', zh: '___ 号油枪，加 40 美元的 87 号油' },
+  { group: '加油', en: 'Fill it up with regular, please.', zh: '请加满 87 号油（新泽西有人帮加）' },
+  { group: '停车', en: 'We are staying here. Can we park overnight?', zh: '我们住这里，能停车过夜吗' },
   { group: '酒店', en: 'We have a reservation under the name ____.', zh: '我们有预订，名字是 ____' },
   { group: '酒店', en: 'Could you keep our luggage until 6 pm?', zh: '行李能寄存到下午 6 点吗' },
   { group: '酒店', en: 'Two beds, please, not one king bed.', zh: '要两张床，不要一张大床' },
@@ -41,7 +49,8 @@ export const PHRASES = [
 // 实时状态：城际交通看车次，市内看地铁停运和改线
 export const LEG_STATUS = {
   train: [{ label: 'Amtrak 车次实时状态', url: 'https://www.amtrak.com/track-your-train.html' }],
-  bus: [{ label: 'FlixBus', url: 'https://www.flixbus.com' }, { label: 'Greyhound', url: 'https://www.greyhound.com' }]
+  bus: [{ label: 'FlixBus', url: 'https://www.flixbus.com' }, { label: 'Greyhound', url: 'https://www.greyhound.com' }],
+  car: [{ label: '纽约路况 511NY', url: 'https://511ny.org' }, { label: '马萨诸塞 Mass511', url: 'https://mass511.com' }, { label: '新泽西 511NJ', url: 'https://511nj.org' }, { label: '马里兰路况', url: 'https://md511.maryland.gov' }]
 };
 
 export const CITY_STATUS = {

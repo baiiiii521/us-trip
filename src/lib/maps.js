@@ -21,6 +21,12 @@ export function directionsUrl(q, app = 'google', mode = 'transit') {
   return `https://www.google.com/maps/dir/?api=1&destination=${enc(q)}&travelmode=${mode}`;
 }
 
+// 两地之间开车（起点终点都给）
+export function driveUrl(from, to, app = 'google') {
+  if (app === 'apple') return `https://maps.apple.com/?saddr=${enc(from)}&daddr=${enc(to)}&dirflg=d`;
+  return `https://www.google.com/maps/dir/?api=1&origin=${enc(from)}&destination=${enc(to)}&travelmode=driving`;
+}
+
 // 当天路线：按顺序串起多个地点（Google 支持途经点，用步行模式；Apple 不支持途经点）
 export function routeUrl(queries) {
   const qs = queries.filter(Boolean);

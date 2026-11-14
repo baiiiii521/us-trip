@@ -25,7 +25,11 @@ export const VENDORS = {
   resy:    { label: 'Resy', url: 'https://resy.com' },
   booking: { label: 'Booking.com', url: 'https://www.booking.com' },
   trip:    { label: '携程 Trip.com', url: 'https://www.trip.com' },
-  nba:     { label: 'NBA 赛程', url: 'https://www.nba.com/schedule' }
+  nba:     { label: 'NBA 赛程', url: 'https://www.nba.com/schedule' },
+  'car-hertz': { label: 'Hertz 租车', url: 'https://www.hertz.com' },
+  'car-avis': { label: 'Avis 租车', url: 'https://www.avis.com' },
+  'car-ent': { label: 'Enterprise 租车', url: 'https://www.enterprise.com' },
+  'car-zuzu': { label: '租租车（中文，含驾照翻译件）', url: 'https://www.zuzuche.com' }
 };
 
 // 球票平台说明（球赛页的平台对比）

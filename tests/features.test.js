@@ -122,9 +122,11 @@ test('订单夹：凯尔特人始终有格子，每个行程里的票都有对�
   assert.ok(ids.includes('game-bos'));
   assert.ok(ids.includes('hotel-ewr') && ids.includes('doc-ins') && ids.includes('res-summit'));
   assert.equal(new Set(ids).size, ids.length);
-  for (const st of [c]) {
+  for (const rent of ['jfk', 'bos', 'none']) {
+    const st = { ...c, rent };
     const have = new Set(walletSlots(st).map((s) => s.id));
-    for (const d of buildDays(st)) for (const it of d.items) for (const id of slotsForItem(it)) assert.ok(have.has(id), `${d.md} 缺格子 ${id}`);
+    for (const d of buildDays(st)) for (const it of d.items) for (const id of slotsForItem(it, st)) assert.ok(have.has(id), `${rent} ${d.md} 缺格子 ${id}`);
+    assert.equal(have.has('car-rental'), rent !== 'none', `${rent} 租车格子`);
   }
 });
 

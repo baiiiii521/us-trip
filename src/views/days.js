@@ -6,7 +6,9 @@ import { POI } from '../data/pois.js';
 import { LEGS, legOption } from '../data/legs.js';
 import { GAMES, gameLinks } from '../data/games.js';
 import { choiceFor, tripPhase } from '../lib/calc.js';
-import { routeUrl, directionsUrl } from '../lib/maps.js';
+import { routeUrl, directionsUrl, driveUrl } from '../lib/maps.js';
+import { DRIVES, PICKUP, DROPOFF } from '../data/drive.js';
+import { HOTEL_OF } from '../data/hotels.js';
 import { photoHtml } from '../components/photo.js';
 import { tripRouteHtml } from '../components/trip-route.js';
 import { slotsForItem } from '../data/bookings.js';
@@ -14,8 +16,39 @@ import { slotChip } from './wallet.js';
 import { findToday } from '../lib/today.js';
 import { weatherFor, alertFor, codeLabel } from '../lib/weather.js';
 
+// 每段自驾的起点终点（导航用）
+const DRIVE_ENDS = {
+  s1: () => [PICKUP.jfk.q, HOTEL_OF.bos.addr],
+  s2: () => [HOTEL_OF.bos.addr, HOTEL_OF.dc.addr],
+  s3: () => [HOTEL_OF.dc.addr, HOTEL_OF.phl.addr],
+  s4: () => [HOTEL_OF.phl.addr, HOTEL_OF.nyc.addr]
+};
+
+function driveBlock(id, state) {
+  const d = DRIVES[id];
+  const [from, to] = DRIVE_ENDS[id]();
+  const fromQ = id === 's2' && state.rent === 'bos' ? PICKUP.bos.q : from;
+  return `<div class="move move--car">
+    <div class="move__h">${icon('car')}<b>自驾 · ${esc(d.from)} → ${esc(d.to)}</b><a class="linkbtn" href="#drive">自驾须知</a></div>
+    <p class="move__t">约 ${d.mi} 英里 · ${esc(d.h)} <span class="price">过路费约 $${d.toll}</span></p>
+    <p class="move__d">${esc(d.route)}</p>
+    <p class="move__d">${esc(d.tollNote)}</p>
+    ${d.stops.length ? `<p class="move__d">休息：${esc(d.stops.join('；'))}</p>` : ''}
+    <div class="btn-row"><a class="btn btn--primary btn--sm" href="${esc(driveUrl(fromQ, to, state.nav))}" target="_blank" rel="noopener">${icon('nav')}开车导航</a></div>
+  </div>`;
+}
+
+function rentBlock(kind, state) {
+  const p = kind === 'pickup' ? PICKUP[state.rent === 'bos' ? 'bos' : 'jfk'] : DROPOFF;
+  return `<div class="move move--car">
+    <div class="move__h">${icon('car')}<b>${kind === 'pickup' ? '取车' : '还车'} · ${esc(p.place)}</b></div>
+    <div class="btn-row"><a class="btn btn--secondary btn--sm" href="${esc(directionsUrl(p.q, state.nav, kind === 'pickup' ? 'transit' : 'driving'))}" target="_blank" rel="noopener">${icon('nav')}导航到${kind === 'pickup' ? '取车点' : '还车点'}</a><a class="btn btn--secondary btn--sm" href="#drive">自驾须知</a></div>
+  </div>`;
+}
+
 function legBlock(id, state) {
   const kind = choiceFor(state, id);
+  if (kind === 'car') return driveBlock(id, state);
   const o = legOption(id, kind);
   const leg = LEGS[id];
   const canSwitch = true;
@@ -84,6 +117,7 @@ export function renderDays(state, ctx = { now: new Date(), weather: null }) {
         </div>
         ${rUrl ? `<a class="btn btn--secondary" href="${esc(rUrl)}" target="_blank" rel="noopener">${icon('route')}打开当天路线</a>` : ''}
       </header>
+      ${d.warn ? `<p class="alert alert--warn" role="note"><b>注意</b>${esc(d.warn)}</p>` : ''}
       <ol class="tl">${d.items.map((it) => `
         <li class="tl__i${it.leg ? ' tl__i--move' : ''}${it.game ? ' tl__i--game' : ''}">
           <span class="tl__t">${esc(it.t)}</span>
@@ -91,9 +125,10 @@ export function renderDays(state, ctx = { now: new Date(), weather: null }) {
             ${it.leg ? legBlock(it.leg, state) : ''}
             ${it.game ? gameBlock(it.game, it.text) : ''}
             ${!it.game && it.text ? `<p>${esc(it.text)}</p>` : ''}
+            ${it.drive ? rentBlock(it.drive, state) : ''}
             ${it.pois && it.pois.length ? poiChips(it.pois, state, d.md) : ''}
             ${it.buy && it.buy.length ? buyRow('预约 / 买票', vendorLinks(it.buy)) : ''}
-            ${(() => { const ids = slotsForItem(it); return ids.length ? `<div class="buys"><span class="buys__label">我的订单</span><div class="buys__list">${ids.map((id) => slotChip(state, id)).join('')}</div></div>` : ''; })()}
+            ${(() => { const ids = slotsForItem(it, state); return ids.length ? `<div class="buys"><span class="buys__label">我的订单</span><div class="buys__list">${ids.map((id) => slotChip(state, id)).join('')}</div></div>` : ''; })()}
           </div>
         </li>`).join('')}</ol>
       ${d.tips && d.tips.length ? `<ul class="day__tips">${d.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}

@@ -1,12 +1,13 @@
 // 整体路线图：一张真实底图（东岸各州州界）+ 城市钉 + 城际线路，下面是可点的明细列表。
 // 数据来自 lib/route.js（跟着方案 A/B/C、火车/大巴选择自动变），底图来自 data/map-geo.js。
+import { legendHtml } from './route-map.js';
 import { esc, icon } from '../lib/dom.js';
 import { buildRoute } from '../lib/route.js';
 import { MAP_STATES, MAP_US, US_TX } from '../data/map-geo.js';
 import { CITY_XY, CITY_LL, offsetLine, toPath } from '../lib/geo.js';
 import { CITIES } from '../data/trip.js';
 
-const MODE_ICON = { train: 'train', bus: 'bus', flight: 'plane' };
+const MODE_ICON = { train: 'train', bus: 'bus', car: 'car', flight: 'plane' };
 
 // 每条线段画在哪、标签放哪：坐标是投影后手工微调过的，改城市或加站点时在这里挪一下。
 // 手机和桌面共用同一个 viewBox，缩放是等比的。
@@ -55,7 +56,7 @@ function mapSvg(stays, moves) {
   const nightNote = (() => {
     const m = moveOf.s2;
     if (!m) return '';
-    return `<text class="trmap__mlabel" x="104" y="176" text-anchor="end">${esc(`${m.md} 夜车 ${m.fromZh}→${m.toZh}`)}</text>`;
+    return `<text class="trmap__mlabel" x="104" y="176" text-anchor="end">${esc(`${m.md} ${m.kindLabel} ${m.fromZh}→${m.toZh}`)}</text>`;
   })();
 
   const lines = Object.entries(SEG_GEO).map(([id, g]) => {
@@ -105,6 +106,7 @@ function mapSvg(stays, moves) {
     <title id="trmap-title">路线图：纽约 → 波士顿 → 华盛顿 → 费城 → 纽约 → 洛杉矶</title>
     <defs>
       <marker id="trmap-arrow-train" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="trmap__arrow trmap__arrow--train" d="M0 0L10 5L0 10z"/></marker>
+      <marker id="trmap-arrow-car" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="trmap__arrow trmap__arrow--car" d="M0 0L10 5L0 10z"/></marker>
       <marker id="trmap-arrow-bus" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="trmap__arrow trmap__arrow--bus" d="M0 0L10 5L0 10z"/></marker>
     </defs>
     <g class="trmap__land">${land}</g>
@@ -174,9 +176,7 @@ export function tripRouteHtml(state) {
     </div>
     ${mapSvg(stays, moves)}
     <div class="rm-legend">
-      <span><i class="lg lg-train"></i>火车</span>
-      <span><i class="lg lg-bus"></i>大巴</span>
-      <span><i class="lg lg-night"></i>过夜</span>
+      ${legendHtml(moves.map((m) => m.kind))}
       <span>点城市跳到那天</span>
     </div>
     <details class="tr__more">

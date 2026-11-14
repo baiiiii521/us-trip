@@ -9,7 +9,7 @@ import './styles/motion.css';
 import './styles/features.css';
 
 import { getState, update, subscribe, resetState, isDone, visitOf } from './state.js';
-import { choicesForMode } from './lib/calc.js';
+import { choiceFor, choicesForMode } from './lib/calc.js';
 import { icon } from './lib/dom.js';
 import { loadPhotos, onPhotos, photoUrls } from './lib/photos.js';
 import { poiAppearances } from './lib/index.js';
@@ -31,6 +31,7 @@ import { budgetOutputHtml } from './views/budget.js';
 import { renderInfo, infoUi } from './views/info.js';
 import { renderMoney, moneyUi } from './views/money.js';
 import { renderMore, moreUi } from './views/more.js';
+import { renderDrive } from './views/drive.js';
 import { renderWallet, slotSheetHtml, walletFiles, loadWalletFiles } from './views/wallet.js';
 import { renderCards, cardsUi, hotelSheetHtml, bigCardHtml } from './views/cards.js';
 import { renderMemories, memUi, loadMemories } from './views/memories.js';
@@ -50,7 +51,7 @@ const POI_FILES = Object.fromEntries(POIS.filter((x) => x.wiki && x.photoFile).m
 
 const VIEWS = {
   home: renderHome, days: renderDays, guide: renderGuide, tickets: renderTickets, money: renderMoney, more: renderMore,
-  wallet: renderWallet, cards: renderCards, memories: renderMemories, info: renderInfo
+  wallet: renderWallet, cards: renderCards, memories: renderMemories, info: renderInfo, drive: renderDrive
 };
 const TITLES = { ...Object.fromEntries(ROUTES.map((r) => [r.id, r.label])), ...Object.fromEntries(Object.entries(SUBPAGES).map(([k, v]) => [k, v.label])) };
 
@@ -99,7 +100,7 @@ function focusKey(el) {
   return sel;
 }
 
-const FOOT = `<footer class="app-foot"><span>信息核对于 2026 年 11 月 5 日，出发前一周再核对一次</span><span>景点照片来自维基共享资源，作者和许可写在每个景点详情底部</span></footer>`;
+const FOOT = `<footer class="app-foot"><span>信息核对于 2026 年 11 月 14 日，出发前一周再核对一次</span><span>景点照片来自维基共享资源，作者和许可写在每个景点详情底部</span></footer>`;
 
 // 正在输入的表单不要被重绘打断
 function typing() {
@@ -133,7 +134,8 @@ function scrollToDay(id) {
 function stickyOffset() {
   const bar = document.querySelector('.topbar');
   const strip = document.querySelector('.strip');
-  return (bar ? bar.offsetHeight : 0) + (strip ? strip.offsetHeight : 0) + 12;
+  const jump = document.querySelector('.jump');
+  return (bar ? bar.offsetHeight : 0) + (strip ? strip.offsetHeight : 0) + (jump ? jump.offsetHeight : 0) + 12;
 }
 
 function enterRoute(r) {
@@ -149,6 +151,11 @@ function onRoute() {
   route = target;
   if (changed || !view.innerHTML || r.tab) { enterRoute(route); render(); if (!r.order) window.scrollTo(0, 0); }
   if (r.day) requestAnimationFrame(() => scrollToDay(r.day));
+  // 旅途中直接打开“行程”，自动滚到今天
+  else if (changed && route === 'days') {
+    const today = findToday(buildDays(getState()), currentNow(getState()));
+    if (today) requestAnimationFrame(() => scrollToDay(today.id));
+  }
   if (r.scrollTo) requestAnimationFrame(() => { const el = document.getElementById(r.scrollTo); if (el) el.scrollIntoView({ block: 'start' }); });
   if (r.poi) openPoi(r.poi);
   if (r.order) openSlot(r.order);
@@ -240,7 +247,7 @@ function armReminders() {
   for (const d of buildDays(state)) {
     for (const x of keyEvents(d)) {
       const title = x.it.leg ? `${LEGS[x.it.leg].route}` : GAMES[x.it.game].title;
-      events.push({ at: x.at, title, body: x.it.leg ? '带好订单号和证件，提前到车站' : '带好电子票和证件，注意包袋规定' });
+      events.push({ at: x.at, title, body: x.it.leg ? (choiceFor(state, x.it.leg) === 'car' ? '看一眼天气和路况，油箱过半再上高速' : '带好订单号和证件，提前到车站') : '带好电子票和证件，注意包袋规定' });
     }
   }
   return scheduleReminders(events, now);
@@ -275,8 +282,10 @@ const ACTIONS = {
     update((s) => {
       if (key === 'mode') s.choice = choicesForMode(value);
       else if (key.startsWith('opts.')) s.opts[key.slice(5)] = value === 'true';
+      else if (key.startsWith('choice.')) s.choice[key.slice(7)] = value;
       else s[key] = value;
     });
+    if (key === 'rent') toast({ jfk: '已切到：落地 JFK 取车，全程自驾', bos: '已切到：12/18 坐火车，12/21 波士顿取车', none: '已切到：不租车，全程火车/大巴' }[value]);
     if (key === 'opts.ewr') toast(value === 'true' ? '12/30 改为住纽瓦克机场酒店，预算和订单夹已更新' : '12/30 改为机场过夜，预算已去掉酒店');
     if (key === 'plan') toast(value === 'A' ? '已切到方案 A：不看凯尔特人' : value === 'C' ? '已切到方案 C：波士顿多住一晚' : '已切到方案 B：凌晨大巴');
   },
@@ -406,6 +415,14 @@ const ACTIONS = {
 };
 
 document.addEventListener('click', (e) => {
+  // 页内跳转条：滚到对应区块，不改地址栏
+  const jump = e.target.closest('[data-jump]');
+  if (jump) {
+    e.preventDefault();
+    const el = document.getElementById(jump.dataset.jump);
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - stickyOffset(), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    return;
+  }
   // 点弹层外面的遮罩也能关（手机 Safari 顶部被地址栏压住时，关闭按钮不好点）
   if (sheet.open && e.target === sheet) { closeSheet(); return; }
   const dayLink = e.target.closest('a[href^="#day-"]');

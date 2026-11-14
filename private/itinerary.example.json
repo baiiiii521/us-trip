@@ -1,0 +1,16 @@
+{
+  "_说明": "复制成 private/itinerary.json 再改成真实信息。private/itinerary.json 不进 git、不上网站。",
+  "travellers": [
+    { "name": "SURNAME / GIVENNAME", "passport": "E00000000" },
+    { "name": "SURNAME / GIVENNAME", "passport": "E00000000" }
+  ],
+  "flightRefs": [
+    "Outbound MF8280 / MF849: confirmed e-tickets, booking reference XXXXXXXX.",
+    "Return UA2434 / UA771: United Airlines PNR XXXXXX, e-tickets 016-XXXXXXXXXX."
+  ],
+  "returnPnr": "XXXXXX",
+  "hotelRefs": { "nyc": "Reservation XXXXXXXX" },
+  "nycUnit": "Apt XXXX",
+  "nycContact": "",
+  "contact": "your@email.com"
+}

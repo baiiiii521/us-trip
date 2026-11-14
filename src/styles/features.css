@@ -138,3 +138,60 @@ dialog.sheet.sheet--big { margin: 0; max-width: none; width: 100vw; height: 100d
   .cmplist li { grid-template-columns: 64px 1fr auto; }
   .settle b { font-size: 22px; }
 }
+
+/* 自驾：用强调色标出“开车”这条线，和火车蓝、大巴绿区分 */
+.move--car { border-left-color: var(--accent); }
+.move--car .move__h .ic { color: var(--accent); }
+.move__h a.linkbtn { margin-left: auto; font-size: var(--t-small); font-weight: 500; }
+.pill--car { --pc: var(--accent); }
+.tr__move--car .tr__mode { color: var(--accent); }
+.trmap__seg--car { stroke: var(--accent); }
+.trmap__arrow--car { fill: var(--accent); }
+.set__warn { margin-top: var(--s-2); font-size: var(--t-small); line-height: 1.6; color: var(--ink-2); padding: var(--s-2) var(--s-3); border-left: 3px solid var(--warn); background: color-mix(in srgb, var(--warn) 8%, var(--card)); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.drivecard { display: flex; align-items: center; gap: var(--s-4); text-decoration: none; color: var(--ink); }
+.drivecard__ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: var(--r-md); background: var(--accent-soft); color: var(--accent); flex: none; }
+.drivecard__ic .ic { width: 24px; height: 24px; }
+.drivecard__main { display: grid; gap: 4px; flex: 1; min-width: 0; }
+.drivecard__main small { color: var(--muted); font-size: var(--t-small); line-height: 1.5; }
+.steps { margin: var(--s-3) 0 0; padding-left: 22px; display: grid; gap: var(--s-2); line-height: 1.65; }
+.steps li::marker { font-family: var(--f-mono); color: var(--accent); font-weight: 600; }
+.card__h--gap { margin-top: var(--s-5); padding-top: var(--s-4); border-top: 1px solid var(--line); }
+.parklist { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
+.parklist li { display: grid; gap: 2px; padding-bottom: var(--s-3); border-bottom: 1px solid var(--line); }
+.parklist li:last-child { border-bottom: 0; padding-bottom: 0; }
+.parklist span { color: var(--ink-2); font-size: var(--t-small); line-height: 1.6; }
+.tbl__note { display: block; color: var(--muted); font-size: var(--t-label); font-family: var(--f-body); font-weight: 400; margin-top: 2px; white-space: normal; }
+.tbl__sum td { font-weight: 700; border-bottom: 0; }
+.tbl tr.is-on td { background: var(--accent-soft); }
+.guide { display: grid; gap: var(--s-3); }
+.fold { padding: 0; }
+.fold > summary { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: var(--s-4) var(--s-5); min-height: 56px; cursor: pointer; list-style: none; }
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::after { content: ""; width: 9px; height: 9px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform var(--m-out, 200ms) ease; flex: none; }
+.fold[open] > summary::after { transform: rotate(-135deg); }
+.fold > summary .meta { margin-left: auto; }
+.fold > .sheet__list { padding: 0 var(--s-5) var(--s-5) calc(var(--s-5) + 20px); }
+.note code { font-family: var(--f-mono); font-size: .92em; background: var(--soft); padding: 1px 6px; border-radius: 4px; }
+@media (max-width: 639px) {
+  .fold > summary { padding: var(--s-3) var(--s-4); }
+  .fold > .sheet__list { padding: 0 var(--s-4) var(--s-4) calc(var(--s-4) + 20px); }
+}
+.rentopts { display: grid; gap: var(--s-3); }
+.rentopt { display: grid; gap: 4px; text-align: left; font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line-strong); border-radius: var(--r-md); padding: var(--s-3) var(--s-4); cursor: pointer; }
+.rentopt.is-on { border: 2px solid var(--accent); padding: calc(var(--s-3) - 1px) calc(var(--s-4) - 1px); background: var(--accent-soft); }
+.rentopt__top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
+.rentopt__top .mono { font-size: 18px; font-weight: 600; }
+.rentopt__meta { font-size: var(--t-label); color: var(--muted); }
+.rentopt__d { font-size: var(--t-small); color: var(--ink-2); line-height: 1.6; }
+@media (min-width: 900px) { .rentopts { grid-template-columns: repeat(3, 1fr); } }
+.rm-car { stroke: var(--accent); }
+.lg-car { background: var(--accent); }
+
+/* 票务页的跳转条：贴在顶栏下面，横向滑动 */
+.jump { position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--nav)); z-index: 9; display: flex; gap: var(--s-2); overflow-x: auto; scrollbar-width: none;
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: var(--s-2) max(16px, env(safe-area-inset-left, 0px)); background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.jump::-webkit-scrollbar { display: none; }
+.jump .chip { flex: none; text-decoration: none; }
+.more-links { margin-top: var(--s-2); }
+.more-links > summary { cursor: pointer; font-size: var(--t-small); color: var(--muted); padding: var(--s-2) 0; min-height: 36px; }
+.more-links[open] > summary { margin-bottom: var(--s-2); }

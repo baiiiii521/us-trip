@@ -4,7 +4,8 @@ import { LEGS, LEG_IDS, legOption, legWhy } from '../data/legs.js';
 import { GAMES, GAME_ORDER, gameLinks, gameStatus } from '../data/games.js';
 import { TICKET_PLATFORMS } from '../data/vendors.js';
 import { POI, POIS } from '../data/pois.js';
-import { choiceFor, transportCost, MODE_LABEL } from '../lib/calc.js';
+import { choiceFor, transportCost, MODE_LABEL, carCost, transportLabel } from '../lib/calc.js';
+import { rentPlan } from '../data/drive.js';
 import { FLIGHTS } from '../data/flights.js';
 import { HOTELS } from '../data/hotels.js';
 import { slotChip } from './wallet.js';
@@ -38,8 +39,8 @@ function hotelCard(h, state) {
   const nightly = total / h.nights;
   // 有人民币订单就照票面显示到分；纽约公寓只有美元价
   const money = h.usdNightly
-    ? `${usd(total)}（$${h.usdNightly}/晚 × ${h.nights}）· 约 ${cny(total * rate)}`
-    : `¥${h.cny.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}（含税费）· 约 ${usd(total)}，每晚 ${usd(nightly)}`;
+    ? (h.priceTbd ? `房价待填，按 $${h.usdNightly}/晚估算 ${usd(total)}` : `${usd(total)}（$${h.usdNightly}/晚 × ${h.nights}）· 约 ${cny(total * rate)}`)
+    : `${h.approx ? '约 ' : ''}${cny(h.cny)}（含税费，以订单为准）· 约 ${usd(total)}，每晚 ${usd(nightly)}`;
   const q = encodeURIComponent(`${h.en} ${h.addr}`);
   return `<article class="card ht">
     <header class="ht__h">
@@ -50,7 +51,7 @@ function hotelCard(h, state) {
     <p class="ht__en">${esc(h.en)}</p>
     <p class="ht__addr">${icon('pin')}${esc(h.addr)}</p>
     <ul class="ht__meta">
-      <li>${h.nights} 晚 · ${esc(h.room)}</li>
+      <li>${h.nights} 晚${h.room ? ' · ' + esc(h.room) : ''}${h.tel ? ` · <a class="link" href="tel:${esc(h.tel.replace(/[^+\d]/g, ''))}">${esc(h.tel)}</a>` : ''}</li>
       <li>${esc(money)}</li>
     </ul>
     <div class="btn-row">
@@ -86,6 +87,9 @@ function legCard(id, state) {
 }
 
 export function renderTickets(state) {
+  const plan = rentPlan(state);
+  const car = carCost(state);
+  const ticketLegs = LEG_IDS.filter((id) => !plan.legs.includes(id));
   const tr = transportCost(state, 'train');
   const rows = [['train', '全火车'], ['mix', '推荐混合（长途火车 + 短途大巴）'], ['bus', '全大巴']];
   if (state.mode === 'custom') rows.push(['custom', '你的自选组合']);
@@ -103,9 +107,9 @@ export function renderTickets(state) {
       <div class="gamecard__body">
         <h3>${esc(g.title)}</h3>
         <p><button type="button" class="linkbtn" data-action="poi" data-id="${arena.id}">${esc(arena.name)}</button> · ${esc(g.price)} · <span class="pill pill--${st.tone}">${esc(st.label)}</span></p>
-        ${buyRow('买票', gameLinks(id).map((l, i) => ext(l.label, l.url, i === 0)).join(''))}
-        ${buyRow('我的订单', slotChip(state, 'game-' + id))}
-        <button type="button" class="linkbtn" data-action="gameday" data-id="${id}">球赛日卡片</button>
+        ${buyRow('买票', gameLinks(id).slice(0, 3).map((l, i) => ext(l.label, l.url, i === 0)).join(''))}
+        <details class="more-links"><summary>还有 ${gameLinks(id).length - 3} 个购票入口</summary><div class="buys__list">${gameLinks(id).slice(3).map((l) => ext(l.label, l.url)).join('')}</div></details>
+        <div class="btn-row">${slotChip(state, 'game-' + id)}<button type="button" class="btn btn--secondary btn--sm" data-action="gameday" data-id="${id}">${icon('ball')}球赛日卡片</button></div>
       </div>
     </article>`;
   }).join('');
@@ -116,31 +120,41 @@ export function renderTickets(state) {
       <div class="buys__list">${vendorLinks(p.buy)}</div></li>`).join('');
 
   return `
-  <div class="pagehead"><h1>票务</h1><p>机票、城际交通、球票和需要预约的景点都在这一页。火车价按原攻略总价拆分估算，大巴价来自比价网站区间，下单前以官网为准。</p></div>
+  <div class="pagehead"><h1>票务</h1><p>机票、住宿、租车、球票和需要预约的景点都在这一页。价格是估算区间，下单前以官网为准。</p></div>
+  <nav class="jump" aria-label="跳到">${[['tk-flights', '机票'], ['tk-hotels', '住宿'], ...(plan.legs.length ? [['tk-drive', '自驾']] : []), ...(ticketLegs.length ? [['tk-legs', plan.legs.length ? '车票' : '城际交通']] : []), ['tk-games', '球票'], ['tk-res', '预约']]
+    .map(([id, l]) => `<a class="chip" href="#tickets" data-jump="${id}">${l}</a>`).join('')}</nav>
 
-  <section class="sec">
+  <section class="sec" id="tk-flights">
     <div class="sec__h"><h2>机票</h2><span class="meta">两人已出票</span></div>
     <div class="flights">${FLIGHTS.map(flightCard).join('')}</div>
   </section>
 
-  <section class="sec">
-    <div class="sec__h"><h2>酒店</h2><span class="meta">${HOTELS.filter((h) => h.status === '已订').length} 家已订 · 纽约暂定</span></div>
+  <section class="sec" id="tk-hotels">
+    <div class="sec__h"><h2>住宿</h2><span class="meta">${HOTELS.filter((h) => h.status === '已订').length} 处全部已订</span></div>
     <div class="hotels">${HOTELS.map((h) => hotelCard(h, state)).join('')}</div>
-    <p class="note">价格是携程「在线付（含税费）」的整段总额；纽约公寓是 $90/晚的暂定价，还没出单。地址可以点“给司机看”全屏出示，或点“地图”打开导航。</p>
-    <div class="btn-row"><button type="button" class="btn btn--primary btn--sm" data-action="budget-actual">${icon('check')}按已订房价更新预算（并把 12/20 切到方案 C）</button></div>
-    <p class="note">波士顿订到 12/21 退房是 3 晚，等于要按方案 C 走；点上面这个按钮会一起把方案和房价对上。</p>
+    <p class="note">前三家是携程「在线付（含税费）」订单，金额按每晚房价换算，以订单为准；纽约公寓房价还没填，先按 $90/晚估算，可以在“花费 → 预算”里改。房号和门禁信息请填在订单夹里，不放在公开网页上。</p>
+    <div class="btn-row"><button type="button" class="btn btn--secondary btn--sm" data-action="budget-actual">${icon('check')}把预算里的房价改成订单价</button></div>
   </section>
 
-  <section class="sec">
-    <div class="sec__h"><h2>城际交通</h2><span class="meta">当前：${esc(MODE_LABEL[state.mode])} · 两人 ${usd(transportCost(state))}</span></div>
-    <div class="segctl segctl--inline" role="radiogroup" aria-label="交通方式">${[['train', '全火车'], ['mix', '推荐混合'], ['bus', '全大巴']].map(([m, l]) =>
-      `<button type="button" role="radio" aria-checked="${state.mode === m}" class="segctl__opt${state.mode === m ? ' is-on' : ''}" data-action="set" data-key="mode" data-value="${m}"><b>${l}</b></button>`).join('')}</div>
-    <div class="legs">${LEG_IDS.map((id) => legCard(id, state)).join('')}</div>
-    <div class="card"><div class="scroll"><table class="tbl"><thead><tr><th>组合</th><th class="n">两人城际</th><th class="n">比全火车</th><th class="n">人民币</th></tr></thead><tbody>${cmp}</tbody></table></div>
-    <p class="note">大巴票越早买越便宜，Megabus / OurBus 偶尔有 $1–9 早鸟票。火车 Saver 票不退，Value 票可改签。</p></div>
-  </section>
+  ${plan.legs.length ? `<section class="sec" id="tk-drive">
+    <div class="sec__h"><h2>自驾</h2><span class="meta">${esc(transportLabel(state))} · 约 ${usd(car.total)}</span></div>
+    <a class="card drivecard m-card" href="#drive">
+      <span class="drivecard__ic">${icon('car')}</span>
+      <span class="drivecard__main"><b>${esc(plan.label)} → 12/24 JFK 还车</b>
+        <small>${plan.days} 天 · 约 ${car.miles} 英里 · 租车 ${usd(car.rental)} + 油 ${usd(car.fuel)} + 过路费 ${usd(car.tolls)} + 停车 ${usd(car.parking)}${car.oneWay ? ' + 异地还车 ' + usd(car.oneWay) : ''}</small>
+        <small>每段路线、取还车步骤、停车、过路费、加油和驾驶规则</small></span>${arrow}
+    </a>
+  </section>` : ''}
+  ${ticketLegs.length ? `<section class="sec" id="tk-legs">
+    <div class="sec__h"><h2>${plan.legs.length ? '要买票的城际交通' : '城际交通'}</h2><span class="meta">${plan.legs.length ? '' : '当前：' + esc(MODE_LABEL[state.mode]) + ' · '}两人 ${usd(transportCost(state))}</span></div>
+    ${plan.legs.length ? '' : `<div class="segctl segctl--inline" role="radiogroup" aria-label="交通方式">${[['train', '全火车'], ['mix', '推荐混合'], ['bus', '全大巴']].map(([m, l]) =>
+      `<button type="button" role="radio" aria-checked="${state.mode === m}" class="segctl__opt${state.mode === m ? ' is-on' : ''}" data-action="set" data-key="mode" data-value="${m}"><b>${l}</b></button>`).join('')}</div>`}
+    <div class="legs">${ticketLegs.map((id) => legCard(id, state)).join('')}</div>
+    ${plan.legs.length ? '' : `<div class="card"><div class="scroll"><table class="tbl"><thead><tr><th>组合</th><th class="n">两人城际</th><th class="n">比全火车</th><th class="n">人民币</th></tr></thead><tbody>${cmp}</tbody></table></div>
+    <p class="note">大巴票越早买越便宜，Megabus / OurBus 偶尔有 $1–9 早鸟票。火车 Saver 票不退，Value 票可改签。</p></div>`}
+  </section>` : ''}
 
-  <section class="sec">
+  <section class="sec" id="tk-games">
     <div class="sec__h"><h2>NBA 球票</h2><span class="meta">每场 7 个购票入口</span></div>
     <div class="games">${games}</div>
     <h3 class="sec__sub">六个购票平台怎么选</h3>
@@ -148,7 +162,7 @@ export function renderTickets(state) {
     <div class="platforms">${TICKET_PLATFORMS.map((p) => `<a class="card platform m-card" href="${esc(p.url)}" target="_blank" rel="noopener"><b>${esc(p.name)}${arrow}</b><span>${esc(p.note)}</span></a>`).join('')}</div>
   </section>
 
-  <section class="sec">
+  <section class="sec" id="tk-res">
     <div class="sec__h"><h2>需要预约的景点</h2><span class="meta">${POIS.filter((p) => p.buy && p.buy.length).length} 处</span></div>
     <ul class="card reslist">${reservations}</ul>
   </section>`;

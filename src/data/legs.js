@@ -1,3 +1,4 @@
+import { DRIVES } from './drive.js';
 // 城际 4 段：火车 / 大巴两个选项。p = 每人价格（美元）
 // 火车价按原攻略“4 段两人 $536”拆分估算；大巴价来自 Omio / Wanderu / CheckMyBus 报价区间（2026-11-05）
 export const LEGS = {
@@ -31,6 +32,12 @@ export const LEGS = {
 };
 
 export const LEG_IDS = Object.keys(LEGS);
+
+// 自驾：每段的“选项”从 drive.js 生成，和火车/大巴同一个形状，页面可以统一渲染
+for (const id of LEG_IDS) {
+  const d = DRIVES[id];
+  LEGS[id].car = { p: 0, t: `自驾 · 约 ${d.mi} 英里 · ${d.h}`, d: d.route, price: `过路费约 $${d.toll}（一车）`, buy: [] };
+}
 
 // 12/20 只保留方案 C（看凯尔特人、波士顿住 3 晚、12/21 早上南下）。
 // 签名保留 plan 参数，方便老调用处不报错；值不再影响结果。

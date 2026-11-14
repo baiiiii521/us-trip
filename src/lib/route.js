@@ -7,7 +7,8 @@ import { buildDays } from '../data/days.js';
 import { LEGS } from '../data/legs.js';
 import { GAMES } from '../data/games.js';
 import { CITIES } from '../data/trip.js';
-import { choiceFor } from './calc.js';
+import { choiceFor, KIND_LABEL } from './calc.js';
+import { DRIVES } from '../data/drive.js';
 
 // 路线图上要短的时长文案；legs.js 里是详细说明。改运行时长记得同步这里。
 const DURATION = {
@@ -23,6 +24,7 @@ const S2_DATE = ['12/21', '周一'];
 const S2_DAY = '1221';
 
 function durationFor(id, kind) {
+  if (kind === 'car') return { s1: '约 4–5h', s2: '约 8–9h', s3: '约 2.5h', s4: '约 2h' }[id] + ` · ${DRIVES[id].mi} 英里`;
   if (id === 's2') return kind === 'train' ? '约 7–8h' : '约 9–10h';
   return DURATION[id][kind];
 }
@@ -78,7 +80,7 @@ export function buildRoute(state) {
     return {
       id,
       kind,
-      kindLabel: kind === 'train' ? '火车' : '大巴',
+      kindLabel: KIND_LABEL[kind],
       from: leg.from,
       to: leg.to,
       fromZh: CITIES[leg.from].zh,

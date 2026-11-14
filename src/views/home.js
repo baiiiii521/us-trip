@@ -1,6 +1,6 @@
 // 总览：一句话说清这是什么 + 三个硬数字、下一件待办、三个关键决定、路线图、14 天一览、必须改的问题
 import { esc, icon, usd, cny, vendorLinks, ext, buyRow, arrow } from '../lib/dom.js';
-import { tripPhase, budgetTotal, MODE_LABEL, choiceFor } from '../lib/calc.js';
+import { tripPhase, budgetTotal, transportLabel, choiceFor } from '../lib/calc.js';
 import { CHECKLIST } from '../data/content.js';
 import { CITIES, TRIP } from '../data/trip.js';
 import { GAMES, gameLinks } from '../data/games.js';
@@ -24,10 +24,10 @@ function todayCard(state, days, ctx) {
   const w = weatherFor(ctx.weather, day.city, day);
   const al = alertFor(w);
   const nextPoi = next && (next.it.pois || []).map((id) => POI[id]).find(Boolean);
-  const slots = [...new Set(day.items.flatMap(slotsForItem))];
+  const slots = [...new Set(day.items.flatMap((it) => slotsForItem(it, state)))];
   const leg = day.items.find((i) => i.leg);
   const status = [...(CITY_STATUS[day.city] || []), ...(leg ? LEG_STATUS[choiceFor(state, leg.leg)] || [] : [])];
-  const line = (x) => x ? `<b>${esc(x.it.t)}</b> ${esc((x.it.text || x.it.title || (x.it.leg ? '城际交通' : x.it.game ? '球赛' : '')).slice(0, 60))}` : '';
+  const line = (x) => x ? `<b>${esc(x.it.t)}</b> ${esc((x.it.text || x.it.title || (x.it.leg ? (choiceFor(state, x.it.leg) === 'car' ? '开车' : '城际交通') : x.it.game ? '球赛' : '')).slice(0, 60))}` : '';
   return `<section class="card today2">
     <div class="card__h"><h2>今天 ${day.md} ${esc(day.wd)}</h2><span class="meta">${esc(CITIES[day.city].zh)}${w ? ` · ${codeLabel(w.code)} ${Math.round(w.hi)}°/${Math.round(w.lo)}°C` : ''}</span></div>
     <p class="today2__title">${esc(day.title)}</p>
@@ -47,6 +47,13 @@ function todayCard(state, days, ctx) {
 }
 const STORM = { bos: '波士顿公共图书馆、哈佛自然史博物馆', dc: '史密森尼博物馆群（免费）、国会图书馆', phl: '费城艺术博物馆、独立厅', nyc: '大都会博物馆、自然史博物馆、纽约公共图书馆', la: '盖蒂中心、格兰德中央市场' };
 
+function heroLead(state) {
+  const how = state.rent === 'jfk' ? '落地在 JFK 取车，一路开到波士顿、华盛顿、费城，12/24 回纽约还车'
+    : state.rent === 'bos' ? '坐火车去波士顿，12/21 在波士顿取车开去华盛顿、费城，12/24 回纽约还车'
+    : '坐火车和大巴去波士顿、华盛顿、费城';
+  return `2026 年 12 月 18 日纽约落地，${how}。纽约住布鲁克林连住 7 晚过圣诞，31 日在洛杉矶海边走半天再回国。在美 ${TRIP.nights} 晚，看 4 场 NBA。`;
+}
+
 export function renderHome(state, ctx = { now: new Date(), weather: null }) {
   const phase = tripPhase(ctx.now);
   const days = buildDays(state);
@@ -65,7 +72,7 @@ export function renderHome(state, ctx = { now: new Date(), weather: null }) {
   <section class="hero">
     <div>
       <h1 class="hero__h1">两人 14 天美东圣诞篮球行</h1>
-      <p class="hero__lead">2026 年 12 月 18 日纽约落地，坐火车和大巴去波士顿、华盛顿、费城，纽约连住 6 晚过圣诞，31 日在洛杉矶海边走半天再回国。5 座城市全程公共交通，在美 ${TRIP.nights} 晚。</p>
+      <p class="hero__lead">${heroLead(state)}</p>
     </div>
     <div class="hero__facts">
       <div class="fact"><span class="fact__n">${esc(when[0])}</span><span class="fact__l">${esc(when[1])}</span></div>
@@ -94,7 +101,7 @@ export function renderHome(state, ctx = { now: new Date(), weather: null }) {
 
   <section class="grid2 grid2--map">
     <div class="m-nolift card">
-      <div class="m-nolift card__h"><h2>路线和城际交通</h2><span class="meta">当前：${esc(MODE_LABEL[state.mode])}</span></div>
+      <div class="m-nolift card__h"><h2>路线和城际交通</h2><span class="meta">当前：${esc(transportLabel(state))}${state.rent !== 'none' ? ' · <a class="link" href="#drive">自驾须知</a>' : ''}</span></div>
       ${routeMapHtml(state)}
     </div>
     <div class="m-nolift card">

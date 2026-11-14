@@ -54,9 +54,17 @@ test('球赛归到正确的停留段（含 12/20 凯尔特人）', () => {
   assert.deepEqual(games.nyc, ['nyk25', 'bkn', 'nyk27']);
 });
 
-test('交通方式跟着选择变', () => {
-  const train = buildRoute(state({ choice: { s1: 'train', s2: 'train', s3: 'train', s4: 'train' } }));
+test('交通方式跟着选择变（不租车时）', () => {
+  const train = buildRoute(state({ rent: 'none', choice: { s1: 'train', s2: 'train', s3: 'train', s4: 'train' } }));
   assert.ok(train.moves.slice(0, 4).every((m) => m.kind === 'train'));
-  const bus = buildRoute(state({ choice: { s1: 'bus', s2: 'bus', s3: 'bus', s4: 'bus' } }));
+  const bus = buildRoute(state({ rent: 'none', choice: { s1: 'bus', s2: 'bus', s3: 'bus', s4: 'bus' } }));
   assert.ok(bus.moves.slice(0, 4).every((m) => m.kind === 'bus'));
+});
+
+test('租车方案：JFK 取车四段都是自驾，波士顿取车只有后三段', () => {
+  const jfk = buildRoute(state({ rent: 'jfk' }));
+  assert.deepEqual(jfk.moves.slice(0, 4).map((m) => m.kind), ['car', 'car', 'car', 'car']);
+  assert.ok(jfk.moves.every((m) => m.kindLabel));
+  const bos = buildRoute(state({ rent: 'bos', choice: { s1: 'train', s2: 'train', s3: 'bus', s4: 'bus' } }));
+  assert.deepEqual(bos.moves.slice(0, 4).map((m) => m.kind), ['train', 'car', 'car', 'car']);
 });

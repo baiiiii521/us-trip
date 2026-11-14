@@ -10,12 +10,13 @@ const KEY = 'hoops-trip-v3';
 
 export const DEFAULTS = {
   mode: 'mix',
+  rent: 'jfk',
   plan: 'C',
   hotel: 'apt',
   nav: 'google',
   choice: { s1: 'train', s2: 'train', s3: 'bus', s4: 'bus' },
   // 机票 ¥12,200（去程 6,000 + 返程 6,200）÷ 6.8；酒店按已订订单的每晚实价
-  budget: { flights: 1794, rate: 6.8, bos: 108, dc: 86, phl: 109, apt: 90, food: 65 },
+  budget: { flights: 1794, rate: 6.8, bos: 108, dc: 86, phl: 109, apt: 90, food: 65, carDay: 110, oneWay: 100 },
   opts: { ewr: false, summit: false, ins: false },
   todo: {},
   visited: {},
@@ -27,7 +28,7 @@ export const DEFAULTS = {
   local: { remind: false, preview: '', syncRoom: '', syncPass: '', lastSync: 0 }
 };
 
-const SETTING_KEYS = ['mode', 'plan', 'hotel', 'nav', 'choice', 'budget', 'opts'];
+const SETTING_KEYS = ['mode', 'rent', 'plan', 'hotel', 'nav', 'choice', 'budget', 'opts'];
 const DATA_KEYS = ['todo', 'visited', 'expenses', 'wallet', 'hotels', 'seats', 'people', 'local'];
 
 function clone(o) { return JSON.parse(JSON.stringify(o)); }
@@ -57,7 +58,7 @@ function load() {
     const raw = localStorage.getItem(KEY);
     if (!raw) return s;
     const o = migrate(JSON.parse(raw));
-    for (const k of ['mode', 'plan', 'hotel', 'nav']) if (typeof o[k] === 'string') s[k] = o[k];
+    for (const k of ['mode', 'rent', 'plan', 'hotel', 'nav']) if (typeof o[k] === 'string') s[k] = o[k];
     for (const k of ['choice', 'budget', 'opts', ...DATA_KEYS]) if (o[k] && typeof o[k] === 'object') Object.assign(s[k], o[k]);
   } catch (e) { /* 隐私模式或数据损坏时用默认值 */ }
   return s;

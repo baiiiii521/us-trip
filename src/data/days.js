@@ -1,32 +1,52 @@
 // 每日行程。12/20 固定按方案 C（看凯尔特人、波士顿住 3 晚），住宿按已订酒店的真实位置写路线。
+// 租车方案（state.rent）改变 12/18、12/21、12/23、12/24 四天：jfk 落地取车 / bos 12/21 波士顿取车 / none 不租车。
 // 每个条目：t 时间，text 说明，pois 关联景点（可点开介绍和导航），leg 城际交通段，game 球赛，buy 预约/购票入口
 import { TRIP } from './trip.js';
-import { stayText } from './hotels.js';
+import { stayText, HOTEL_OF } from './hotels.js';
+import { DRIVES, PICKUP, DROPOFF } from './drive.js';
 
 // 已订酒店的“最后一公里”提示，前面注明最近的地铁站
 const T = {
   bos: '橙线 Massachusetts Ave 站（走 8 分钟）',
   dc: '红线 NoMa–Gallaudet 站（走 5 分钟）／联合车站走 10 分钟',
   phl: '集市-法兰克福线 5th St 站（走 3 分钟，站口在 Market St 上）',
-  nyc: 'B/D/N/Q/R 的 DeKalb Av 站／2/3 的 Atlantic Av–Barclays 站'
+  nyc: 'DeKalb Av 站（B/Q/R，走 6 分钟）／Jay St–MetroTech 站（A/C/F/R，走 8 分钟）'
 };
 
 export function buildDays(state) {
   const days = [];
-  const nycHotel = '纽约 · DKLB BKLN 公寓（布鲁克林，$90/晚 暂定）';
+  const rent = state.rent || 'none';
+  const NYC_ADDR = HOTEL_OF.nyc.addr;
+  const nycHotel = stayText('nyc');
 
-  days.push({
-    id: '1218', md: '12/18', wd: '周五', city: 'bos', from: 'nyc', title: '落地，直奔波士顿',
-    items: [
-      { t: '10:55 落地', text: 'MF849 从福州 09:20 起飞，JFK T4 10:55 落地。前一段是 12/17 13:45 郑州 CGO T2（MF8280），福州跨夜中转 17h25m，行李要在福州取出来重新托运。入境排队 1.5–2 小时，食品如实申报。' },
-      { t: '+2h', text: 'AirTrain 到 Jamaica，换长岛铁路 LIRR 到 Penn Station。AirTrain 约 $8.75，LIRR 市内票 $5.25–7.25，刷卡进出。', pois: ['moynihan'] },
-      { t: '+3h', leg: 's1' },
-      { t: '到站', text: 'South Station 到酒店（811 Massachusetts Ave，South End 边上）约 2 英里：带行李直接打车 10 分钟（$12–15）；想省钱就走到 Downtown Crossing 坐橙线两站到 Massachusetts Ave，再走 8 分钟。', pois: ['south-station'] },
-      { t: '晚上', text: '入住，酒店附近简单吃饭，早睡倒时差。' }
-    ],
-    tips: ['火车选落地时间 + 4 小时以后的班次。到达层有人拉客“Need a taxi?”是黑车，直接走开。', '12/17 下午 13:45 郑州起飞，行李在福州要重新托运一次，值机时问一句能不能直挂到 JFK。', `酒店最近的地铁是${T.bos}，之后几天都从这儿进出。`],
-    stay: stayText('bos')
-  });
+  if (rent === 'jfk') {
+    days.push({
+      id: '1218', md: '12/18', wd: '周五', city: 'bos', from: 'nyc', title: '落地取车，开去波士顿',
+      items: [
+        { t: '10:55 落地', text: 'MF849 从福州 09:20 起飞，JFK T4 10:55 落地。前一段是 12/17 13:45 郑州 CGO T2（MF8280），福州跨夜中转 17h25m，行李要在福州取出来重新托运。入境排队 1.5–2 小时，食品如实申报。' },
+        { t: '12:45', text: '出关后先别急着上路：到达层吃点东西、买咖啡，手机连上 eSIM，把导航目的地设成波士顿酒店。' },
+        { t: '13:15 取车', drive: 'pickup', text: `${PICKUP.jfk.how} 准备好驾照原件 + 翻译件、护照、主驾驶的信用卡；两人都登记为驾驶员，确认含过路费电子收费服务。取车时绕车拍一圈视频。` },
+        { t: '14:00', leg: 's1' },
+        { t: '19:00 前后', text: '到酒店（811 Massachusetts Ave）：车直接开进酒店停车场，行李上楼。入住后附近简单吃饭，早睡倒时差。' }
+      ],
+      warn: DRIVES.s1.risk,
+      tips: ['周五下午出纽约是一周最堵的时候，晚高峰前过了 Whitestone 大桥会好很多。', '12/17 下午 13:45 郑州起飞，行李在福州要重新托运一次，值机时问一句能不能直挂到 JFK。', `酒店最近的地铁是${T.bos}，12/19、12/20 车停着不动，全程坐地铁。`],
+      stay: stayText('bos')
+    });
+  } else {
+    days.push({
+      id: '1218', md: '12/18', wd: '周五', city: 'bos', from: 'nyc', title: '落地，直奔波士顿',
+      items: [
+        { t: '10:55 落地', text: 'MF849 从福州 09:20 起飞，JFK T4 10:55 落地。前一段是 12/17 13:45 郑州 CGO T2（MF8280），福州跨夜中转 17h25m，行李要在福州取出来重新托运。入境排队 1.5–2 小时，食品如实申报。' },
+        { t: '+2h', text: 'AirTrain 到 Jamaica，换长岛铁路 LIRR 到 Penn Station。AirTrain 约 $8.75，LIRR 市内票 $5.25–7.25，刷卡进出。', pois: ['moynihan'] },
+        { t: '+3h', leg: 's1' },
+        { t: '到站', text: 'South Station 到酒店（811 Massachusetts Ave，South End 边上）约 2 英里：带行李直接打车 10 分钟（$12–15）；想省钱就走到 Downtown Crossing 坐橙线两站到 Massachusetts Ave，再走 8 分钟。', pois: ['south-station'] },
+        { t: '晚上', text: '入住，酒店附近简单吃饭，早睡倒时差。' }
+      ],
+      tips: ['火车选落地时间 + 4 小时以后的班次，在车上补觉。到达层有人拉客“Need a taxi?”是黑车，直接走开。', '12/17 下午 13:45 郑州起飞，行李在福州要重新托运一次，值机时问一句能不能直挂到 JFK。', `酒店最近的地铁是${T.bos}，之后几天都从这儿进出。`],
+      stay: stayText('bos')
+    });
+  }
 
   days.push({
     id: '1219', md: '12/19', wd: '周六', city: 'bos', title: '哈佛、MIT、灯光秀',
@@ -39,7 +59,7 @@ export function buildDays(state) {
       { t: '17:00', text: 'Newbury Street 节日灯光。' },
       { t: '18:30', text: '昆西市场晚饭：蛤蜊浓汤、龙虾卷。法纳尔厅圣诞树和 Blink! 灯光秀。', pois: ['faneuil-hall'] }
     ],
-    tips: ['波士顿地铁可以直接刷信用卡或手机进站。', '查尔斯河边风很大，帽子手套带上。', '酒店在 South End 生活区，晚上回来的路上餐馆比市中心多。'],
+    tips: [...(rent === 'jfk' ? ['车停在酒店停车场不动，今天全程坐地铁，市区停车又贵又难找。'] : []), '波士顿地铁可以直接刷信用卡或手机进站。', '查尔斯河边风很大，帽子手套带上。', '酒店在 South End 生活区，晚上回来的路上餐馆比市中心多。'],
     stay: `${stayText('bos')} · 续住`
   });
 
@@ -60,19 +80,40 @@ export function buildDays(state) {
     stay: `${stayText('bos')} · 续住（第 3 晚）`
   });
 
-  // 12/21 周一：国会图书馆周一闭馆，图书馆统一放到 12/22
-  days.push({
-    id: '1221', md: '12/21', wd: '周一', city: 'dc', from: 'bos', title: '南下，傍晚看圣诞树',
-    items: [
-      { t: '05:40 出门', text: '早班火车，橙线头班车太赶，直接从酒店打车到 South Station（10 分钟，$12–15）。' },
-      { t: '06:30', leg: 's2' },
-      { t: '14:30', text: '到联合车站，走到酒店（1225 First St NE，NoMa 一带，约 10 分钟，一路有行李通道）。', pois: ['union-station-dc'] },
-      { t: '16:00', text: '酒店出门往南走 15 分钟就是国会山：白宫北侧外观 → 国家圣诞树（天黑后亮灯，日落 16:50）。', pois: ['white-house', 'national-tree'] },
-      { t: '19:00', text: '晚饭：红线 NoMa–Gallaudet 两站到 Gallery Place，中国城一带选择多；或去 U Street 吃 Ben\'s Chili Bowl 的 half-smoke。', pois: ['bens'] }
-    ],
-    tips: ['华盛顿地铁闸机可以直接刷信用卡或手机，进出都要刷同一张。', '从国会走到林肯纪念堂约 3.5 公里，穿好走的鞋。', '酒店离联合车站步行 10 分钟，12/23 走的时候不用打车。'],
-    stay: stayText('dc')
-  });
+  if (rent !== 'none') {
+    days.push({
+      id: '1221', md: '12/21', wd: '周一', city: 'dc', from: 'bos', title: '开车南下，傍晚看圣诞树',
+      items: rent === 'jfk' ? [
+        { t: '06:45', text: '退房，从酒店停车场取车。出城前加满油，行李全放后备箱、拉上遮物帘。' },
+        { t: '07:00', leg: 's2' },
+        { t: '15:30', text: '到酒店（1225 First St NE，NoMa 一带）：车交给代客泊车或停进车库，12/22 全天不碰车。', pois: ['union-station-dc'] },
+        { t: '16:30', text: '酒店出门往南走 15 分钟到国会山，再沿国家广场去白宫北侧外观 → 国家圣诞树（天黑后亮灯，日落 16:50）。', pois: ['white-house', 'national-tree'] },
+        { t: '19:00', text: '晚饭：红线 NoMa–Gallaudet 两站到 Gallery Place，中国城一带选择多；或去 U Street 吃 Ben\'s Chili Bowl 的 half-smoke。', pois: ['bens'] }
+      ] : [
+        { t: '06:30 取车', drive: 'pickup', text: PICKUP.bos.how },
+        { t: '07:00', leg: 's2' },
+        { t: '15:30', text: '到酒店（1225 First St NE，NoMa 一带）：车交给代客泊车或停进车库，12/22 全天不碰车。', pois: ['union-station-dc'] },
+        { t: '16:30', text: '酒店出门往南走 15 分钟到国会山，再沿国家广场去白宫北侧外观 → 国家圣诞树（天黑后亮灯，日落 16:50）。', pois: ['white-house', 'national-tree'] },
+        { t: '19:00', text: '晚饭：红线 NoMa–Gallaudet 两站到 Gallery Place，中国城一带选择多；或去 U Street 吃 Ben\'s Chili Bowl 的 half-smoke。', pois: ['bens'] }
+      ],
+      warn: DRIVES.s2.risk,
+      tips: ['华盛顿地铁闸机可以直接刷信用卡或手机，进出都要刷同一张。', '从国会走到林肯纪念堂约 3.5 公里，穿好走的鞋。'],
+      stay: stayText('dc')
+    });
+  } else {
+    days.push({
+      id: '1221', md: '12/21', wd: '周一', city: 'dc', from: 'bos', title: '南下，傍晚看圣诞树',
+      items: [
+        { t: '05:40 出门', text: '早班火车，橙线头班车太赶，直接从酒店打车到 South Station（10 分钟，$12–15）。' },
+        { t: '06:30', leg: 's2' },
+        { t: '14:30', text: '到联合车站，走到酒店（1225 First St NE，NoMa 一带，约 10 分钟，一路有行李通道）。', pois: ['union-station-dc'] },
+        { t: '16:00', text: '酒店出门往南走 15 分钟就是国会山：白宫北侧外观 → 国家圣诞树（天黑后亮灯，日落 16:50）。', pois: ['white-house', 'national-tree'] },
+        { t: '19:00', text: '晚饭：红线 NoMa–Gallaudet 两站到 Gallery Place，中国城一带选择多；或去 U Street 吃 Ben\'s Chili Bowl 的 half-smoke。', pois: ['bens'] }
+      ],
+      tips: ['华盛顿地铁闸机可以直接刷信用卡或手机，进出都要刷同一张。', '从国会走到林肯纪念堂约 3.5 公里，穿好走的鞋。', '酒店离联合车站步行 10 分钟，12/23 走的时候不用打车。'],
+      stay: stayText('dc')
+    });
+  }
 
   days.push({
     id: '1222', md: '12/22', wd: '周二', city: 'dc', title: '国会、纪念堂、奇才',
@@ -90,47 +131,72 @@ export function buildDays(state) {
     stay: `${stayText('dc')} · 续住`
   });
 
+  const phlRest = [
+    { t: '13:30', text: '回酒店方向：独立厅（定时票）+ 自由钟，就在酒店旁边两个街区。', pois: ['independence-hall', 'liberty-bell'], buy: ['rec'] },
+    { t: '15:30', text: 'Elfreth\'s Alley，美国最老的住家小巷，离酒店 5 分钟。', pois: ['elfreth'] },
+    { t: '16:30', text: 'LOVE 雕塑拍照（走 15 分钟），旁边圣诞市集只路过。', pois: ['love-park'] },
+    { t: '17:30', text: '南费城 Pat\'s vs Geno\'s 芝士牛肉堡对决，打车 10 分钟，吃完直接去球馆。', pois: ['pats-genos'] },
+    { t: '19:30', game: 'phi' },
+    { t: '22:00', text: '散场：宽街线（Broad Street Line）北上到 15th St，换集市-法兰克福线到 5th St，走 3 分钟回酒店；赛后有加开班次。' }
+  ];
   days.push({
     id: '1223', md: '12/23', wd: '周三', city: 'phl', from: 'dc', title: '独立厅、芝士牛肉堡、76人',
-    items: [
+    items: rent !== 'none' ? [
+      { t: '08:30', text: '退房取车，行李进后备箱。' },
+      { t: '08:45', leg: 's3' },
+      { t: '11:30', text: '到费城酒店（400 Arch St，老城区）：车停酒店停车场，行李寄存。午饭 Reading Terminal Market：DiNic\'s 烤猪肉三明治、Beiler\'s 甜甜圈（从酒店往西走 12 分钟）。', pois: ['reading-terminal'] },
+      ...phlRest
+    ] : [
       { t: '08:30', text: '退房，走 10 分钟到联合车站（不用打车）。', pois: ['union-station-dc'] },
       { t: '09:30', leg: 's3' },
       { t: '12:00', text: '到费城后打车 8 分钟到酒店（400 Arch St，老城区），先寄存行李。午饭 Reading Terminal Market：DiNic\'s 烤猪肉三明治、Beiler\'s 甜甜圈（从酒店往西走 12 分钟）。', pois: ['reading-terminal'] },
-      { t: '13:30', text: '回酒店方向：独立厅（定时票）+ 自由钟，就在酒店旁边两个街区。', pois: ['independence-hall', 'liberty-bell'], buy: ['rec'] },
-      { t: '15:30', text: 'Elfreth\'s Alley，美国最老的住家小巷，离酒店 5 分钟。', pois: ['elfreth'] },
-      { t: '16:30', text: 'LOVE 雕塑拍照（走 15 分钟），旁边圣诞市集只路过。', pois: ['love-park'] },
-      { t: '17:30', text: '南费城 Pat\'s vs Geno\'s 芝士牛肉堡对决，打车 10 分钟，吃完直接去球馆。', pois: ['pats-genos'] },
-      { t: '19:30', game: 'phi' },
-      { t: '22:00', text: '散场：宽街线（Broad Street Line）北上到 15th St，换集市-法兰克福线到 5th St，走 3 分钟回酒店；赛后有加开班次。' }
+      ...phlRest
     ],
-    tips: ['费城地铁 SEPTA 可以刷卡，一张卡最多能替 5 个人付费。', '12/23 是圣诞前出行高峰，大巴千万别坐下午的车。', '酒店在 Arch St 上，独立厅、自由钟、Elfreth\'s Alley 全在步行 5–10 分钟里，明天走之前还能再看一眼。'],
+    tips: rent !== 'none'
+      ? ['去球馆别开车：散场堵、停车贵，坐地铁 15 分钟。车在酒店停车场过夜。', '费城地铁 SEPTA 可以刷卡，一张卡最多能替 5 个人付费。', '酒店在 Arch St 上，独立厅、自由钟、Elfreth\'s Alley 全在步行 5–10 分钟里。']
+      : ['费城地铁 SEPTA 可以刷卡，一张卡最多能替 5 个人付费。', '12/23 是圣诞前出行高峰，大巴千万别坐下午的车。', '酒店在 Arch St 上，独立厅、自由钟、Elfreth\'s Alley 全在步行 5–10 分钟里，明天走之前还能再看一眼。'],
     stay: stayText('phl')
   });
 
+  const nyc24 = [
+    { t: '16:30', text: '布莱恩公园 Winter Village：全程唯一逛的节日市集。', pois: ['bryant-park'] },
+    { t: '18:00', text: '梅西百货圣诞橱窗。', pois: ['macys'] },
+    { t: '19:30', text: '平安夜晚餐。很多餐厅这天只做套餐，提前两周订位。', buy: ['ot', 'resy'] }
+  ];
   days.push({
-    id: '1224', md: '12/24', wd: '周四', city: 'nyc', from: 'phl', title: '平安夜：橱窗和洛克菲勒圣诞树',
-    items: [
+    id: '1224', md: '12/24', wd: '周四', city: 'nyc', from: 'phl', title: rent !== 'none' ? '开回纽约还车，平安夜看圣诞树' : '平安夜：橱窗和洛克菲勒圣诞树',
+    items: rent !== 'none' ? [
+      { t: '08:15', text: '（可选）Rocky 铜像拍照：开车 10 分钟，博物馆有付费停车场，拍完就走。行李一直锁在后备箱。', pois: ['rocky-steps'] },
+      { t: '09:00', leg: 's4' },
+      { t: '11:15', text: `到公寓楼下（${NYC_ADDR}）：在大楼门口装卸区打双闪，一人看车，一人把行李搬进大楼。提前和房东约好中午能不能先放行李（入住一般 15:00 后）。` },
+      { t: '11:45 还车', drive: 'dropoff', text: `${DROPOFF.how} ${DROPOFF.why}` },
+      { t: '13:30', text: `回到布鲁克林。下午进曼哈顿：${T.nyc}，坐 B/Q 到曼哈顿中城。第五大道橱窗：Bergdorf Goodman → Saks（入夜外墙灯光秀）→ 洛克菲勒圣诞树 → 圣帕特里克大教堂外观。`, pois: ['rockefeller-tree', 'st-patricks'] },
+      ...nyc24
+    ] : [
       { t: '09:00', text: '（可选）Rocky 铜像拍照，从酒店打车 10 分钟，不进馆、不爬台阶也可以。', pois: ['rocky-steps'] },
       { t: '10:30', leg: 's4' },
-      { t: '13:00', text: '到曼哈顿后去布鲁克林：Penn Station 坐长岛铁路 LIRR 到 Atlantic Terminal（20 分钟，带行李最省事），出站走 10 分钟到公寓；或 2/3 地铁三站到 Atlantic Av–Barclays。', pois: ['moynihan'] },
-      { t: '14:30', text: '公寓一般 15:00 后才能入住，早到先和房东约好放行李。然后 B/D/N/Q/R 从 DeKalb Av 进曼哈顿（到 34 St 约 15 分钟）。第五大道橱窗：Bergdorf Goodman → Saks（入夜外墙灯光秀）→ 洛克菲勒圣诞树 → 圣帕特里克大教堂外观。', pois: ['rockefeller-tree', 'st-patricks'] },
-      { t: '16:30', text: '布莱恩公园 Winter Village：全程唯一逛的节日市集。', pois: ['bryant-park'] },
-      { t: '18:00', text: '梅西百货圣诞橱窗。', pois: ['macys'] },
-      { t: '19:30', text: '平安夜晚餐。很多餐厅这天只做套餐，提前两周订位。', buy: ['ot', 'resy'] }
+      { t: '13:00', text: '到曼哈顿后去布鲁克林：Penn Station 坐长岛铁路 LIRR 到 Atlantic Terminal（20 分钟，带行李最省事），出站走 12 分钟到公寓。', pois: ['moynihan'] },
+      { t: '14:30', text: `公寓一般 15:00 后才能入住，早到先和房东约好放行李。然后从 ${T.nyc} 进曼哈顿。第五大道橱窗：Bergdorf Goodman → Saks（入夜外墙灯光秀）→ 洛克菲勒圣诞树 → 圣帕特里克大教堂外观。`, pois: ['rockefeller-tree', 'st-patricks'] },
+      ...nyc24
     ],
-    tips: ['平安夜傍晚第五大道和洛克菲勒中心会分流管制，排队 20–40 分钟很正常。', '纽约地铁用 OMNY 刷卡，每人用自己的卡或手机，7 天内刷满 $35 后免费。', `公寓最近的地铁是${T.nyc}；住布鲁克林进出曼哈顿单程 15–20 分钟，比住曼哈顿省一半房费。`],
+    tips: [
+      ...(rent !== 'none' ? ['还车前在新泽西加满油（新泽西有人帮加，比纽约便宜）。在取车时刻之前还车，6 天整只算 6 天。', '纽约市内不要开车：禁止红灯右转、停车极贵、拥堵费。车一还，之后全靠地铁。'] : []),
+      '平安夜傍晚第五大道和洛克菲勒中心会分流管制，排队 20–40 分钟很正常。',
+      '纽约地铁用 OMNY 刷卡，每人用自己的卡或手机，7 天内刷满 $35 后免费。',
+      `公寓最近的地铁是${T.nyc}；住布鲁克林进出曼哈顿单程 15–20 分钟。`
+    ],
     stay: nycHotel
   });
 
   days.push({
     id: '1225', md: '12/25', wd: '周五', city: 'nyc', title: '圣诞日：公园、唐人街、灯光',
     items: [
-      { t: '08:30', text: '早起再看一次洛克菲勒圣诞树，早上人最少（B/D/N/Q/R 到 47–50 Sts）。', pois: ['rockefeller-tree'] },
+      { t: '08:30', text: '早起再看一次洛克菲勒圣诞树，早上人最少（DeKalb Av 坐 B 线到 47–50 Sts；圣诞节 B 线停运就坐 Q 到 57 St 走过去）。', pois: ['rockefeller-tree'] },
       { t: '10:00', text: '中央公园：Gapstow 桥 → The Mall → 贝塞斯达喷泉 → Bow Bridge。', pois: ['central-park'] },
       { t: '12:00', game: 'nyk25', text: '尼克斯 vs 马刺圣诞大战中午开球。票太贵不买，找开门的体育酒吧看直播。' },
       { t: '13:30', text: '唐人街 + 小意大利。圣诞节中餐馆照常营业：Nom Wah 点心、Joe\'s Shanghai 小笼包。', pois: ['chinatown'] },
-      { t: '16:00', text: '看 Dyker Heights 圣诞灯：从公寓坐 D 线到 79 St（约 35 分钟，不用先绕去曼哈顿）。', pois: ['dyker'] },
-      { t: '20:00', text: 'D 线直接坐回 DeKalb Av，走回公寓。' }
+      { t: '16:00', text: '看 Dyker Heights 圣诞灯：从公寓走到 Atlantic Av–Barclays 站坐 D 线到 79 St（约 35 分钟，不用先绕去曼哈顿）。', pois: ['dyker'] },
+      { t: '20:00', text: 'D 线坐回 Atlantic Av–Barclays，走 12 分钟回公寓。' }
     ],
     tips: ['圣诞日大都会、多数商店和不少餐厅关门，地铁按周日时刻表跑。', 'Dyker Heights 21 点后不少人家关灯。', '住布鲁克林的好处：晚上看完灯 20 分钟就到家，不用再横穿曼哈顿。'],
     stay: nycHotel
@@ -139,15 +205,15 @@ export function buildDays(state) {
   days.push({
     id: '1226', md: '12/26', wd: '周六', city: 'nyc', title: '布鲁克林大桥、DUMBO、篮网',
     items: [
-      { t: '09:00', text: '从公寓走 15 分钟到 DUMBO（或 F 线一站到 York St），先看桥洞框住帝国大厦的机位、Jane\'s 旋转木马。', pois: ['dumbo'] },
+      { t: '09:00', text: '从公寓走 20 分钟到 DUMBO（或从 Jay St–MetroTech 坐 F 线一站到 York St），先看桥洞框住帝国大厦的机位、Jane\'s 旋转木马。', pois: ['dumbo'] },
       { t: '10:00', text: '从布鲁克林一侧走上布鲁克林大桥，往曼哈顿方向走约 30 分钟，下桥在市政厅一带。', pois: ['brooklyn-bridge'] },
       { t: '12:00', text: '回布鲁克林吃午饭：Juliana\'s 披萨或 Time Out Market 美食广场（都在 DUMBO）。' },
       { t: '13:30', text: '布鲁克林高地观景步道看天际线，走回公寓方向。', pois: ['promenade'] },
       { t: '15:00', text: '回公寓放东西。进球馆不能背双肩包。' },
-      { t: '17:00', text: 'Junior\'s 晚饭和芝士蛋糕（Flatbush & DeKalb），从公寓走 10 分钟，吃完再走 5 分钟到球馆。' },
+      { t: '17:00', text: 'Junior\'s 晚饭和芝士蛋糕（Flatbush & DeKalb），从公寓走 6 分钟，吃完再走 8 分钟到球馆。' },
       { t: '18:00', game: 'bkn' }
     ],
-    tips: ['弱队场次临近开赛常降价。', '12/26 是节后返程高峰，这天别安排城际移动。', '篮网就在 Barclays Center，公寓步行 15 分钟，散场不用挤地铁。'],
+    tips: ['弱队场次临近开赛常降价。', '12/26 是节后返程高峰，这天别安排城际移动。', '篮网就在 Barclays Center，公寓步行约 15 分钟，散场不用挤地铁。'],
     stay: nycHotel
   });
 
@@ -183,7 +249,7 @@ export function buildDays(state) {
   days.push({
     id: '1229', md: '12/29', wd: '周二', city: 'nyc', title: '弹性日：天气兜底',
     items: [
-      { t: '方案 1', text: '7 号线去法拉盛吃中餐和奶茶（从公寓先坐 B/D/N/Q/R 进曼哈顿再换 7 号线）。', pois: ['flushing'] },
+      { t: '方案 1', text: '7 号线去法拉盛吃中餐和奶茶（从 DeKalb Av 坐 Q/R 进曼哈顿，在 Times Sq 换 7 号线）。', pois: ['flushing'] },
       { t: '方案 2', text: '罗斯福岛缆车，刷 OMNY，空中看东河。', pois: ['roosevelt-tram'] },
       { t: '方案 3', text: '哈莱姆：Apollo 剧院外观，125 街。', pois: ['apollo'] },
       { t: '晚上', text: '韩国城 32 街烤肉，吃完回布鲁克林。' }
@@ -213,7 +279,7 @@ export function buildDays(state) {
     tips: state.opts.ewr
       ? ['大都会周三闭馆，别挪到这天。', '住机场酒店：晚饭后就动身，NJ Transit 末班在午夜前后；酒店通常有免费接驳，入住时问清楚次日航站楼接驳时间。']
       : ['大都会周三闭馆，别挪到这天。', '公寓订到 12/31，所以这晚不用去机场过夜；代价是 12/31 凌晨 02:30 就得叫车。想睡整觉就把设置里切成机场酒店，并和房东退掉最后一晚。', 'UA2434 是 06:00 起飞，国内段柜台 04:00 左右开，02:30 出发刚好。'],
-    stay: state.opts.ewr ? '纽瓦克机场酒店' : '纽约 · DKLB BKLN 公寓（住到 12/31）'
+    stay: state.opts.ewr ? '纽瓦克机场酒店' : `${nycHotel}（住到 12/31）`
   });
 
   days.push({
