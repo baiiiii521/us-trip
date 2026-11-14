@@ -34,7 +34,7 @@ import { renderSos } from './views/sos.js';
 import { billTotal, TAX, driveEves } from './lib/tools.js';
 import { renderMore, moreUi } from './views/more.js';
 import { renderDrive } from './views/drive.js';
-import { renderVault, vaultUi, lockVault, vaultFileUrl } from './views/vault.js';
+import { renderVault, vaultUi, lockVault, vaultFileUrl, syncVaultFiles, uploadVaultFiles, openUpload, deleteUpload } from './views/vault.js';
 import { unlockVault } from './lib/vault.js';
 import { renderWallet, slotSheetHtml, walletFiles, loadWalletFiles } from './views/wallet.js';
 import { renderCards, cardsUi, hotelSheetHtml, bigCardHtml } from './views/cards.js';
@@ -266,6 +266,8 @@ function armReminders() {
   return scheduleReminders(events, now);
 }
 
+const escHtml = (x) => String(x).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
 /* ---------- 动作 ---------- */
 const stamp = () => Date.now();
 const ACTIONS = {
@@ -377,6 +379,21 @@ const ACTIONS = {
     moreUi.busy = ''; rerender(); toast(`已下载 ${urls.length} 张景点照片`);
   },
   'vault-lock': () => { lockVault(); rerender(); toast('已锁上'); },
+  'vfile-open': async (el) => {
+    try {
+      const f = await openUpload(el.dataset.id);
+      const img = /^image\//.test(f.type);
+      openHtml(`<div class="sheet__body"><h2 class="sheet__title" id="sheet-title">${escHtml(f.name)}</h2>
+        ${img ? `<img class="sharecard" src="${f.url}" alt="${escHtml(f.name)}">` : ''}
+        <div class="btn-row"><a class="btn btn--primary" href="${f.url}" target="_blank" rel="noopener">${img ? '全屏看' : '打开 PDF'}</a>
+        <a class="btn btn--secondary" href="${f.url}" download="${escHtml(f.name)}">存到手机</a></div></div>`);
+    } catch (e) { toast(e.message); }
+  },
+  'vfile-del': async (el) => {
+    const f = vaultUi.uploads.find((x) => x.id === el.dataset.id);
+    if (!confirm(`删除“${f ? f.name : '这个附件'}”？两台手机都会看不到，不能恢复。`)) return;
+    await deleteUpload(el.dataset.id, () => { if (route === 'vault') rerender(); });
+  },
   'vault-file': (el) => { if (vaultUi.data) window.open(vaultFileUrl(Number(el.dataset.i)), '_blank'); },
   'preview-clear': () => { update((s) => { s.local.preview = ''; }); toast('已回到真实时间'); },
 
@@ -511,9 +528,10 @@ const FORMS = {
     vaultUi.busy = true; vaultUi.err = ''; rerender();
     try {
       const r = await unlockVault(pin);
-      Object.assign(vaultUi, { data: r.data, from: r.from, at: r.at, err: '' });
+      Object.assign(vaultUi, { data: r.data, from: r.from, at: r.at, err: '', pin });
     } catch (e) { vaultUi.err = e.message; }
     vaultUi.busy = false; rerender();
+    if (vaultUi.data) syncVaultFiles(() => { if (route === 'vault') rerender(); });
   },
   preview: (f) => { update((s) => { s.local.preview = val(f, 'at'); }); toast(val(f, 'at') ? '预览模式已开' : '已回到真实时间'); },
   cloud: async (f) => {
@@ -568,6 +586,11 @@ document.addEventListener('change', async (e) => {
     moneyUi.bill[k] = k === 'incl' ? t.checked : k === 'tip' ? Number(t.value) : t.value;
     if (k === 'tip') t.closest('form').querySelectorAll('input[name="tip"]').forEach((r) => r.closest('.pillradio').classList.toggle('is-on', r.checked));
     const out = document.getElementById('bill-out'); if (out) out.innerHTML = billOutHtml(getState());
+    return;
+  }
+  if (t.matches('[data-vault-upload]')) {
+    const list = [...t.files]; t.value = '';
+    if (list.length) await uploadVaultFiles(list, () => { if (route === 'vault') rerender(); });
     return;
   }
   if (t.matches('[data-park-photo]')) {

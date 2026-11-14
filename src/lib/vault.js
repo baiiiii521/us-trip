@@ -44,6 +44,54 @@ export async function openVault(box, pin) {
   return JSON.parse(dec.decode(pt));
 }
 
+// ── 手机上传的附件 ──
+// 每个附件两段密文：mct（文件名、类型、大小）和 ct（文件本身），都用证件包密码派生的同一把钥匙加密。
+// 钥匙每次打开只算一次（60 万次 PBKDF2，手机上约 1 秒）。
+const FILES_SALT = enc.encode('hoops-vault-files-v1');
+const fileKeys = new Map();
+function filesKey(pin, iter = KEY_ITER) {
+  const k = iter + ':' + pin;
+  if (!fileKeys.has(k)) fileKeys.set(k, aesKey(pin, FILES_SALT, iter));
+  return fileKeys.get(k);
+}
+export function forgetFileKeys() { fileKeys.clear(); }
+
+async function seal(key, bytes) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, bytes));
+  return { iv: toB64(iv), ct: toB64(ct) };
+}
+async function unseal(key, iv, ct) {
+  return new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromB64(iv) }, key, fromB64(ct)));
+}
+
+export const VAULT_FILE_MAX = 10 * 1024 * 1024;
+
+// { name, type, bytes } → { miv, mct, iv, ct }
+export async function sealVaultFile({ name, type, bytes }, pin, iter = KEY_ITER) {
+  const key = await filesKey(pin, iter);
+  const meta = await seal(key, enc.encode(JSON.stringify({ name: String(name || '附件'), type: String(type || 'application/octet-stream'), size: bytes.length })));
+  const body = await seal(key, bytes);
+  return { miv: meta.iv, mct: meta.ct, iv: body.iv, ct: body.ct };
+}
+export async function openVaultFileMeta(rec, pin, iter = KEY_ITER) {
+  return JSON.parse(dec.decode(await unseal(await filesKey(pin, iter), rec.miv, rec.mct)));
+}
+export async function openVaultFileData(rec, pin, iter = KEY_ITER) {
+  return unseal(await filesKey(pin, iter), rec.iv, rec.ct);
+}
+
+// 调服务器：op = list / get / put / del。出错时抛出中文说明
+export async function vaultFilesCall(op, pin, extra = {}, endpoint = 'api/vault/files') {
+  let res;
+  try {
+    res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ proof: await vaultProof(pin), op, ...extra }) });
+  } catch (e) { const err = new Error('没连上网'); err.offline = true; throw err; }
+  if (res.ok) return res.json();
+  const msg = { 403: '密码不对', 404: op === 'get' ? '这个附件已经被删了' : '服务器上还没有证件包', 413: '文件太大，单个最多 10MB', 429: '尝试次数太多，过一会儿再试', 507: '空间满了：最多 40 个附件、共 150MB，先删掉几个' }[res.status];
+  throw new Error(msg || `服务器出错（${res.status}）`);
+}
+
 export function cachedVault() {
   try { return JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); } catch (e) { return null; }
 }
