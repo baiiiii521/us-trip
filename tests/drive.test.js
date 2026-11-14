@@ -20,7 +20,8 @@ test('默认是你们的计划：12/18 JFK 取车，四段全自驾', () => {
 test('自驾花费：6 天租车 + 油 + 过路费 + 波士顿/华盛顿/费城停车', () => {
   const c = carCost(state());
   assert.equal(c.days, 6);
-  assert.equal(c.rental, 6 * DEFAULTS.budget.carDay);
+  assert.equal(c.booked, true);
+  assert.equal(c.rental, Math.round(4300 / DEFAULTS.budget.rate), '已订 ¥4,300 含保险');
   assert.equal(c.miles, 215 + 440 + 140 + 100 + 15);
   assert.ok(c.fuel > 80 && c.fuel < 150, `油费 ${c.fuel}`);
   assert.deepEqual(c.parkNights, { bos: 3, dc: 2, phl: 1 });
@@ -30,6 +31,8 @@ test('自驾花费：6 天租车 + 油 + 过路费 + 波士顿/华盛顿/费城�
 test('波士顿取车：只租 3 天，不付波士顿停车，加异地还车费', () => {
   const c = carCost(state({ rent: 'bos' }));
   assert.equal(c.days, 3);
+  assert.equal(c.booked, false);
+  assert.equal(c.rental, 3 * DEFAULTS.budget.carDay);
   assert.equal(c.parkNights.bos, 0);
   assert.equal(c.oneWay, DEFAULTS.budget.oneWay);
   const cmp = Object.fromEntries(rentCompare(state()).map((r) => [r.rent, r]));
@@ -39,6 +42,7 @@ test('波士顿取车：只租 3 天，不付波士顿停车，加异地还车�
 
 test('预算里有租车、油费、过路费、停车，不再有 4 段车票', () => {
   const rows = budgetRows(state());
+  assert.equal(rows.find((r) => /^租车/.test(r.label)).kind, 'real');
   for (const re of [/^租车 6 天/, /^油费/, /^过路费/, /^停车/]) assert.ok(rows.some((r) => re.test(r.label)), `缺 ${re}`);
   assert.ok(!rows.some((r) => /^城际车票/.test(r.label)));
   const none = budgetRows(state({ rent: 'none' }));

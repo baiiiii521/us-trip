@@ -59,7 +59,7 @@ export const TIPS = [
 ];
 
 export const CHECKLIST = [
-  { id: 'c1', when: '本周', text: '订租车：12/18 JFK 取、12/24 JFK 还，中型 SUV；套餐含 LDW + SLI 保险，两人都登记为驾驶员，确认含过路费电子收费服务', buy: ['car-hertz', 'car-avis', 'car-ent', 'car-zuzu'] },
+  { id: 'c1', when: '本周', text: '租车已订（JFK 12/18 取、12/24 还，¥4,300 含保险）：核对订单里车损险和第三者责任险都在、两人都是驾驶员、有没有过路费电子收费服务；确认号和道路救援电话存进订单夹', buy: ['car-hertz', 'car-avis', 'car-ent', 'car-zuzu'] },
   { id: 'c2', when: '本周', text: '两人办中国驾照英文翻译件；确认租车门店接受中国驾照 + 翻译件；主驾驶准备一张实体信用卡（不是借记卡）' },
   { id: 't3', when: '本周', text: '两人登记 EVUS（约 $31.75/人）', buy: ['evus'] },
   { id: 't5', when: '11/20 前', text: '凯尔特人、76人票先买；奇才、篮网在 TickPick 设降价提醒，赛前 1–2 天再买', game: 'bos' },

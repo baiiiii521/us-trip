@@ -19,7 +19,7 @@ function costCard(state) {
   const c = carCost(state);
   const rate = +state.budget.rate || 6.8;
   const rows = [
-    [`租车 ${c.days} 天 × $${state.budget.carDay}`, c.rental, '在“花费 → 预算”里改成你订到的每天总价'],
+    c.booked ? [`租车 ${c.days} 天（已订 ¥${Number(state.budget.carCny).toLocaleString('en-US')}，含保险）`, c.rental, '按汇率换算成美元；订单改了就在“花费 → 预算”里改'] : [`租车 ${c.days} 天 × $${state.budget.carDay}（估算）`, c.rental, '还没订，按每天估算'],
     ...(c.oneWay ? [['异地还车费', c.oneWay, '波士顿取、纽约还，下单时看清楚']] : []),
     [`油费（约 ${c.miles} 英里，28 mpg，$3.3/加仑）`, c.fuel, ''],
     ['过路费（含租车公司收费服务费）', c.tolls, '估算'],
@@ -48,7 +48,7 @@ function compareCard(state) {
       <span class="rentopt__meta">${r.car.miles ? `租 ${r.car.days} 天 · 开 ${r.car.miles} 英里` : '不开车'}${state.rent === r.rent ? ' · 当前' : ''}</span>
       <span class="rentopt__d">${esc(note[r.rent])}</span>
     </button>`).join('')}</div>
-    ${saving > 0 ? `<p class="callout"><b>建议</b>12/21 在波士顿取车比落地取车省约 ${usd(saving)}，还避开了“长途飞行后马上开 4–5 小时”这个全程最大的风险。12/19、12/20 在波士顿本来就只坐地铁，车停着只花钱。</p>` : ''}
+    ${saving > 0 ? `<p class="callout"><b>建议</b>12/21 在波士顿取车比落地取车约省 ${usd(saving)}（波士顿方案按每天 $${state.budget.carDay} 估算，含异地还车费），还避开了“长途飞行后马上开 4–5 小时”这个全程最大的风险。JFK 的车已经订好（¥${Number(state.budget.carCny).toLocaleString('en-US')}），要改先看订单的免费取消和改期规则。</p>` : ''}
   </section>`;
 }
 

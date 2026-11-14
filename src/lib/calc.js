@@ -30,9 +30,11 @@ export function carCost(state, rent = state.rent) {
   // 租车期间要过夜停车的城市：jfk 方案波士顿 3 晚；两种方案都有华盛顿 2 晚、费城 1 晚
   const parkNights = { bos: rent === 'jfk' ? 3 : 0, dc: 2, phl: 1 };
   const parking = Object.entries(parkNights).reduce((s, [c, k]) => s + k * PARKING[c].nightly, 0);
-  const rental = plan.days * n(b.carDay);
+  // JFK 6 天已订：¥4,300 含保险，按汇率换成美元；别的方案还没订，按每天估算
+  const booked = rent === 'jfk' && n(b.carCny) > 0;
+  const rental = booked ? Math.round(n(b.carCny) / (n(b.rate) || 6.8)) : plan.days * n(b.carDay);
   const oneWay = rent === 'bos' ? n(b.oneWay) : 0;
-  return { days: plan.days, rental, oneWay, miles, fuel, tolls, parking, parkNights, total: rental + oneWay + fuel + tolls + parking };
+  return { days: plan.days, booked, rental, oneWay, miles, fuel, tolls, parking, parkNights, total: rental + oneWay + fuel + tolls + parking };
 }
 
 export function choicesForMode(mode) {
@@ -92,7 +94,7 @@ export function budgetRows(state) {
   const ticketLegs = LEG_IDS.filter((id) => !isDriveLeg(state, id)).length;
   if (ticketLegs) rows.push({ group: 'transport', label: `城际车票 ${ticketLegs} 段（${ticketLegs === 4 ? MODE_LABEL[state.mode] : KIND_LABEL[state.choice.s1]}）`, amount: transportCost(state), kind: 'est' });
   if (car.days) {
-    rows.push({ group: 'transport', label: `租车 ${car.days} 天（$${n(b.carDay)}/天，含税费和保险）`, amount: car.rental, kind: 'in' });
+    rows.push({ group: 'transport', label: car.booked ? `租车 ${car.days} 天（已订 ¥${n(b.carCny).toLocaleString('en-US')}，含保险）` : `租车 ${car.days} 天（$${n(b.carDay)}/天，含税费和保险）`, amount: car.rental, kind: car.booked ? 'real' : 'in' });
     if (car.oneWay) rows.push({ group: 'transport', label: '异地还车费（波士顿取、纽约还）', amount: car.oneWay, kind: 'est' });
     rows.push({ group: 'transport', label: `油费（约 ${car.miles} 英里）`, amount: car.fuel, kind: 'est' });
     rows.push({ group: 'transport', label: '过路费（含租车公司收费服务费）', amount: car.tolls, kind: 'est' });

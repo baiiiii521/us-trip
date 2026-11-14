@@ -16,7 +16,7 @@ export const DEFAULTS = {
   nav: 'google',
   choice: { s1: 'train', s2: 'train', s3: 'bus', s4: 'bus' },
   // 机票 ¥12,200（去程 6,000 + 返程 6,200）÷ 6.8；酒店按已订订单的每晚实价
-  budget: { flights: 1794, rate: 6.8, bos: 108, dc: 86, phl: 109, apt: 90, food: 65, carDay: 110, oneWay: 100 },
+  budget: { flights: 1794, rate: 6.8, bos: 108, dc: 86, phl: 109, apt: 90, food: 65, carDay: 105, oneWay: 100, carCny: 4300 },
   opts: { ewr: false, summit: false, ins: false },
   todo: {},
   visited: {},
