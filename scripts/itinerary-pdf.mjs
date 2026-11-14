@@ -8,11 +8,12 @@
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { FLIGHTS } from '../src/data/flights.js';
 import { HOTELS } from '../src/data/hotels.js';
 
-const OUT_DIR = process.env.OUT_DIR || join(homedir(), 'Desktop', 'us-trip');
+// 转成绝对路径：Chrome 的 file:// 和 --print-to-pdf 都不认相对路径（发版脚本传的是 private/files）
+const OUT_DIR = resolve(process.env.OUT_DIR || join(homedir(), 'Desktop', 'us-trip'));
 const PDF = join(OUT_DIR, 'US-Itinerary-2026-12.pdf');
 const HTML = join(OUT_DIR, 'US-Itinerary-2026-12.html');
 const CHROME = process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
