@@ -17,7 +17,61 @@ import { slotsForItem, walletSlots } from '../data/bookings.js';
 import { slotChip } from './wallet.js';
 import { LEGS } from '../data/legs.js';
 import { HOTEL_OF } from '../data/hotels.js';
-import { PICKUP, DROPOFF } from '../data/drive.js';
+import { PICKUP, DROPOFF, PARKING } from '../data/drive.js';
+import { checkoutItems, parkingCities, daySpend } from '../lib/tools.js';
+import { files } from '../lib/storage.js';
+import { usd as usd0 } from '../lib/dom.js';
+
+// 停车照片（IndexedDB，只在本机）：{ city: objectURL }
+export const parkingPhotos = { map: {} };
+export async function loadParking() {
+  for (const u of Object.values(parkingPhotos.map)) URL.revokeObjectURL(u);
+  const map = {};
+  for (const f of await files.byKind('parking')) if (f.blob) map[f.slot] = URL.createObjectURL(f.blob);
+  parkingPhotos.map = map;
+}
+
+function checkoutHtml(state, day) {
+  const items = checkoutItems(day, state);
+  if (!items.length) return '';
+  const done = items.filter((x) => isDone(state, x.id)).length;
+  return `<details class="tbox"${done < items.length ? ' open' : ''}><summary><h3 style="display:inline">退房前检查 ${done}/${items.length}${done === items.length ? ' ✓' : ''}</h3></summary>
+    <ul class="outlist">${items.map((x) => `<li class="${isDone(state, x.id) ? 'is-done' : ''}"><label><input type="checkbox" data-action="todo" data-id="${esc(x.id)}"${isDone(state, x.id) ? ' checked' : ''}><span>${esc(x.text)}</span></label></li>`).join('')}</ul></details>`;
+}
+
+const CITY_ZH = { bos: '波士顿', dc: '华盛顿', phl: '费城' };
+function parkingHtml(state, day) {
+  return parkingCities(day, state).map((c) => {
+    const p = state.parking && state.parking[c] && !state.parking[c].del ? state.parking[c] : {};
+    const photo = parkingPhotos.map[c];
+    const has = p.spot || p.lat || photo;
+    const back = p.lat ? `<a class="btn btn--primary" href="${esc(directionsUrl(p.lat + ',' + p.lng, state.nav, 'walking'))}" target="_blank" rel="noopener">${icon('nav')}走回车旁</a>` : '';
+    return `<div class="tbox park">
+      <h3>${icon('car')} 车停在哪 · ${esc(CITY_ZH[c])}${c === day.from && c !== day.city ? '（今天从这里取车）' : has ? '' : '（停好车记一下）'}</h3>
+      <form class="form form--inline" data-form="park" data-city="${c}">
+        <label class="field" for="park-${c}"><span>层数、车位号、哪个车库</span><input id="park-${c}" name="spot" value="${esc(p.spot || '')}" autocomplete="off" placeholder="例如 P2 层 B14，酒店车库"></label>
+        <button class="btn btn--secondary" type="submit">保存</button>
+      </form>
+      ${photo ? `<img class="park__photo" src="${photo}" alt="${esc(CITY_ZH[c])}停车位置照片">` : ''}
+      <div class="btn-row">
+        ${back}
+        <button type="button" class="btn btn--secondary" data-action="park-here" data-city="${c}">${p.lat ? '重新定位' : '记下当前位置'}</button>
+        <label class="btn btn--secondary filebtn" for="park-photo-${c}">${photo ? '换一张照片' : '拍柱子编号'}<input id="park-photo-${c}" type="file" accept="image/*" capture="environment" data-park-photo="${c}" hidden></label>
+        ${has ? `<button type="button" class="btn btn--secondary" data-action="park-clear" data-city="${c}">清空</button>` : ''}
+      </div>
+      <p class="meta">${esc((PARKING[c] || {}).note || '')}</p>
+    </div>`;
+  }).join('');
+}
+
+function spendHtml(state, day) {
+  const rate = +state.budget.rate || 6.8;
+  const spent = daySpend(state.expenses, day.md, rate);
+  const food = (+state.budget.food || 0) * 2;
+  return `<div class="tbox"><h3>今天的花费</h3>
+    <p>已记 <b class="mono">${usd0(spent)}</b>（约 ${cny(spent * rate)}）${food ? ` · 餐饮预算两人 ${usd0(food)}/天` : ''}</p>
+    <div class="btn-row"><a class="btn btn--secondary" href="#money">记一笔 / 算小费</a></div></div>`;
+}
 
 // 某一项该导航去哪：景点 → 球馆 → 开车段的目的地酒店 → 取车/还车点
 export function navTarget(state, day, it) {
@@ -26,9 +80,9 @@ export function navTarget(state, day, it) {
   const poi = (it.pois || []).map((id) => POI[id]).find(Boolean);
   if (poi) return { name: poi.name, q: poi.q };
   if (it.game && GAMES[it.game]) { const a = POI[GAMES[it.game].arena]; if (a) return { name: a.name, q: a.q }; }
-  if (it.leg && choiceFor(state, it.leg) === 'car' && HOTEL_OF[day.city]) return { name: HOTEL_OF[day.city].zh, q: HOTEL_OF[day.city].addr };
+  if (it.leg && choiceFor(state, it.leg) === 'car' && HOTEL_OF[day.city]) return { name: HOTEL_OF[day.city].zh, q: HOTEL_OF[day.city].addr, mode: 'driving' };
   if (it.drive === 'pickup' && PICKUP[state.rent]) return { name: '取车点', q: PICKUP[state.rent].q };
-  if (it.drive === 'dropoff') return { name: '还车点', q: DROPOFF.q };
+  if (it.drive === 'dropoff') return { name: '还车点', q: DROPOFF.q, mode: 'driving' };
   return null;
 }
 
@@ -61,15 +115,20 @@ function todayCard(state, days, ctx) {
     <dl class="nownext">
       <div><dt>现在</dt><dd>${current ? line(current) : '今天还没开始'}</dd></div>
       ${between.length ? `<div><dt>接着按顺序</dt><dd>${between.map((it) => `<b>${esc(it.t)}</b> ${esc(itemLine(state, it).slice(0, 24))}`).join('<br>')}</dd></div>` : ''}
-      <div><dt>下一项${minutes != null ? ' · ' + fmtCountdown(minutes) : ''}</dt><dd>${next ? line(next) : '今天的安排都结束了'}</dd></div>
+      <div class="is-next"><dt>下一项${minutes != null ? ' · ' + fmtCountdown(minutes) : ''}</dt><dd>${next ? line(next) : '今天的安排都结束了'}</dd></div>
     </dl>
+    ${next && next.it.xmas ? `<p class="xmas xmas--${esc(next.it.xmas.s)}"><b>${next.it.xmas.s === 'open' ? '圣诞照常' : next.it.xmas.s === 'closed' ? '圣诞关门' : '圣诞营业待确认'}</b>${esc(next.it.xmas.note)}</p>` : ''}
     <div class="btn-row">
-      ${go ? `<a class="btn btn--primary" href="${esc(directionsUrl(go.q, state.nav))}" target="_blank" rel="noopener">${icon('nav')}导航到 ${esc(go.name)}</a>` : ''}
+      ${go ? `<a class="btn btn--primary" href="${esc(directionsUrl(go.q, state.nav, go.mode))}" target="_blank" rel="noopener">${icon('nav')}导航到 ${esc(go.name)}</a>` : ''}
       <a class="btn btn--secondary" href="#day-${day.id}">看全天行程</a>
       <a class="btn btn--secondary" href="#cards">英文大字卡</a>
+      <a class="btn btn--secondary" href="#sos">紧急情况</a>
     </div>
     ${slots.length ? `<div class="buys"><span class="buys__label">今天要出示的订单</span><div class="buys__list">${slots.map((id) => slotChip(state, id, slotTitle[id])).join('')}</div></div>` : ''}
     ${status.length ? `<div class="buys"><span class="buys__label">实时状态</span><div class="buys__list">${status.map((l) => ext(l.label, l.url)).join('')}</div></div>` : ''}
+    ${checkoutHtml(state, day)}
+    ${parkingHtml(state, day)}
+    ${spendHtml(state, day)}
   </section>`;
 }
 const STORM = { bos: '波士顿公共图书馆、哈佛自然史博物馆', dc: '史密森尼博物馆群（免费）、国会图书馆', phl: '费城艺术博物馆、独立厅', nyc: '大都会博物馆、自然史博物馆、纽约公共图书馆', la: '盖蒂中心、格兰德中央市场' };

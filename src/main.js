@@ -29,7 +29,9 @@ import { renderGuide, guideUi, guideResultsHtml } from './views/guide.js';
 import { renderTickets } from './views/tickets.js';
 import { budgetOutputHtml } from './views/budget.js';
 import { renderInfo, infoUi } from './views/info.js';
-import { renderMoney, moneyUi } from './views/money.js';
+import { renderMoney, moneyUi, billOutHtml } from './views/money.js';
+import { renderSos } from './views/sos.js';
+import { billTotal, TAX, driveEves } from './lib/tools.js';
 import { renderMore, moreUi } from './views/more.js';
 import { renderDrive } from './views/drive.js';
 import { renderVault, vaultUi, lockVault, vaultFileUrl } from './views/vault.js';
@@ -38,6 +40,7 @@ import { renderWallet, slotSheetHtml, walletFiles, loadWalletFiles } from './vie
 import { renderCards, cardsUi, hotelSheetHtml, bigCardHtml } from './views/cards.js';
 import { renderMemories, memUi, loadMemories } from './views/memories.js';
 import { files, uid } from './lib/storage.js';
+import { loadParking } from './views/home.js';
 import { fetchRate } from './lib/money.js';
 import { loadWeather, weatherFor, codeLabel } from './lib/weather.js';
 import { findToday, keyEvents } from './lib/today.js';
@@ -53,7 +56,7 @@ const POI_FILES = Object.fromEntries(POIS.filter((x) => x.wiki && x.photoFile).m
 
 const VIEWS = {
   home: renderHome, days: renderDays, guide: renderGuide, tickets: renderTickets, money: renderMoney, more: renderMore,
-  wallet: renderWallet, cards: renderCards, memories: renderMemories, info: renderInfo, drive: renderDrive, vault: renderVault
+  wallet: renderWallet, cards: renderCards, memories: renderMemories, info: renderInfo, drive: renderDrive, vault: renderVault, sos: renderSos
 };
 const TITLES = { ...Object.fromEntries(ROUTES.map((r) => [r.id, r.label])), ...Object.fromEntries(Object.entries(SUBPAGES).map(([k, v]) => [k, v.label])) };
 
@@ -259,6 +262,7 @@ function armReminders() {
       events.push({ at: x.at, title, body });
     }
   }
+  for (const e of driveEves(buildDays(state), state, (leg) => choiceFor(state, leg) === 'car')) events.push(e);
   return scheduleReminders(events, now);
 }
 
@@ -327,6 +331,22 @@ const ACTIONS = {
     if (!r) return toast('取不到实时汇率，先用手动汇率');
     update((s) => { s.budget.rate = Math.round(r * 1000) / 1000; });
     toast(`已更新：1 美元 = ¥${r.toFixed(3)}`);
+  },
+  'park-here': (el) => {
+    const c = el.dataset.city;
+    if (!navigator.geolocation) return toast('这个浏览器拿不到位置');
+    toast('正在定位…');
+    navigator.geolocation.getCurrentPosition(
+      (p) => { update((s) => { s.parking[c] = { ...(s.parking[c] && !s.parking[c].del ? s.parking[c] : {}), lat: +p.coords.latitude.toFixed(6), lng: +p.coords.longitude.toFixed(6), u: stamp() }; }); toast('已记下车的位置'); },
+      () => toast('定位失败：地下车库常没有信号，拍张柱子编号的照片更靠谱'),
+      { enableHighAccuracy: true, timeout: 15000 }
+    );
+  },
+  'park-clear': async (el) => {
+    const c = el.dataset.city;
+    update((s) => { s.parking[c] = { del: true, u: stamp() }; });
+    for (const old of await files.byKind('parking')) if (old.slot === c) await files.del(old.id).catch(() => {});
+    await loadParking(); rerender(); toast('已清空');
   },
   'exp-del': (el) => update((s) => { s.expenses[el.dataset.id] = { del: true, u: stamp() }; }),
   reset: () => { resetState(); toast('已恢复默认设置'); },
@@ -463,6 +483,21 @@ const FORMS = {
     update((s) => { s.expenses[uid()] = { amount, currency: d.currency, cat: d.cat, payer: d.payer, split: d.split, date: val(f, 'date'), note: val(f, 'note'), u: stamp() }; });
     toast('已记一笔');
   },
+  bill: () => {
+    const b = moneyUi.bill;
+    const r = billTotal({ amount: b.amount, taxRate: TAX[b.city || 'nyc'].rate, tipPct: b.tip, taxIncluded: b.incl });
+    if (!(r.total > 0)) return toast('请先填账单金额');
+    const d = moneyUi.draft;
+    const today = findToday(buildDays(getState()), currentNow(getState()));
+    moneyUi.bill.amount = '';
+    update((s) => { s.expenses[uid()] = { amount: r.total, currency: 'USD', cat: 'food', payer: d.payer, split: d.split, date: today ? today.md : '出发前', note: `餐馆（含税 + 小费 ${b.tip}%）`, u: stamp() }; });
+    toast(`已记一笔 $${r.total.toFixed(2)}`);
+  },
+  park: (f) => {
+    const c = f.dataset.city;
+    update((s) => { s.parking[c] = { ...(s.parking[c] && !s.parking[c].del ? s.parking[c] : {}), spot: val(f, 'spot'), u: stamp() }; });
+    toast('停车位置已保存');
+  },
   people: (f) => { update((s) => { s.people.a = { v: val(f, 'a') || '我', u: stamp() }; s.people.b = { v: val(f, 'b') || '同伴', u: stamp() }; }); toast('名字已保存'); },
   seat: (f) => { const id = f.dataset.id; update((s) => { s.seats[id] = { v: val(f, 'seat'), u: stamp() }; }); closeSheet(); toast('座位已保存'); },
   hotel: (f) => { const c = f.dataset.city; update((s) => { s.hotels[c] = { name: val(f, 'name'), addr: val(f, 'addr'), u: stamp() }; }); closeSheet(); toast('酒店已保存'); },
@@ -511,6 +546,11 @@ document.addEventListener('input', (e) => {
     if (box) box.innerHTML = guideResultsHtml(getState());
     return;
   }
+  if (e.target.matches('[data-bill="amount"]')) {
+    moneyUi.bill.amount = e.target.value;
+    const out = document.getElementById('bill-out'); if (out) out.innerHTML = billOutHtml(getState());
+    return;
+  }
   const el = e.target.closest('[data-bind]');
   if (!el) return;
   const [group, key] = el.dataset.bind.split('.');
@@ -523,6 +563,24 @@ document.addEventListener('input', (e) => {
 
 document.addEventListener('change', async (e) => {
   const t = e.target;
+  if (t.matches('[data-bill]')) {
+    const k = t.dataset.bill;
+    moneyUi.bill[k] = k === 'incl' ? t.checked : k === 'tip' ? Number(t.value) : t.value;
+    if (k === 'tip') t.closest('form').querySelectorAll('input[name="tip"]').forEach((r) => r.closest('.pillradio').classList.toggle('is-on', r.checked));
+    const out = document.getElementById('bill-out'); if (out) out.innerHTML = billOutHtml(getState());
+    return;
+  }
+  if (t.matches('[data-park-photo]')) {
+    const c = t.dataset.parkPhoto;
+    const f = t.files[0];
+    if (f) {
+      for (const old of await files.byKind('parking')) if (old.slot === c) await files.del(old.id).catch(() => {});
+      await files.put({ id: uid(), kind: 'parking', slot: c, name: f.name, type: f.type, blob: f });
+      await loadParking(); toast('停车照片已保存（只存在这台手机）'); rerender();
+    }
+    t.value = '';
+    return;
+  }
   if (t.matches('.pillradio input')) {
     moneyUi.draft[t.name] = t.value;
     t.closest('form').querySelectorAll(`.pillradio input[name="${t.name}"]`).forEach((r) => r.closest('.pillradio').classList.toggle('is-on', r.checked));
@@ -576,6 +634,7 @@ onRoute();
 
 // 后台任务：订单附件索引、天气、照片、离线缓存、提醒
 loadWalletFiles().then(rerender).catch(() => {});
+loadParking().then(rerender).catch(() => {});
 loadWeather().then((m) => { ctx.weather = m; rerender(); }).catch(() => {});
 onPhotos(() => render({ keepScroll: true }));
 loadPhotos(POIS.map((p) => p.wiki), POI_FILES);

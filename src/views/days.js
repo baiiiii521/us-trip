@@ -90,6 +90,12 @@ function poiChips(ids, state, md) {
   void md;
 }
 
+// 12/24、12/25 的营业情况：照常 / 待确认 / 关门
+const XMAS = { open: '圣诞照常', check: '圣诞营业待确认', closed: '圣诞关门' };
+export function xmasHtml(x) {
+  return `<p class="xmas xmas--${esc(x.s)}"><b>${esc(XMAS[x.s] || '')}</b>${esc(x.note || '')}</p>`;
+}
+
 export function renderDays(state, ctx = { now: new Date(), weather: null }) {
   const days = buildDays(state);
   const phase = tripPhase(ctx.now);
@@ -125,6 +131,7 @@ export function renderDays(state, ctx = { now: new Date(), weather: null }) {
             ${it.leg ? legBlock(it.leg, state) : ''}
             ${it.game ? gameBlock(it.game, it.text) : ''}
             ${!it.game && it.text ? `<p>${esc(it.text)}</p>` : ''}
+            ${it.xmas ? xmasHtml(it.xmas) : ''}
             ${it.drive ? rentBlock(it.drive, state) : ''}
             ${it.pois && it.pois.length ? poiChips(it.pois, state, d.md) : ''}
             ${it.buy && it.buy.length ? buyRow('预约 / 买票', vendorLinks(it.buy)) : ''}

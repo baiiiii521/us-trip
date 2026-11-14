@@ -1,7 +1,7 @@
 // 全局状态，保存在本机浏览器 localStorage。
 // - 方案设置：交通方式、12/20 方案、纽约住宿、导航 App、预算输入
 // - 可同步数据（两人同步时合并）：每条记录带更新时间 u，删除也留一条 { del: true, u }
-//     todo 清单勾选、visited 景点打卡、expenses 记账、wallet 订单夹文字、hotels 酒店地址、seats 球赛座位、people 两人名字
+//     todo 清单勾选（含退房清单 out-<天>-<项>）、visited 景点打卡、expenses 记账、wallet 订单夹文字、hotels 酒店地址、seats 球赛座位、people 两人名字、parking 车停在哪（文字和定位；照片只在本机）
 // - 本机设置：提醒、预览日期、云同步房间（口令只存本机）
 // 照片和订单附件存在 IndexedDB（lib/storage.js），不在这里。
 import { detectMode } from './lib/calc.js';
@@ -25,11 +25,12 @@ export const DEFAULTS = {
   hotels: {},
   seats: {},
   people: {},
+  parking: {},
   local: { remind: false, preview: '', syncRoom: '', syncPass: '', lastSync: 0 }
 };
 
 const SETTING_KEYS = ['mode', 'rent', 'plan', 'hotel', 'nav', 'choice', 'budget', 'opts'];
-const DATA_KEYS = ['todo', 'visited', 'expenses', 'wallet', 'hotels', 'seats', 'people', 'local'];
+const DATA_KEYS = ['todo', 'visited', 'expenses', 'wallet', 'hotels', 'seats', 'people', 'parking', 'local'];
 
 function clone(o) { return JSON.parse(JSON.stringify(o)); }
 

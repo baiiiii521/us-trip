@@ -163,9 +163,9 @@ export function buildDays(state) {
   });
 
   const nyc24 = [
-    { t: '16:30', text: '布莱恩公园 Winter Village：全程唯一逛的节日市集。', pois: ['bryant-park'] },
-    { t: '18:00', text: '梅西百货圣诞橱窗。', pois: ['macys'] },
-    { t: '19:30', text: '平安夜晚餐。很多餐厅这天只做套餐，提前两周订位。', buy: ['ot', 'resy'] }
+    { t: '16:30', xmas: { s: 'check', note: '官网写平日 11:00–20:00，开到 2027-01-03；平安夜会不会提早关门官网还没写（11-14 查）' }, text: '布莱恩公园 Winter Village：全程唯一逛的节日市集。', pois: ['bryant-park'] },
+    { t: '18:00', xmas: { s: 'open', note: '橱窗在街边，商店关门也能看；平安夜商店一般提早关门，想进去买东西就早点去' }, text: '梅西百货圣诞橱窗。', pois: ['macys'] },
+    { t: '19:30', xmas: { s: 'check', note: '不少餐厅这天只做套餐或干脆不开，订位时确认营业时间' }, text: '平安夜晚餐。很多餐厅这天只做套餐，提前两周订位。', buy: ['ot', 'resy'] }
   ];
   days.push({
     id: '1224', md: '12/24', wd: '周四', city: 'nyc', from: 'phl', title: rent !== 'none' ? '开回纽约还车，平安夜看圣诞树' : '平安夜：橱窗和洛克菲勒圣诞树',
@@ -174,13 +174,13 @@ export function buildDays(state) {
       { t: '09:00', leg: 's4' },
       { t: '11:15', text: `到公寓楼下（${NYC_ADDR}）：在大楼门口装卸区打双闪，一人看车，一人把行李搬进大楼。提前和房东约好中午能不能先放行李（入住一般 15:00 后）。` },
       { t: '11:45 还车', drive: 'dropoff', text: `${DROPOFF.how} ${DROPOFF.why}` },
-      { t: '13:30', text: `回到布鲁克林。下午进曼哈顿：${T.nyc}，坐 B/Q 到曼哈顿中城。第五大道橱窗：Bergdorf Goodman → Saks（入夜外墙灯光秀）→ 洛克菲勒圣诞树 → 圣帕特里克大教堂外观。`, pois: ['rockefeller-tree', 'st-patricks'] },
+      { t: '13:30', text: `回到布鲁克林。下午进曼哈顿：${T.nyc}，坐 B/Q 到曼哈顿中城。第五大道橱窗：Bergdorf Goodman → Saks（入夜外墙灯光秀）→ 洛克菲勒圣诞树 → 圣帕特里克大教堂外观。`, xmas: { s: 'check', note: '圣诞树 12/2 点灯，每天几点亮灯官网还没公布（11-14 查）；橱窗在街边随时能看' }, pois: ['rockefeller-tree', 'st-patricks'] },
       ...nyc24
     ] : [
       { t: '09:00', text: '（可选）Rocky 铜像拍照，从酒店打车 10 分钟，不进馆、不爬台阶也可以。', pois: ['rocky-steps'] },
       { t: '10:30', leg: 's4' },
       { t: '13:00', text: '到曼哈顿后去布鲁克林：Penn Station 坐长岛铁路 LIRR 到 Atlantic Terminal（20 分钟，带行李最省事），出站走 12 分钟到公寓。', pois: ['moynihan'] },
-      { t: '14:30', text: `公寓一般 15:00 后才能入住，早到先和房东约好放行李。然后从 ${T.nyc} 进曼哈顿。第五大道橱窗：Bergdorf Goodman → Saks（入夜外墙灯光秀）→ 洛克菲勒圣诞树 → 圣帕特里克大教堂外观。`, pois: ['rockefeller-tree', 'st-patricks'] },
+      { t: '14:30', text: `公寓一般 15:00 后才能入住，早到先和房东约好放行李。然后从 ${T.nyc} 进曼哈顿。第五大道橱窗：Bergdorf Goodman → Saks（入夜外墙灯光秀）→ 洛克菲勒圣诞树 → 圣帕特里克大教堂外观。`, xmas: { s: 'check', note: '圣诞树 12/2 点灯，每天几点亮灯官网还没公布（11-14 查）；橱窗在街边随时能看' }, pois: ['rockefeller-tree', 'st-patricks'] },
       ...nyc24
     ],
     tips: [
@@ -195,11 +195,11 @@ export function buildDays(state) {
   days.push({
     id: '1225', md: '12/25', wd: '周五', city: 'nyc', title: '圣诞日：公园、唐人街、灯光',
     items: [
-      { t: '08:30', text: '早起再看一次洛克菲勒圣诞树，早上人最少（DeKalb Av 坐 B 线到 47–50 Sts；圣诞节 B 线停运就坐 Q 到 57 St 走过去）。', pois: ['rockefeller-tree'] },
-      { t: '10:00', text: '中央公园：Gapstow 桥 → The Mall → 贝塞斯达喷泉 → Bow Bridge。', pois: ['central-park'] },
-      { t: '12:00', game: 'nyk25', text: '尼克斯 vs 马刺圣诞大战中午开球。票太贵不买，找开门的体育酒吧看直播。' },
-      { t: '13:30', text: '唐人街 + 小意大利。圣诞节中餐馆照常营业：Nom Wah 点心、Joe\'s Shanghai 小笼包。', pois: ['chinatown'] },
-      { t: '16:00', text: '看 Dyker Heights 圣诞灯：从公寓走到 Atlantic Av–Barclays 站坐 D 线到 79 St（约 35 分钟，不用先绕去曼哈顿）。', pois: ['dyker'] },
+      { t: '08:30', xmas: { s: 'check', note: '往年圣诞日全天亮灯，2026 年的时间官网还没公布；B 线圣诞节不开，按括号里坐 Q 线' }, text: '早起再看一次洛克菲勒圣诞树，早上人最少（DeKalb Av 坐 B 线到 47–50 Sts；圣诞节 B 线停运就坐 Q 到 57 St 走过去）。', pois: ['rockefeller-tree'] },
+      { t: '10:00', xmas: { s: 'open', note: '公园每天 6:00–次日 1:00 开放，圣诞节也开' }, text: '中央公园：Gapstow 桥 → The Mall → 贝塞斯达喷泉 → Bow Bridge。', pois: ['central-park'] },
+      { t: '12:00', game: 'nyk25', xmas: { s: 'check', note: '圣诞中午开门的体育酒吧不多，前一天在 Google 地图上看好营业时间' }, text: '尼克斯 vs 马刺圣诞大战中午开球。票太贵不买，找开门的体育酒吧看直播。' },
+      { t: '13:30', xmas: { s: 'check', note: '唐人街中餐馆大多照常营业，但 Nom Wah、Joe\'s Shanghai 没在官网查到圣诞时间，前一天打电话或看 Google 地图' }, text: '唐人街 + 小意大利。圣诞节中餐馆照常营业：Nom Wah 点心、Joe\'s Shanghai 小笼包。', pois: ['chinatown'] },
+      { t: '16:00', xmas: { s: 'open', note: '居民自家装饰，街区随时能走；天黑后亮灯，21 点后不少人家关灯' }, text: '看 Dyker Heights 圣诞灯：从公寓走到 Atlantic Av–Barclays 站坐 D 线到 79 St（约 35 分钟，不用先绕去曼哈顿）。', pois: ['dyker'] },
       { t: '20:00', text: 'D 线坐回 Atlantic Av–Barclays，走 12 分钟回公寓。' }
     ],
     tips: ['圣诞日大都会、多数商店和不少餐厅关门，地铁按周日时刻表跑。', 'Dyker Heights 21 点后不少人家关灯。', '住布鲁克林的好处：晚上看完灯 20 分钟就到家，不用再横穿曼哈顿。'],

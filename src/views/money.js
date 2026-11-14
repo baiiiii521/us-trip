@@ -6,8 +6,41 @@ import { personName } from '../state.js';
 import { buildDays } from '../data/days.js';
 import { findToday } from '../lib/today.js';
 import { budgetBody } from './budget.js';
+import { TAX, TIPS, billTotal } from '../lib/tools.js';
 
-export const moneyUi = { tab: 'log', draft: { currency: 'USD', cat: 'food', payer: 'a', split: 'both' } };
+export const moneyUi = { tab: 'log', draft: { currency: 'USD', cat: 'food', payer: 'a', split: 'both' }, bill: { amount: '', city: '', tip: 18, incl: false } };
+
+// 结账计算的结果（输入时只刷新这一块，不重绘整页）
+export function billOutHtml(state) {
+  const b = moneyUi.bill;
+  const rate = +state.budget.rate || 6.8;
+  const r = billTotal({ amount: b.amount, taxRate: TAX[b.city || 'nyc'].rate, tipPct: b.tip, taxIncluded: b.incl });
+  return `<div><span>${b.incl ? '税前' : '菜单金额'}</span><b>${usd2(r.sub)}</b></div>
+    <div><span>税</span><b>${usd2(r.tax)}</b></div>
+    <div><span>小费 ${b.tip}%（按税前算）</span><b>${usd2(r.tip)}</b></div>
+    <div><span>每人</span><b>${usd2(r.each)}</b></div>
+    <div class="is-total"><span>一共要付 · 约 ${cny(r.total * rate)}</span><b>${usd2(r.total)}</b></div>`;
+}
+const usd2 = (n) => '$' + (Number(n) || 0).toFixed(2);
+
+function billCard(state, today) {
+  const b = moneyUi.bill;
+  if (!b.city) b.city = today && TAX[today.city] ? today.city : 'nyc';
+  return `<section class="card bill">
+    <div class="card__h"><h2>结账计算</h2><span class="meta">美国标价不含税，小费另付</span></div>
+    <form class="form" data-form="bill">
+      <div class="form__row">
+        <label class="field field--amount" for="bill-amount"><span>账单金额（美元）</span><input id="bill-amount" name="amount" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00" value="${esc(b.amount)}" data-bill="amount"></label>
+        <label class="field" for="bill-city"><span>在哪个城市</span><select id="bill-city" name="city" data-bill="city">${Object.entries(TAX).map(([k, v]) => `<option value="${k}"${k === b.city ? ' selected' : ''}>${esc(v.label)}</option>`).join('')}</select></label>
+      </div>
+      <div class="field"><span>小费</span><div class="pills">${TIPS.map((t) => `<label class="pillradio${t === +b.tip ? ' is-on' : ''}"><input type="radio" name="tip" value="${t}" data-bill="tip"${t === +b.tip ? ' checked' : ''}><span>${t ? t + '%' : '不给'}</span></label>`).join('')}</div></div>
+      <label class="check"><input type="checkbox" name="incl" data-bill="incl"${b.incl ? ' checked' : ''}> 我输入的是已含税的金额（收据上的 Total）</label>
+      <div class="bill__out" id="bill-out" aria-live="polite">${billOutHtml(state)}</div>
+      <button class="btn btn--primary" type="submit">${icon('check')}按总额记一笔</button>
+    </form>
+    <p class="note">餐馆坐下吃给 18–20%；外带、柜台点餐可以不给或给 10%；收据上已经有 “Gratuity / Service charge” 就不用再给。刷卡时小费写在 Tip 那一行，Total 写总数。</p>
+  </section>`;
+}
 
 const TABS = [['log', '记账'], ['settle', '结算'], ['budget', '预算']];
 // 记账分类 → 预算分组（用于“实际 vs 预算”）
@@ -28,6 +61,7 @@ function logTab(state, now) {
   for (const e of list) (byDate[e.date || '其他'] = byDate[e.date || '其他'] || []).push(e);
   const a = personName(state, 'a'), b = personName(state, 'b');
   return `
+  ${billCard(state, today)}
   <section class="card">
     <div class="card__h"><h2>记一笔</h2><span class="meta">汇率 1 美元 = ¥${rate.toFixed(2)} <button type="button" class="linkbtn" data-action="fx-live">用实时汇率</button></span></div>
     <form class="form" data-form="expense">

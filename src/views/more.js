@@ -28,6 +28,7 @@ export function renderMore(state) {
 
   <section class="card">
     <div class="mlist">
+      ${entry('#sos', '紧急情况', '911、领事保护电话、酒店电话、丢护照怎么办、英文求助卡', 'phone')}
       ${entry('#vault', '证件和订单（需密码）', '护照号、机票订单号和票号、酒店确认号、入境行程单 PDF', 'info')}
       ${state.rent !== 'none' ? entry('#drive', '自驾', '租车、每段路线、停车、过路费、加油和驾驶规则', 'car') : ''}
       ${entry('#wallet', '订单夹', `确认号、座位、截图，已填 ${wp.filled}/${wp.total}`, 'ticket')}
@@ -51,7 +52,7 @@ export function renderMore(state) {
 
   <section class="card">
     <div class="card__h"><h2>出发提醒</h2></div>
-    <p class="note">每次城际交通和球赛开始前 60 分钟、15 分钟各提醒一次。浏览器的限制：需要页面开着，或者已加到主屏幕。iPhone 必须先“添加到主屏幕”。</p>
+    <p class="note">城际交通、球赛、取车和航班前 60 分钟、15 分钟各提醒一次；开车的前一晚 21:00 提醒看天气。浏览器的限制：需要页面开着，或者已加到主屏幕。iPhone 必须先“添加到主屏幕”。</p>
     ${notifySupported()
       ? `<div class="btn-row"><button type="button" class="btn ${l.remind && perm === 'granted' ? 'btn--secondary' : 'btn--primary'}" data-action="remind-toggle">${l.remind && perm === 'granted' ? '已开启，点这里关闭' : '开启提醒'}</button>${perm === 'denied' ? '<span class="meta">浏览器已拒绝通知，请在系统设置里允许</span>' : ''}</div>`
       : '<p class="meta">这个浏览器不支持通知。</p>'}
