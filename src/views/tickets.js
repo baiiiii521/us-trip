@@ -140,7 +140,7 @@ export function renderTickets(state) {
     <div class="sec__h"><h2>自驾</h2><span class="meta">${esc(transportLabel(state))} · 约 ${usd(car.total)}</span></div>
     <a class="card drivecard m-card" href="#drive">
       <span class="drivecard__ic">${icon('car')}</span>
-      <span class="drivecard__main"><b>${esc(plan.label)} → 12/24 JFK 还车</b>
+      <span class="drivecard__main"><b>${esc(plan.label)} → 12/24 曼哈顿还车</b>
         <small>${plan.days} 天 · 约 ${car.miles} 英里 · 租车 ${usd(car.rental)} + 油 ${usd(car.fuel)} + 过路费 ${usd(car.tolls)} + 停车 ${usd(car.parking)}${car.oneWay ? ' + 异地还车 ' + usd(car.oneWay) : ''}</small>
         <small>每段路线、取还车步骤、停车、过路费、加油和驾驶规则</small></span>${arrow}
     </a>

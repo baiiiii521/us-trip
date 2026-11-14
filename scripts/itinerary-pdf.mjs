@@ -63,7 +63,7 @@ const DAYS = [
   ['Mon 21 Dec', 'Boston → Washington, D.C.', 'Drive to Washington; check in; White House and National Christmas Tree.'],
   ['Tue 22 Dec', 'Washington, D.C.', 'U.S. Capitol tour, Library of Congress, National Mall and memorials; Washington Wizards game, 19:00.'],
   ['Wed 23 Dec', 'Washington → Philadelphia', 'Drive to Philadelphia; Independence Hall, Liberty Bell, Reading Terminal Market; Philadelphia 76ers game, 19:30.'],
-  ['Thu 24 Dec', 'Philadelphia → New York', 'Drive to Brooklyn; return rental car at JFK; check in at apartment in Fort Greene, Brooklyn; Fifth Avenue and Rockefeller Center Christmas Tree.'],
+  ['Thu 24 Dec', 'Philadelphia → New York', 'Drive to Brooklyn and drop luggage at the apartment in Fort Greene; return rental car at Sixt Battery Park, Lower Manhattan; Fifth Avenue and Rockefeller Center Christmas Tree.'],
   ['Fri 25 Dec', 'New York', 'Christmas Day: Central Park, Chinatown, Dyker Heights Christmas lights.'],
   ['Sat 26 Dec', 'New York', 'Brooklyn Bridge, DUMBO, Brooklyn Heights Promenade; Brooklyn Nets game, 18:00, Barclays Center.'],
   ['Sun 27 Dec', 'New York', 'Metropolitan Museum of Art, Grand Central Terminal, Times Square.'],
@@ -201,7 +201,7 @@ const html = `<!doctype html>
 <h2>Notes</h2>
 <div class="box">
   <p><b>Luggage:</b> one checked bag (23 kg) and one carry-on per traveller.</p>
-  <p><b>Transport within the United States:</b> rental car (self-drive) from 18 to 24 December, picked up and returned at New York JFK; subway and regional rail inside the cities; no driving in New York City after 24 December.</p>
+  <p><b>Transport within the United States:</b> rental car (self-drive) from 18 to 24 December, picked up at New York JFK and returned at Sixt Battery Park (20 Morris St), Manhattan; subway and regional rail inside the cities; no driving in New York City after 24 December.</p>
   ${PRIV.contact ? `<p><b>Contact:</b> ${esc(PRIV.contact)}</p>` : ''}
 </div>
 

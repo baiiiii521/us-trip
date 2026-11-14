@@ -67,10 +67,12 @@ function stepsCard(state) {
   ];
   const dropSteps = [
     '新泽西收费公路上最后一个服务区加满油（新泽西有人帮加），保留小票。',
-    `先开到公寓（${HOTEL_OF.nyc.addr}）门口卸行李，一人看车一人搬。`,
-    '空车开去 JFK，跟着 Rental Car Return 指示牌，约 40–60 分钟。',
-    '还车时再绕车拍一圈视频、拍油表和里程，拿到还车收据（邮件）再走。',
-    '坐 AirTrain 到 Jamaica 换 LIRR 到 Atlantic Terminal，走 12 分钟回公寓，约 1 小时。',
+    `先开到公寓（${HOTEL_OF.nyc.addr}）门口卸行李，一人看车一人搬。房东不让提前放行李，就带着行李直接去还车，还完打车回来。`,
+    '在布鲁克林这边再把油补满（曼哈顿下城几乎没有加油站），走布鲁克林大桥进曼哈顿，到 20 Morris St 的停车楼，约 20–30 分钟。',
+    DROPOFF.toll,
+    DROPOFF.hours,
+    '还车时绕车拍一圈视频、拍油表和里程，拿到还车收据（邮件）再走。',
+    '还完车就在曼哈顿下城：下午直接逛；回公寓走 5 分钟到 Whitehall St 站坐 R 线到 DeKalb Av，约 15 分钟。',
     DROPOFF.why
   ];
   const ol = (a) => `<ol class="steps">${a.map((x) => `<li>${esc(x)}</li>`).join('')}</ol>`;
@@ -123,7 +125,7 @@ export function renderDrive(state) {
     ${compareCard(state)}`;
   }
   return `
-  <div class="pagehead"><h1>自驾</h1><p>${esc(plan.label)}，12/24 回纽约还车，${plan.days} 天约 ${carCost(state).miles} 英里。纽约那 6 天不开车。</p></div>
+  <div class="pagehead"><h1>自驾</h1><p>${esc(plan.label)}，12/24 在曼哈顿下城还车，${plan.days} 天约 ${carCost(state).miles} 英里。纽约那 6 天不开车。</p></div>
   ${compareCard(state)}
   ${costCard(state)}
   ${stepsCard(state)}

@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { DEFAULTS } from '../src/state.js';
 import { carCost, rentCompare, budgetRows, choiceFor, transportCost } from '../src/lib/calc.js';
 import { buildDays } from '../src/data/days.js';
-import { DRIVES, RENT_PLANS, DRIVE_GUIDE } from '../src/data/drive.js';
+import { DRIVES, RENT_PLANS, DRIVE_GUIDE, DROPOFF } from '../src/data/drive.js';
 
 const state = (over = {}) => ({ ...JSON.parse(JSON.stringify(DEFAULTS)), ...over });
 
@@ -22,7 +22,7 @@ test('自驾花费：6 天租车 + 油 + 过路费 + 波士顿/华盛顿/费城�
   assert.equal(c.days, 6);
   assert.equal(c.booked, true);
   assert.equal(c.rental, Math.round(4300 / DEFAULTS.budget.rate), '已订 ¥4,300 含保险');
-  assert.equal(c.miles, 215 + 440 + 140 + 100 + 15);
+  assert.equal(c.miles, 215 + 440 + 140 + 100 + 4);
   assert.ok(c.fuel > 80 && c.fuel < 150, `油费 ${c.fuel}`);
   assert.deepEqual(c.parkNights, { bos: 3, dc: 2, phl: 1 });
   assert.equal(c.total, c.rental + c.oneWay + c.fuel + c.tolls + c.parking);
@@ -59,9 +59,14 @@ test('每日行程：12/18 取车、12/24 还车，自驾日不再写火车大�
     const text = d(id).items.map((i) => i.text || '').join(' ');
     assert.ok(!/Amtrak|大巴|South Station 坐|联合车站（不用打车）/.test(text), `${id} 还在写公共交通：${text.slice(0, 80)}`);
   }
-  // 还车时间早于 12/18 取车时刻，才能只算 6 天
-  const drop = d('1224').items.find((i) => i.drive === 'dropoff');
-  assert.match(drop.t, /^11:45/);
+  // 12/24 在曼哈顿 Sixt Battery Park 还车，12:30 前还掉（平安夜门店可能 13:00 关门，订单也写 13:00）
+  for (const rent of ['jfk', 'bos']) {
+    const drop = buildDays(state({ rent })).find((x) => x.id === '1224').items.find((i) => i.drive === 'dropoff');
+    const [h, m] = drop.t.split(' ')[0].split(':').map(Number);
+    assert.ok(h * 60 + m <= 12 * 60 + 30, `${rent} 还车 ${drop.t} 太晚`);
+  }
+  assert.match(DROPOFF.q, /Morris/);
+  assert.match(DROPOFF.hours, /07:30–13:00/);
   // 不租车时恢复原来的火车/大巴
   const none = buildDays(state({ rent: 'none' }));
   assert.ok(none.find((x) => x.id === '1218').items.some((i) => /AirTrain 到 Jamaica/.test(i.text || '')));

@@ -29,7 +29,7 @@ export function walletSlots(state) {
   const plan = rentPlan(state);
   if (plan.legs.length) {
     const from = state.rent === 'bos' ? '12/21 波士顿' : '12/18 JFK';
-    s.push({ id: 'car-rental', group: 'leg', md: plan.pickupMd, title: `租车：${from} 取 → 12/24 JFK 还`, hint: '确认号、租车公司、取车柜台、保险内容、道路救援电话、车牌' });
+    s.push({ id: 'car-rental', group: 'leg', md: plan.pickupMd, title: `租车：${from} 取 → 12/24 曼哈顿 Battery Park 还（Sixt）`, hint: '确认号、取车柜台、道路救援电话、保险内容、道路救援电话、车牌' });
   }
   for (const id of Object.keys(LEGS)) {
     if (plan.legs.includes(id)) continue;

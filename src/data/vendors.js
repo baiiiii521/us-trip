@@ -26,6 +26,7 @@ export const VENDORS = {
   booking: { label: 'Booking.com', url: 'https://www.booking.com' },
   trip:    { label: '携程 Trip.com', url: 'https://www.trip.com' },
   nba:     { label: 'NBA 赛程', url: 'https://www.nba.com/schedule' },
+  'car-sixt': { label: 'Sixt 租车（已订）', url: 'https://www.sixt.com/car-rental/usa/new-york-city/new-york-downtown/' },
   'car-hertz': { label: 'Hertz 租车', url: 'https://www.hertz.com' },
   'car-avis': { label: 'Avis 租车', url: 'https://www.avis.com' },
   'car-ent': { label: 'Enterprise 租车', url: 'https://www.enterprise.com' },
