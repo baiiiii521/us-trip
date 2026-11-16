@@ -343,6 +343,15 @@ export function buildDays(state) {
     stay: '国际航班'
   });
 
+  // 每一项的备注和改过的时间（key 用原定时间，改了时间也认得出是哪一项）
+  const notes = state.notes || {};
+  for (const d of days) for (const it of d.items) {
+    it.key = `${d.id}@${it.t}`;
+    const n = notes[it.key];
+    if (!n || n.del) continue;
+    if (n.t && n.t !== it.t) { it.t0 = it.t; it.t = n.t; }
+    if (n.text) it.note = n.text;
+  }
   return days;
 }
 

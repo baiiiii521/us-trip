@@ -15,3 +15,10 @@ private/*
 !private/itinerary.example.json
 # 底图原始数据（npm pack us-atlas@3 取得）
 scripts/data/
+
+# 3D 行程片的渲染产物和工具缓存（源码在 video/intro3d/index.html，用 om render 重新生成）
+video/intro3d/out/
+video/intro3d/tools/
+video/intro3d/.om/
+video/intro3d/assets/sound.wav
+video/intro3d/assets/gen/codex.log

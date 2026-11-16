@@ -127,16 +127,18 @@ export function renderDays(state, ctx = { now: new Date(), weather: null }) {
       ${d.warn ? `<p class="alert alert--warn" role="note"><b>注意</b>${esc(d.warn)}</p>` : ''}
       <ol class="tl">${d.items.map((it) => `
         <li class="tl__i${it.leg ? ' tl__i--move' : ''}${it.game ? ' tl__i--game' : ''}">
-          <span class="tl__t">${esc(it.t)}</span>
+          <span class="tl__t">${esc(it.t)}${it.t0 ? `<s class="tl__t0">${esc(it.t0)}</s>` : ''}</span>
           <div class="tl__b">
             ${it.leg ? legBlock(it.leg, state) : ''}
             ${it.game ? gameBlock(it.game, it.text) : ''}
             ${!it.game && it.text ? `<p>${esc(it.text)}</p>` : ''}
+            ${it.note ? `<p class="tl__note"><b>备注</b>${esc(it.note)}</p>` : ''}
             ${it.xmas ? xmasHtml(it.xmas) : ''}
             ${it.drive ? rentBlock(it.drive, state) : ''}
             ${it.pois && it.pois.length ? poiChips(it.pois, state, d.md) : ''}
             ${it.buy && it.buy.length ? buyRow('预约 / 买票', vendorLinks(it.buy)) : ''}
             ${(() => { const ids = slotsForItem(it, state); return ids.length ? `<div class="buys"><span class="buys__label">我的订单</span><div class="buys__list">${ids.map((id) => slotChip(state, id)).join('')}</div></div>` : ''; })()}
+            <button type="button" class="linkbtn tl__edit" data-action="note" data-key="${esc(it.key)}">${it.note || it.t0 ? '改备注' : '加备注 / 改时间'}</button>
           </div>
         </li>`).join('')}</ol>
       ${d.pace && d.pace.cut ? `<p class="day__cut"><b>想轻松点</b>${esc(d.pace.cut)}</p>` : ''}

@@ -34,8 +34,11 @@ export function renderMore(state) {
       ${entry('#cards', '英文大字卡', '给司机、前台、服务员看的地址和句子', 'bus')}
       ${state.rent !== 'none' ? entry('#drive', '自驾', '租车、每段路线、停车、过路费、加油和驾驶规则', 'car') : ''}
       ${entry('#tickets', '票务', '城际交通对比、6 场 NBA 购票入口、需要预约的景点', 'ball')}
+      ${entry('#near', '离我最近', '按定位找最近的景点、餐馆和厕所', 'pin')}
+      ${entry('#eats', '吃什么', '五个城市值得专门去吃的店，要不要订位、大概多少钱', 'guide')}
+      ${entry('#recap', '旅行总结', '走了多少路、看了几场球、花了多少钱；行程预告片也在这里', 'ball')}
       ${entry('#memories', '回忆', '导入照片，按天整理，生成回忆视频和每日分享卡', 'sun')}
-      ${entry('#info', '资料', `预订清单 ${done}/${CHECKLIST.length}、行李清单、倒时差、实用提示`, 'info')}
+      ${entry('#info', '资料', `预订清单 ${done}/${CHECKLIST.length}、待确认、行李清单、倒时差、实用提示`, 'info')}
     </div>
   </section>
 

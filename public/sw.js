@@ -1,6 +1,6 @@
 // 离线缓存：第一次打开后，页面、脚本、样式、字体和看过的景点照片都会存下来，没网也能看。
 // 页面和脚本：先读缓存，同时后台更新；图片字体：同样处理；接口（天气、汇率、云同步）不缓存。
-const VERSION = 'hoops-v3-9';
+const VERSION = 'hoops-v3-10';
 const SHELL = VERSION + '-shell';
 const MEDIA = VERSION + '-media';
 // thumb.wikimedia.org 是维基 pageimages 现在返回的缩略图域名，漏了它照片在线有图、离线全没
@@ -41,6 +41,7 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   if (url.origin === self.location.origin) {
     if (url.pathname.includes('/api/')) return; // 云同步不缓存
+    if (/\.mp4$/.test(url.pathname) || req.headers.has('range')) return; // 视频分段请求，交给浏览器自己拿
     if (req.mode === 'navigate') {
       e.respondWith((async () => {
         try { const res = await fetch(req); const c = await caches.open(SHELL); c.put('./', res.clone()); return res; }

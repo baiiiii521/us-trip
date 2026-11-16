@@ -46,6 +46,7 @@ export function renderGuide(state) {
 
   return `
   <div class="pagehead"><h1>景点图鉴</h1><p>${POIS.length} 个地点的介绍、开放时间、门票和走法，每个都能一键导航。照片来自维基百科。</p></div>
+  <div class="btn-row guide__quick"><a class="btn btn--secondary" href="#near">${icon('pin')}离我最近</a><a class="btn btn--secondary" href="#eats">${icon('guide')}吃什么</a></div>
   <div class="filters">
     <label class="search" for="guide-q"><span class="visually-hidden">搜索景点</span>${icon('guide')}
       <input id="guide-q" type="search" placeholder="搜索景点，例如 大桥、披萨、Met" value="${esc(guideUi.q)}" autocomplete="off" data-guide-search></label>

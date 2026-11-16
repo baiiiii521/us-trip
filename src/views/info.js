@@ -4,10 +4,11 @@ import { CHECKLIST, TIPS, SOURCES } from '../data/content.js';
 import { gameLinks } from '../data/games.js';
 import { isDone } from '../state.js';
 import { PACKING, PACK_IDS, JETLAG } from '../data/wellbeing.js';
+import { confirmHtml } from './extras.js';
 
 export const infoUi = { tab: 'todo' };
 
-const TABS = [['todo', '预订清单'], ['pack', '行李清单'], ['jetlag', '倒时差'], ['tips', '实用提示'], ['sources', '来源']];
+const TABS = [['todo', '预订清单'], ['confirm', '待确认'], ['pack', '行李清单'], ['jetlag', '倒时差'], ['tips', '实用提示'], ['sources', '来源']];
 
 function packHtml(state) {
   const done = PACK_IDS.filter((id) => isDone(state, id)).length;
@@ -48,7 +49,7 @@ function sourcesHtml() {
 }
 
 export function renderInfo(state) {
-  const body = ({ todo: () => todoHtml(state), pack: () => packHtml(state), jetlag: jetlagTabHtml, tips: tipsHtml, sources: sourcesHtml }[infoUi.tab] || (() => todoHtml(state)))();
+  const body = ({ todo: () => todoHtml(state), confirm: () => confirmHtml(state), pack: () => packHtml(state), jetlag: jetlagTabHtml, tips: tipsHtml, sources: sourcesHtml }[infoUi.tab] || (() => todoHtml(state)))();
   return `
   <div class="pagehead"><h1>资料</h1></div>
   <div class="subtabs" role="tablist">${TABS.map(([k, l]) => `<button type="button" role="tab" aria-selected="${infoUi.tab === k}" class="subtab${infoUi.tab === k ? ' is-on' : ''}" data-action="info-tab" data-tab="${k}">${esc(l)}</button>`).join('')}</div>

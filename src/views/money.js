@@ -8,6 +8,7 @@ import { findToday } from '../lib/today.js';
 import { budgetBody } from './budget.js';
 import { TAX, TIPS, billTotal } from '../lib/tools.js';
 
+import { shopHtml, convHtml } from './extras.js';
 export const moneyUi = { tab: 'log', draft: { currency: 'USD', cat: 'food', payer: 'a', split: 'both' }, bill: { amount: '', city: '', tip: 18, incl: false } };
 
 // 结账计算的结果（输入时只刷新这一块，不重绘整页）
@@ -42,7 +43,7 @@ function billCard(state, today) {
   </section>`;
 }
 
-const TABS = [['log', '记账'], ['settle', '结算'], ['budget', '预算']];
+const TABS = [['log', '记账'], ['settle', '结算'], ['budget', '预算'], ['shop', '购物清单'], ['conv', '换算']];
 // 记账分类 → 预算分组（用于“实际 vs 预算”）
 const CAT_TO_GROUP = { food: ['food'], transport: ['transport', 'local'], hotel: ['hotel'], tickets: ['games', 'tickets'], shopping: [], other: ['other', 'flight'] };
 
@@ -126,9 +127,9 @@ function settleTab(state) {
 
 export function renderMoney(state, ctx = {}) {
   const now = ctx.now || new Date();
-  const body = moneyUi.tab === 'settle' ? settleTab(state) : moneyUi.tab === 'budget' ? budgetBody(state) : logTab(state, now);
+  const body = moneyUi.tab === 'settle' ? settleTab(state) : moneyUi.tab === 'budget' ? budgetBody(state) : moneyUi.tab === 'shop' ? shopHtml(state) : moneyUi.tab === 'conv' ? convHtml() : logTab(state, now);
   return `
-  <div class="pagehead"><h1>花费</h1><p>出发前看预算，旅途中随手记账，最后自动算出两人谁该给谁多少。</p></div>
+  <div class="pagehead"><h1>花费</h1><p>出发前看预算，旅途中随手记账，最后自动算出两人谁该给谁多少。购物清单和单位换算也在这里。</p></div>
   <div class="subtabs" role="tablist">${TABS.map(([k, l]) => `<button type="button" role="tab" aria-selected="${moneyUi.tab === k}" class="subtab${moneyUi.tab === k ? ' is-on' : ''}" data-action="money-tab" data-tab="${k}">${esc(l)}</button>`).join('')}</div>
   <div class="subbody">${body}</div>`;
 }

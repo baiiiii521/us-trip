@@ -31,6 +31,8 @@ import { budgetOutputHtml } from './views/budget.js';
 import { renderInfo, infoUi } from './views/info.js';
 import { renderMoney, moneyUi, billOutHtml } from './views/money.js';
 import { renderSos } from './views/sos.js';
+import { renderEats, eatsUi, renderNear, nearUi, renderRecap, noteSheetHtml, convUi, convOut } from './views/extras.js';
+import { checkinEvents } from './lib/extras.js';
 import { billTotal, TAX, driveEves } from './lib/tools.js';
 import { renderMore, moreUi } from './views/more.js';
 import { renderDrive } from './views/drive.js';
@@ -56,7 +58,8 @@ const POI_FILES = Object.fromEntries(POIS.filter((x) => x.wiki && x.photoFile).m
 
 const VIEWS = {
   home: renderHome, days: renderDays, guide: renderGuide, tickets: renderTickets, money: renderMoney, more: renderMore,
-  wallet: renderWallet, cards: renderCards, memories: renderMemories, info: renderInfo, drive: renderDrive, vault: renderVault, sos: renderSos
+  wallet: renderWallet, cards: renderCards, memories: renderMemories, info: renderInfo, drive: renderDrive, vault: renderVault, sos: renderSos,
+  eats: renderEats, near: renderNear, recap: renderRecap
 };
 const TITLES = { ...Object.fromEntries(ROUTES.map((r) => [r.id, r.label])), ...Object.fromEntries(Object.entries(SUBPAGES).map(([k, v]) => [k, v.label])) };
 
@@ -263,6 +266,7 @@ function armReminders() {
     }
   }
   for (const e of driveEves(buildDays(state), state, (leg) => choiceFor(state, leg) === 'car')) events.push(e);
+  for (const e of checkinEvents()) events.push(e);
   return scheduleReminders(events, now);
 }
 
@@ -326,6 +330,21 @@ const ACTIONS = {
     s.visited[el.dataset.id] = { v: cur === el.dataset.value ? '' : el.dataset.value, u: stamp() };
   }),
   'guide-filter': (el) => { guideUi[el.dataset.key] = el.dataset.value; if (route === 'guide') render({ keepScroll: true }); },
+  note: (el) => openHtml(noteSheetHtml(getState(), el.dataset.key)),
+  'note-clear': (el) => { update((s) => { s.notes[el.dataset.key] = { del: true, u: stamp() }; }); closeSheet(); toast('已恢复原样'); },
+  'eats-city': (el) => { eatsUi.city = el.dataset.city; if (route === 'eats') render({ keepScroll: true }); },
+  'near-kind': (el) => { nearUi.kind = el.dataset.kind; rerender(); },
+  'near-locate': () => {
+    if (!navigator.geolocation) { nearUi.msg = '这个浏览器拿不到位置'; return rerender(); }
+    nearUi.busy = true; nearUi.msg = ''; rerender();
+    navigator.geolocation.getCurrentPosition(
+      (p) => { nearUi.busy = false; nearUi.here = [p.coords.latitude, p.coords.longitude]; if (route === 'near') rerender(); },
+      () => { nearUi.busy = false; nearUi.msg = '定位失败：检查一下浏览器有没有定位权限，或者走到室外再试。也可以直接用下面的“地图上搜附近的”。'; if (route === 'near') rerender(); },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
+    );
+  },
+  'shop-toggle': (el) => update((s) => { const x = s.shop[el.dataset.id]; if (x && !x.del) s.shop[el.dataset.id] = { ...x, done: !x.done, u: stamp() }; }),
+  'shop-del': (el) => { update((s) => { s.shop[el.dataset.id] = { del: true, u: stamp() }; }); toast('已删除'); },
   'info-tab': (el) => { infoUi.tab = el.dataset.tab; if (route === 'info') render({ keepScroll: true }); },
   'money-tab': (el) => { moneyUi.tab = el.dataset.tab; render({ keepScroll: true }); },
   'fx-live': async () => {
@@ -510,6 +529,17 @@ const FORMS = {
     update((s) => { s.expenses[uid()] = { amount: r.total, currency: 'USD', cat: 'food', payer: d.payer, split: d.split, date: today ? today.md : '出发前', note: `餐馆（含税 + 小费 ${b.tip}%）`, u: stamp() }; });
     toast(`已记一笔 $${r.total.toFixed(2)}`);
   },
+  note: (f) => {
+    const key = f.dataset.key, t = val(f, 't'), text = val(f, 'text');
+    if (t && !/^\d{1,2}:\d{2}/.test(t)) return toast('时间写成 09:40 这样');
+    update((s) => { s.notes[key] = t || text ? { t, text, u: stamp() } : { del: true, u: stamp() }; });
+    closeSheet(); armReminders(); toast(t || text ? '已保存' : '已恢复原样');
+  },
+  shop: (f) => {
+    const text = val(f, 'text'); if (!text) return toast('写一下要买什么');
+    update((s) => { s.shop[uid()] = { text, who: val(f, 'who'), size: val(f, 'size'), budget: parseFloat(val(f, 'budget')) || 0, done: false, c: stamp(), u: stamp() }; });
+    toast('已加到清单');
+  },
   park: (f) => {
     const c = f.dataset.city;
     update((s) => { s.parking[c] = { ...(s.parking[c] && !s.parking[c].del ? s.parking[c] : {}), spot: val(f, 'spot'), u: stamp() }; });
@@ -562,6 +592,12 @@ document.addEventListener('input', (e) => {
     guideUi.q = e.target.value;
     const box = document.getElementById('guide-results');
     if (box) box.innerHTML = guideResultsHtml(getState());
+    return;
+  }
+  if (e.target.matches('[data-conv]')) {
+    convUi[e.target.dataset.conv] = e.target.value;
+    const o = convOut();
+    for (const [id, v] of [['cv-f-out', o.c], ['cv-mi-out', o.km], ['cv-lb-out', o.kg]]) { const el = document.getElementById(id); if (el) el.textContent = v; }
     return;
   }
   if (e.target.matches('[data-bill="amount"]')) {

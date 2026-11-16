@@ -3,7 +3,7 @@
 // 两种方式：
 //   1. 同步码：把数据压缩成一段文字，发给同伴，对方粘贴导入（不需要服务器）
 //   2. 云同步：部署到 Vercel 并配置 KV 后可用。房间名 + 口令在本机加密（AES-GCM），服务器只存密文
-export const SYNC_KEYS = ['todo', 'visited', 'expenses', 'wallet', 'hotels', 'seats', 'people', 'parking'];
+export const SYNC_KEYS = ['todo', 'visited', 'expenses', 'wallet', 'hotels', 'seats', 'people', 'parking', 'notes', 'shop'];
 
 export function syncDoc(state) {
   return Object.fromEntries(SYNC_KEYS.map((k) => [k, state[k] || {}]));

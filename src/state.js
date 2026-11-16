@@ -26,11 +26,13 @@ export const DEFAULTS = {
   seats: {},
   people: {},
   parking: {},
+  notes: {},   // 每一项的备注和改过的时间：{ '1222@09:00': { t, text, u } }
+  shop: {},    // 购物清单：{ id: { text, who, size, budget, done, c, u } }
   local: { remind: false, preview: '', syncRoom: '', syncPass: '', lastSync: 0 }
 };
 
 const SETTING_KEYS = ['mode', 'rent', 'plan', 'hotel', 'nav', 'choice', 'budget', 'opts'];
-const DATA_KEYS = ['todo', 'visited', 'expenses', 'wallet', 'hotels', 'seats', 'people', 'parking', 'local'];
+const DATA_KEYS = ['todo', 'visited', 'expenses', 'wallet', 'hotels', 'seats', 'people', 'parking', 'notes', 'shop', 'local'];
 
 function clone(o) { return JSON.parse(JSON.stringify(o)); }
 

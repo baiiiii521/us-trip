@@ -305,3 +305,66 @@ details.tbox[open] > summary::after { transform: rotate(-135deg) translateY(-2px
 .today2__title { margin-bottom: var(--s-2); }
 .today2 .nownext { gap: var(--s-4); }
 .today2 .nownext dd { padding-left: var(--s-4); }
+
+/* 两地时钟 */
+.clock { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-1) var(--s-4); margin: 0 0 var(--s-3); font-size: var(--t-small); color: var(--ink-2); }
+.clock b { font-size: 16px; color: var(--ink); margin-right: var(--s-1); }
+.clock__call { color: var(--muted); }
+.clock__call.is-ok { color: var(--ok); }
+/* 今天卡片的六个入口：两行三个 */
+.qa--6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* 备注 */
+.tl__note { margin: 0; padding: var(--s-2) var(--s-3); border-radius: var(--r-sm); background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent); font-size: 15px; line-height: 1.55; color: var(--ink); white-space: pre-wrap; }
+.tl__note b { margin-right: var(--s-2); color: var(--accent); }
+.tl__t0 { margin-left: var(--s-2); font-weight: 500; color: var(--muted); }
+.tl__edit { justify-self: start; font-size: var(--t-small); font-weight: 500; color: var(--muted); }
+.next__cf { margin-top: 0; margin-bottom: var(--s-3); border-top: 0; padding-top: 0; }
+.todo__how { display: block; font-size: var(--t-small); color: var(--muted); line-height: 1.5; }
+/* 吃什么 */
+.eats { display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.eat { display: grid; gap: var(--s-2); align-content: start; }
+.eat__h { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-3); }
+.eat__h h3 { margin: 0; font-size: var(--t-h3); }
+.eat__en { margin: 2px 0 0; font-size: var(--t-small); color: var(--muted); }
+.eat > p { margin: 0; line-height: 1.6; color: var(--ink-2); }
+.eat__facts { display: grid; gap: var(--s-1); margin: 0; font-size: var(--t-small); }
+.eat__facts > div { display: grid; grid-template-columns: 44px 1fr; gap: var(--s-2); }
+.eat__facts dt { color: var(--muted); } .eat__facts dd { margin: 0; }
+.guide__quick { margin-bottom: var(--s-4); }
+/* 离我最近 */
+.nearlist { list-style: none; margin: var(--s-3) 0 0; padding: 0; display: grid; gap: var(--s-2); }
+.nearrow { display: grid; grid-template-columns: 1fr auto 48px; align-items: stretch; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+.nearrow__main { display: grid; gap: 2px; align-content: center; padding: var(--s-3) var(--s-4); text-align: left; background: none; border: 0; color: inherit; font: inherit; min-width: 0; min-height: 56px; }
+button.nearrow__main { cursor: pointer; }
+.nearrow__main small { color: var(--muted); font-size: var(--t-small); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nearrow__d { display: grid; align-content: center; justify-items: end; padding-right: var(--s-3); font-size: var(--t-small); white-space: nowrap; }
+.nearrow__d small { color: var(--muted); }
+.nearrow .poichip__nav { border-left: 1px solid var(--line); }
+/* 换算 */
+.convrow { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); align-items: end; margin-top: var(--s-3); }
+.convrow output { min-height: var(--btn-h); display: flex; align-items: center; font-family: var(--f-mono); font-weight: 600; font-size: 18px; }
+.conv { width: 100%; border-collapse: collapse; font-size: 15px; }
+.conv th { text-align: left; font-size: var(--t-label); color: var(--muted); font-weight: 600; padding: var(--s-2) 0; border-bottom: 1px solid var(--line-strong); }
+.conv td { padding: var(--s-2) 0; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.conv tr:last-child td { border-bottom: 0; }
+.convtwo { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); }
+/* 购物清单 */
+.shoplist { list-style: none; margin: 0; padding: 0; display: grid; }
+.shoplist li { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-2) 0; }
+.shoplist li + li { border-top: 1px solid var(--line); }
+.shoplist label { flex: 1; display: flex; gap: var(--s-3); align-items: flex-start; min-height: 44px; cursor: pointer; min-width: 0; }
+.shoplist input { width: 20px; height: 20px; margin-top: 3px; accent-color: var(--accent); flex: none; }
+.shoplist span { display: grid; gap: 2px; min-width: 0; } .shoplist small { color: var(--muted); font-size: var(--t-small); }
+.shoplist .is-done b { text-decoration: line-through; color: var(--muted); }
+.form__row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+@media (max-width: 520px) { .form__row { grid-template-columns: 1fr 1fr; } .form__row > :last-child { grid-column: 1 / -1; } }
+/* 行程片 */
+.film__v { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: var(--r-md); background: #05080d; }
+/* 旅行总结 */
+.recap__facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); margin-bottom: var(--s-4); }
+.recap__big { margin: 0 0 var(--s-3); display: grid; gap: var(--s-1); } .recap__big b { font-size: 32px; } .recap__big span { color: var(--ink-2); font-size: var(--t-small); }
+.recap__cats, .recap__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+.recap__cats li { display: grid; grid-template-columns: 84px 1fr auto; gap: var(--s-3); align-items: center; font-size: 15px; }
+.recap__bar { height: 8px; border-radius: 4px; background: var(--soft); overflow: hidden; } .recap__bar i { display: block; height: 100%; background: var(--ink-2); border-radius: 4px; }
+.recap__list li { display: flex; gap: var(--s-3); align-items: baseline; }
+.recap__tags { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: 0 0 var(--s-3); }

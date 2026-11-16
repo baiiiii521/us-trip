@@ -19,7 +19,10 @@ export const SUBPAGES = {
   wallet: { label: '订单夹', parent: 'more' },
   cards: { label: '英文大字卡', parent: 'more' },
   memories: { label: '回忆', parent: 'more' },
-  info: { label: '资料', parent: 'more' }
+  info: { label: '资料', parent: 'more' },
+  eats: { label: '吃什么', parent: 'guide' },
+  near: { label: '离我最近', parent: 'guide' },
+  recap: { label: '旅行总结', parent: 'more' }
 };
 
 export function shellHtml() {

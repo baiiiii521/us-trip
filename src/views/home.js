@@ -22,6 +22,8 @@ import { checkoutItems, parkingCities, daySpend } from '../lib/tools.js';
 import { files } from '../lib/storage.js';
 import { usd as usd0 } from '../lib/dom.js';
 import { paceText, jetlagFor, PACKING, PACK_IDS } from '../data/wellbeing.js';
+import { clockHtml, flightBoxHtml, confirmLeft, videoCardHtml } from './extras.js';
+import { CONFIRMS } from '../data/extras.js';
 
 // 倒时差：今天该怎么睡、什么时候喝咖啡
 function jetlagHtml(j, open = false) {
@@ -134,6 +136,7 @@ function todayCard(state, days, ctx) {
   return `<section class="card today2">
     <div class="card__h"><h2>今天 ${day.md} ${esc(day.wd)}</h2><span class="meta">${esc(CITIES[day.city].zh)}${w ? ` · ${codeLabel(w.code)} ${Math.round(w.hi)}°/${Math.round(w.lo)}°C` : ''}</span></div>
     <p class="today2__title">${esc(day.title)}</p>
+    ${clockHtml(ctx.now, day.city, !!(state.local && state.local.preview))}
     ${day.pace ? `<p class="day__pace"><span class="pace pace--${day.pace.lv}" aria-hidden="true"><i></i><i></i><i></i></span>${esc(paceText(day.pace))} · 日落 ${esc(CITIES[day.city].sunset)}</p>` : ''}
     ${al ? `<p class="alert alert--${al.level}" role="alert"><b>天气提醒</b>${esc(al.text)}。室外项目改成室内：${esc(STORM[day.city] || '博物馆、图书馆、商场')}。出发前再看一次交通是否正常。</p>` : ''}
     <dl class="nownext">
@@ -141,15 +144,20 @@ function todayCard(state, days, ctx) {
       ${between.length ? `<div><dt>接着按顺序</dt><dd>${between.map((it) => `<b>${esc(it.t)}</b> ${esc(itemLine(state, it).slice(0, 24))}`).join('<br>')}</dd></div>` : ''}
       <div class="is-next"><dt>下一项${minutes != null ? ' · ' + fmtCountdown(minutes) : ''}</dt><dd>${next ? line(next) : '今天的安排都结束了'}</dd></div>
     </dl>
+    ${next && next.it.note ? `<p class="tl__note"><b>备注</b>${esc(next.it.note)}</p>` : current && current.it.note ? `<p class="tl__note"><b>备注</b>${esc(current.it.note)}</p>` : ''}
     ${next && next.it.xmas ? `<p class="xmas xmas--${esc(next.it.xmas.s)}"><b>${next.it.xmas.s === 'open' ? '圣诞照常' : next.it.xmas.s === 'closed' ? '圣诞关门' : '圣诞营业待确认'}</b>${esc(next.it.xmas.note)}</p>` : ''}
     <div class="btn-row">
       ${go ? `<a class="btn btn--primary" href="${esc(directionsUrl(go.q, state.nav, go.mode))}" target="_blank" rel="noopener">${icon('nav')}导航到 ${esc(go.name)}</a>` : ''}
     </div>
-    <nav class="qa" aria-label="今天常用">
+    <nav class="qa qa--6" aria-label="今天常用">
       <a class="qa__i" href="#day-${day.id}">${icon('days')}<span>全天行程</span></a>
+      <a class="qa__i" href="#near">${icon('pin')}<span>离我最近</span></a>
+      <a class="qa__i" href="#eats" data-action="eats-city" data-city="${day.city}">${icon('guide')}<span>吃什么</span></a>
       <a class="qa__i" href="#cards">${icon('bus')}<span>英文大字卡</span></a>
+      <a class="qa__i" href="#info" data-action="info-tab" data-tab="confirm">${icon('check')}<span>待确认 ${confirmLeft(state)}</span></a>
       <a class="qa__i" href="#sos">${icon('phone')}<span>紧急情况</span></a>
     </nav>
+    ${flightBoxHtml(ctx.now)}
     ${slots.length ? `<div class="buys"><span class="buys__label">今天要出示的订单</span><div class="buys__list">${slots.map((id) => slotChip(state, id, slotTitle[id])).join('')}</div></div>` : ''}
     ${status.length ? `<details class="tbox"><summary><h3>实时路况和地铁 · ${status.length} 个</h3></summary><div class="buys__list">${status.map((l) => ext(l.label, l.url)).join('')}</div></details>` : ''}
     ${day.pace && day.pace.cut ? `<details class="tbox"><summary><h3>想轻松点</h3><span class="tbox__st">累了或下雨先砍哪一项</span></summary><p class="tbox__p">${esc(day.pace.cut)}</p></details>` : ''}
@@ -190,6 +198,9 @@ export function renderHome(state, ctx = { now: new Date(), weather: null }) {
     <div class="card__h"><h2>还有 ${phase.days} 天出发</h2><span class="meta">12/17 13:45 郑州起飞</span></div>
     <a class="tbox tbox--link" href="#info" data-action="info-tab" data-tab="pack"><h3>行李清单</h3><span class="tbox__st">${packed}/${PACK_IDS.length} 已装</span>${icon('arrow')}</a>
     <a class="tbox tbox--link" href="#info" data-action="info-tab" data-tab="todo"><h3>预订清单</h3><span class="tbox__st">${doneCount}/${CHECKLIST.length} 已办</span>${icon('arrow')}</a>
+    <a class="tbox tbox--link" href="#info" data-action="info-tab" data-tab="confirm"><h3>待确认</h3><span class="tbox__st">还有 ${confirmLeft(state)}/${CONFIRMS.length} 件</span>${icon('arrow')}</a>
+    ${flightBoxHtml(ctx.now)}
+    ${clockHtml(ctx.now, 'nyc')}
     ${jetlagHtml(jl, true)}
   </section>` : '';
   void PACKING;
@@ -211,6 +222,7 @@ export function renderHome(state, ctx = { now: new Date(), weather: null }) {
   <section class="grid2">
     <div class="m-nolift card next">
       <div class="card__h"><h2>下一件待办</h2><a href="#info" class="more" data-action="info-tab" data-tab="todo">清单 ${doneCount}/${CHECKLIST.length}${arrow}</a></div>
+      ${phase.phase !== 'after' && confirmLeft(state) ? `<a class="tbox tbox--link next__cf" href="#info" data-action="info-tab" data-tab="confirm"><h3>待确认</h3><span class="tbox__st">还有 ${confirmLeft(state)} 件要打电话或看官网</span>${icon('arrow')}</a>` : ''}
       ${next ? `
         <p class="next__when">${esc(next.when)}</p>
         <p class="next__what">${esc(next.text)}</p>
@@ -223,6 +235,9 @@ export function renderHome(state, ctx = { now: new Date(), weather: null }) {
       ${settingsHtml(state, { compact: true })}
     </div>
   </section>
+
+  ${phase.phase === 'after' ? `<section class="card"><div class="card__h"><h2>这一趟走完了</h2></div><p class="note">走了多少路、看了几场球、花了多少钱，都在旅行总结里。</p><div class="btn-row"><a class="btn btn--primary" href="#recap">看旅行总结</a><a class="btn btn--secondary" href="#memories">整理照片</a></div></section>` : ''}
+  ${phase.phase === 'before' ? videoCardHtml() : ''}
 
   <section class="grid2 grid2--map">
     <div class="m-nolift card">
