@@ -91,7 +91,7 @@ test('今天模式：按日期找到当天，再找当前项和下一项', () =>
   assert.equal(findToday(days, new Date(2026, 10, 5)), null);
   assert.equal(findToday(days, new Date(2025, 11, 19)), null);
   const { current, next, minutes } = nowAndNext(d, new Date(2026, 11, 19, 10, 0));
-  assert.equal(current.it.t, '09:30'); assert.equal(next.it.t, '11:00'); assert.equal(minutes, 60);
+  assert.equal(current.it.t, '08:30'); assert.equal(next.it.t, '10:15'); assert.equal(minutes, 15);
   assert.equal(itemTime(d, '落地'), null);
   assert.equal(fmtCountdown(0), '马上'); assert.equal(fmtCountdown(45), '45 分钟后'); assert.equal(fmtCountdown(125), '2 小时 5 分钟后');
   assert.ok(keyEvents(findToday(days, new Date(2026, 11, 20))).length >= 1);
@@ -111,10 +111,11 @@ test('今天模式：带文字的时间也算数，凌晨叫车仍算前一天�
     const d31 = findToday(days, new Date(2026, 11, 31, 3, 0));
     assert.equal(d31.id, '1231');
     assert.equal(nowAndNext(d31, new Date(2026, 11, 31, 3, 0)).next.it.t, '06:00 起飞');
-    // 下午：没写具体时间的“落地”“午后”按顺序列出来
-    const mid = nowAndNext(d31, new Date(2026, 11, 31, 13, 0));
-    assert.ok(mid.between.some((it) => it.t === '午后'));
-    assert.equal(mid.next.it.t, '20:35 到柜台');
+    // 飞行途中：没写具体时间的“落地”排在下一项前面列出来；下午按时间往下走
+    const air = nowAndNext(d31, new Date(2026, 11, 31, 7, 0));
+    assert.ok(air.between.some((it) => it.t === '落地'));
+    assert.equal(air.next.it.t, '11:00');
+    assert.equal(nowAndNext(d31, new Date(2026, 11, 31, 19, 0)).next.it.t, '20:35 到柜台');
     const kinds = keyEvents(d31).map((x) => x.kind);
     assert.ok(kinds.includes('flight'));
   }

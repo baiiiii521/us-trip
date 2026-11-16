@@ -60,7 +60,7 @@ test('开车前一晚 21:00 提醒看天气，落地那天不提醒', () => {
   assert.deepEqual(ev.map((e) => e.leg), ['s2', 's3', 's4']);
   const s2 = ev[0].at;
   assert.equal(s2.getDate(), 20); assert.equal(s2.getHours(), 21);
-  assert.match(ev[0].body, /440 英里/);
+  assert.match(ev[0].body, /450 英里/);
   assert.equal(driveEves(buildDays(st), st, () => false).length, 0);
 });
 

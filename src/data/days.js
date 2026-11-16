@@ -31,10 +31,12 @@ export function buildDays(state) {
         { t: '12:45', text: '出关后先别急着上路：到达层吃点东西、买咖啡，手机连上 eSIM，把导航目的地设成波士顿酒店。' },
         { t: '13:00 取车', drive: 'pickup', text: `${PICKUP.jfk.how} 准备好驾照原件 + 翻译件、护照、主驾驶的信用卡；两人都登记为驾驶员，确认含过路费电子收费服务。取车时绕车拍一圈视频。` },
         { t: '14:00', leg: 's1' },
+        { t: '16:00', text: '必停一次：康州 I-95 上的 Milford 服务区（离 JFK 约 1.5 小时）。上厕所、换人开。先喝咖啡再眯 20 分钟，醒来咖啡因正好起效。不困也要停：这时候身体是北京时间凌晨 5 点。' },
         { t: '19:00 前后', text: '到酒店（811 Massachusetts Ave）：车直接开进酒店停车场，行李上楼。入住后附近简单吃饭，早睡倒时差。' }
       ],
       warn: DRIVES.s1.risk,
       tips: ['周五下午出纽约是一周最堵的时候，晚高峰前过了 Whitestone 大桥会好很多。', '12/17 下午 13:45 郑州起飞，行李在福州要重新托运一次，值机时问一句能不能直挂到 JFK。', `酒店最近的地铁是${T.bos}，12/19、12/20 车停着不动，全程坐地铁。`],
+      pace: { km: 2, lv: 3, cut: '落地后实在撑不住：在康州服务区睡够再走，晚到两小时没关系；酒店前台 24 小时都能办入住。' },
       stay: stayText('bos')
     });
   } else {
@@ -48,6 +50,7 @@ export function buildDays(state) {
         { t: '晚上', text: '入住，酒店附近简单吃饭，早睡倒时差。' }
       ],
       tips: ['火车选落地时间 + 4 小时以后的班次，在车上补觉。到达层有人拉客“Need a taxi?”是黑车，直接走开。', '12/17 下午 13:45 郑州起飞，行李在福州要重新托运一次，值机时问一句能不能直挂到 JFK。', `酒店最近的地铁是${T.bos}，之后几天都从这儿进出。`],
+      pace: { km: 3, lv: 3, cut: '入境排队太久赶不上订的火车：Value 票可以免费改签到下一班。' },
       stay: stayText('bos')
     });
   }
@@ -55,15 +58,18 @@ export function buildDays(state) {
   days.push({
     id: '1219', md: '12/19', wd: '周六', city: 'bos', title: '哈佛、MIT、灯光秀',
     items: [
-      { t: '09:30', text: `出门：${T.bos}，橙线到 Downtown Crossing 换红线去 Harvard（约 25 分钟）。哈佛园：铜像、Widener 图书馆外观。寒假期间楼内不开放，只逛校园。`, pois: ['harvard-yard'] },
-      { t: '11:00', text: '哈佛广场逛书店，午饭吃 Pinocchio\'s 披萨。' },
-      { t: '13:00', text: '红线到 Kendall/MIT：大圆顶、Killian Court、盖里设计的 Stata Center。', pois: ['mit-dome', 'stata'] },
-      { t: '14:30', text: '步行过 Harvard Bridge，数桥面的 Smoot 刻度。', pois: ['harvard-bridge'] },
-      { t: '15:15', text: '地铁红线到 Charles/MGH，走橡果街（日落 16:15 前光线最好）→ 公共花园看小鸭雕像。', pois: ['beacon-hill', 'public-garden'] },
-      { t: '17:00', text: 'Newbury Street 节日灯光。' },
-      { t: '18:30', text: '昆西市场晚饭：蛤蜊浓汤、龙虾卷。法纳尔厅圣诞树和 Blink! 灯光秀。', pois: ['faneuil-hall'] }
+      { t: '08:30', text: `坐 1 路公交去哈佛园，酒店门口 Massachusetts Ave 上车，不用换乘（约 35–40 分钟）；或者${T.bos}，换红线到 Harvard。时差会让你们五六点就醒，早点出门正好。哈佛园看铜像、Widener 图书馆外观；寒假期间楼内不开放，只逛校园。`, pois: ['harvard-yard'] },
+      { t: '10:15', text: '哈佛广场逛书店，11:00 吃 Pinocchio\'s 披萨当早午饭。' },
+      { t: '12:00', text: '红线两站到 Kendall/MIT：盖里设计的 Stata Center → Killian Court 和大圆顶。', pois: ['stata', 'mit-dome'] },
+      { t: '13:30', text: '步行过 Harvard Bridge 到波士顿一侧，数桥面的 Smoot 刻度。河上风大，戴好帽子。', pois: ['harvard-bridge'] },
+      { t: '14:00', text: '下桥沿 Massachusetts Ave 走 5 分钟就是 Newbury Street 的西头，一路往东逛（约 1.5 公里）。下午 3 点是身体最困的时候（北京时间凌晨 4 点），找家咖啡馆坐半小时。' },
+      { t: '15:15', text: 'Newbury Street 东头接着公共花园：小鸭雕像 → 过马路上比肯山，橡果街赶在日落（16:15）前拍。', pois: ['public-garden', 'beacon-hill'] },
+      { t: '16:30', text: '下山就是 Boston Common：天黑后圣诞树和青蛙塘溜冰场亮灯。' },
+      { t: '17:15', text: '走 15 分钟（或 Park St 坐绿线一站）到昆西市场，早点吃晚饭：蛤蜊浓汤、龙虾卷。法纳尔厅圣诞树和 Blink! 灯光秀。', pois: ['faneuil-hall'] },
+      { t: '19:00', text: 'State 站坐橙线回酒店，争取 21 点睡。' }
     ],
-    tips: [...(rent === 'jfk' ? ['车停在酒店停车场不动，今天全程坐地铁，市区停车又贵又难找。'] : []), '波士顿地铁可以直接刷信用卡或手机进站。', '查尔斯河边风很大，帽子手套带上。', '酒店在 South End 生活区，晚上回来的路上餐馆比市中心多。'],
+    tips: [...(rent === 'jfk' ? ['车停在酒店停车场不动，今天全程坐地铁，市区停车又贵又难找。'] : []), '今天的路线是一条线：哈佛 → MIT → 过桥 → Newbury 街 → 公共花园 → 比肯山 → 昆西市场，从西往东，不走回头路。', '波士顿地铁和公交可以直接刷信用卡或手机。', '酒店在 South End 生活区，晚上回来的路上餐馆比市中心多。'],
+    pace: { km: 10, lv: 3, cut: '下午实在太困：过桥后坐 1 路公交回酒店睡 40 分钟（定闹钟），傍晚只去昆西市场。' },
     stay: `${stayText('bos')} · 续住`
   });
 
@@ -72,36 +78,45 @@ export function buildDays(state) {
     items: [
       { t: '09:30', text: '今天不退房（酒店订到 12/21）。出门坐橙线到 State，换蓝线一站到 Aquarium。' },
       { t: '10:00', text: 'Long Wharf 坐 MBTA F4 渡轮到 Charlestown（约 10 分钟，票价同地铁）。周末班次少，先查时刻表，赶不上就从 North Station 步行约 20 分钟过去。' },
-      { t: '10:30', text: '宪法号：免费，带护照过安检。', pois: ['uss-constitution'], buy: ['uss'] },
-      { t: '12:30', text: '北区午饭：Regina Pizzeria，甜品 cannoli 二选一。', pois: ['north-end'] },
-      { t: '14:00', text: '自由之路片段：保罗·里维尔故居外观 → 老北教堂外观 → 旧州议会。沿线墓园全部跳过。' },
-      { t: '15:30', text: '波士顿公共图书馆 Bates Hall，冬季周日下午开放。', pois: ['bpl'] },
-      { t: '17:30', text: '回酒店休息一下，晚饭在 North Station 一带吃。' },
+      { t: '10:30', text: '宪法号：免费，带护照过安检。海军官网写周三到周日 10:00–18:00。', pois: ['uss-constitution'], buy: ['uss'] },
+      { t: '12:30', text: '走过 Charlestown 桥到北区（约 15 分钟）。午饭：Regina Pizzeria，甜品 cannoli 二选一。', pois: ['north-end'] },
+      { t: '14:00', text: '自由之路片段，从北往南顺着走：老北教堂外观 → 保罗·里维尔故居外观 → 旧州议会。沿线墓园全部跳过。' },
+      { t: '15:30', text: '绿线到 Copley：波士顿公共图书馆 Bates Hall，冬季周日下午开放，进去坐一会儿。', pois: ['bpl'] },
+      { t: '16:30', text: '图书馆往北一个街口就是 Newbury Street，天黑了节日灯正好亮，走一小段。' },
+      { t: '17:00', text: '橙线 Back Bay 一站到 Massachusetts Ave，回酒店歇 1 小时，把明天要带走的箱子先收好。' },
+      { t: '18:30', text: '橙线到 North Station，晚饭在球馆楼下的 Hub Hall 美食广场或周边吃。' },
       { t: '20:00', game: 'bos' },
       { t: '22:30', text: '散场不用挤地铁：TD Garden 就在 North Station 楼上，橙线 5 站到 Massachusetts Ave（约 12 分钟），再走 8 分钟回酒店。' }
     ],
-    tips: ['TD Garden 不让带双肩包和大行李，今天别把箱子拖过去。', '橙线末班在午夜后不久，散场别在球场里拖太久。'],
+    tips: ['TD Garden 不让带双肩包和大行李，今天别把箱子拖过去。', '橙线末班在午夜后不久，散场别在球场里拖太久。', '明天 07:30 要开长途：散场直接回酒店睡，别再加活动。'],
+    pace: { km: 8, lv: 2, cut: '累了砍掉自由之路片段：北区吃完直接坐绿线去图书馆坐着。' },
     stay: `${stayText('bos')} · 续住（第 3 晚）`
   });
 
   if (rent !== 'none') {
+    // 波士顿 → 华盛顿 450 英里拆成三段：中午在纽黑文停 2 小时（耶鲁校园 + 披萨），下午在新泽西服务区再换一次人
+    const south = [
+      { t: '10:00', nav: { name: '纽黑文 Frank Pepe 披萨', q: 'Frank Pepe Pizzeria Napoletana, 157 Wooster St, New Haven, CT', mode: 'driving' }, text: '到纽黑文（开了 2.5 小时，全程的三分之一）。车停在 Wooster St 路边咪表或旁边的停车场，后备箱别开。先走 15 分钟去耶鲁老校区：Phelps 门、Harkness 塔、Sterling 图书馆外观。今天周一，耶鲁美术馆闭馆，只逛校园。' },
+      { t: '11:00', nav: { name: '纽黑文 Frank Pepe 披萨', q: 'Frank Pepe Pizzeria Napoletana, 157 Wooster St, New Haven, CT', mode: 'driving' }, text: 'Frank Pepe 披萨（157 Wooster St），纽黑文披萨的老店：一开门就进，不用排队。招牌是白蛤蜊披萨（White Clam Pie）。开门时间有 10:30 和 11:00 两种说法，出发前看一眼官网。' },
+      { t: '12:15', nav: { name: HOTEL_OF.dc.zh, q: HOTEL_OF.dc.addr, mode: 'driving' }, text: '换人开，上路：I-95 南 → I-287 西过 Mario Cuomo 大桥（绕开纽约市区）→ 新泽西收费公路。15:00 前后在 Molly Pitcher 服务区停 15 分钟，上厕所、再换一次人。' },
+      { t: '18:00', text: '到酒店（1225 First St NE，NoMa 一带），天已经黑了：车交给代客泊车或停进车库，12/22 全天不碰车。', pois: ['union-station-dc'] },
+      { t: '19:00', text: '晚饭就近吃：走 10 分钟到联合车站，或红线两站到 Gallery Place 的中国城。', pois: ['union-station-dc'] },
+      { t: '可选 20:00', text: '精神好再去：红线到 Metro Center，走 10 分钟看白宫北侧外观 → 国家圣诞树（日落后亮灯，往年平日亮到 22:00）。累了就不去，明天中午走到华盛顿纪念碑时往北 5 分钟，白天看一眼。', pois: ['white-house', 'national-tree'] }
+    ];
     days.push({
-      id: '1221', md: '12/21', wd: '周一', city: 'dc', from: 'bos', title: '开车南下，傍晚看圣诞树',
+      id: '1221', md: '12/21', wd: '周一', city: 'dc', from: 'bos', title: '开车南下，中午停纽黑文',
       items: rent === 'jfk' ? [
-        { t: '06:45', text: '退房，从酒店停车场取车。出城前加满油，行李全放后备箱、拉上遮物帘。' },
-        { t: '07:00', leg: 's2' },
-        { t: '15:30', text: '到酒店（1225 First St NE，NoMa 一带）：车交给代客泊车或停进车库，12/22 全天不碰车。', pois: ['union-station-dc'] },
-        { t: '16:30', text: '酒店出门往南走 15 分钟到国会山，再沿国家广场去白宫北侧外观 → 国家圣诞树（天黑后亮灯，日落 16:50）。', pois: ['white-house', 'national-tree'] },
-        { t: '19:00', text: '晚饭：红线 NoMa–Gallaudet 两站到 Gallery Place，中国城一带选择多；或去 U Street 吃 Ben\'s Chili Bowl 的 half-smoke。', pois: ['bens'] }
+        { t: '07:15', text: '退房，从酒店停车场取车。出城前加满油，行李全放后备箱、拉上遮物帘。' },
+        { t: '07:30', leg: 's2' },
+        ...south
       ] : [
         { t: '06:30 取车', drive: 'pickup', text: PICKUP.bos.how },
-        { t: '07:00', leg: 's2' },
-        { t: '15:30', text: '到酒店（1225 First St NE，NoMa 一带）：车交给代客泊车或停进车库，12/22 全天不碰车。', pois: ['union-station-dc'] },
-        { t: '16:30', text: '酒店出门往南走 15 分钟到国会山，再沿国家广场去白宫北侧外观 → 国家圣诞树（天黑后亮灯，日落 16:50）。', pois: ['white-house', 'national-tree'] },
-        { t: '19:00', text: '晚饭：红线 NoMa–Gallaudet 两站到 Gallery Place，中国城一带选择多；或去 U Street 吃 Ben\'s Chili Bowl 的 half-smoke。', pois: ['bens'] }
+        { t: '07:30', leg: 's2' },
+        ...south
       ],
       warn: DRIVES.s2.risk,
-      tips: ['华盛顿地铁闸机可以直接刷信用卡或手机，进出都要刷同一张。', '从国会走到林肯纪念堂约 3.5 公里，穿好走的鞋。'],
+      tips: ['想早点到华盛顿：跳过纽黑文，从 I-84 直接接 I-684 → I-287，07:00 出发 15:30 到，天黑前还能去看圣诞树。', '华盛顿地铁闸机可以直接刷信用卡或手机，进出都要刷同一张。', '晚上最后 30 分钟进城赶上晚高峰的尾巴，让精神好的那个人开。'],
+      pace: { km: 4, lv: 3, cut: '下雪或者起晚了：跳过纽黑文走直路；晚上的圣诞树挪到明天中午。' },
       stay: stayText('dc')
     });
   } else {
@@ -115,6 +130,7 @@ export function buildDays(state) {
         { t: '19:00', text: '晚饭：红线 NoMa–Gallaudet 两站到 Gallery Place，中国城一带选择多；或去 U Street 吃 Ben\'s Chili Bowl 的 half-smoke。', pois: ['bens'] }
       ],
       tips: ['华盛顿地铁闸机可以直接刷信用卡或手机，进出都要刷同一张。', '从国会走到林肯纪念堂约 3.5 公里，穿好走的鞋。', '酒店离联合车站步行 10 分钟，12/23 走的时候不用打车。'],
+      pace: { km: 5, lv: 2, cut: '火车坐累了：只去看国家圣诞树，白宫外观明天白天顺路看。' },
       stay: stayText('dc')
     });
   }
@@ -124,21 +140,26 @@ export function buildDays(state) {
     items: [
       { t: '09:00', text: '走 15 分钟到国会大厦，免费导览（官网预约）。', pois: ['capitol'], buy: ['cap'] },
       { t: '10:30', text: '国会图书馆杰斐逊大楼，就在国会后面，走过去 5 分钟（定时票）。', pois: ['loc'], buy: ['loc'] },
-      { t: '12:00', text: '沿国家广场西行：华盛顿纪念碑 → 二战纪念碑 → 林肯纪念堂。', pois: ['washington-monument', 'ww2-memorial', 'lincoln'] },
-      { t: '14:00', text: '杰斐逊纪念堂 + 潮汐湖 + 马丁·路德·金纪念碑。', pois: ['jefferson'] },
-      { t: '15:30', text: 'Maine Avenue 鱼市吃现蒸蓝蟹。', pois: ['wharf'] },
-      { t: '17:00', text: '回酒店休息。' },
+      { t: '11:45', text: '午饭在国会山吃：国会游客中心的餐厅，或 Pennsylvania Ave SE 上的小馆子。吃饱再走，下午 4 公里沿途几乎没有吃的。' },
+      { t: '12:45', text: 'Capitol South 坐蓝/橙/银线 3 站到 Smithsonian（省 2 公里路），出站就是华盛顿纪念碑 → 二战纪念碑 → 沿倒影池走到林肯纪念堂。昨晚没看圣诞树的话，从纪念碑往北走 5 分钟就是。', pois: ['washington-monument', 'ww2-memorial', 'lincoln'] },
+      { t: '14:30', text: '从林肯纪念堂往南顺着走：马丁·路德·金纪念碑 → 沿潮汐湖 → 杰斐逊纪念堂，不走回头路。', pois: ['jefferson'] },
+      { t: '15:45', text: '走 15 分钟到 Maine Avenue 鱼市吃现蒸蓝蟹，当下午茶，别吃太撑。', pois: ['wharf'] },
+      { t: '16:45', text: 'L\'Enfant Plaza 坐绿/黄线到 Gallery Place 换红线，回酒店歇 45 分钟。' },
       { t: '18:00', text: '红线两站到 Gallery Place，球馆就在站上面，晚饭在中国城吃。' },
       { t: '19:00', game: 'was' }
     ],
-    tips: ['奇才是弱队，转售票常在赛前 24–48 小时降价。', '国会和图书馆都在酒店南边 15 分钟步行圈里，今天基本不用坐车。'],
+    tips: ['奇才是弱队，转售票常在赛前 24–48 小时降价。', '上午国会和图书馆都在酒店南边 15 分钟步行圈里；下午从纪念碑到鱼市一路往西再往南，约 5 公里，全是平路。'],
+    pace: { km: 11, lv: 3, cut: '下午冷或者累：走到林肯纪念堂就收，往北走 15 分钟到 Foggy Bottom 站坐地铁回酒店，跳过潮汐湖和鱼市。' },
     stay: `${stayText('dc')} · 续住`
   });
 
+  // 费城半天：先把西边的（市场、LOVE 雕塑）看完，再回东边老城区，不来回折返；开球前留 1 小时休息
   const phlRest = [
-    { t: '13:30', text: '回酒店方向：独立厅（定时票）+ 自由钟，就在酒店旁边两个街区。', pois: ['independence-hall', 'liberty-bell'], buy: ['rec'] },
-    { t: '15:30', text: 'Elfreth\'s Alley，美国最老的住家小巷，离酒店 5 分钟。', pois: ['elfreth'] },
-    { t: '16:30', text: 'LOVE 雕塑拍照（走 15 分钟），旁边圣诞市集只路过。', pois: ['love-park'] },
+    { t: '13:00', text: '从 Reading Terminal 往西走 8 分钟：LOVE 雕塑拍照，旁边的圣诞市集白天顺路看一眼。', pois: ['love-park'] },
+    { t: '13:45', text: '回老城区：15th St 坐集市-法兰克福线 4 站到 5th St（或走 20 分钟）。' },
+    { t: '14:15', text: '独立厅（定时票，订 14:15 前后那一场）+ 对面的自由钟，就在酒店旁边两个街区。', pois: ['independence-hall', 'liberty-bell'], buy: ['rec'] },
+    { t: '15:45', text: 'Elfreth\'s Alley，美国最老的住家小巷，离酒店 5 分钟，赶在日落（16:40）前。', pois: ['elfreth'] },
+    { t: '16:15', text: '回酒店办入住，休息 1 小时。' },
     { t: '17:30', text: '南费城 Pat\'s vs Geno\'s 芝士牛肉堡对决，打车 10 分钟，吃完直接去球馆。', pois: ['pats-genos'] },
     { t: '19:30', game: 'phi' },
     { t: '22:00', text: '散场：宽街线（Broad Street Line）北上到 15th St，换集市-法兰克福线到 5th St，走 3 分钟回酒店；赛后有加开班次。' }
@@ -157,8 +178,9 @@ export function buildDays(state) {
       ...phlRest
     ],
     tips: rent !== 'none'
-      ? ['去球馆别开车：散场堵、停车贵，坐地铁 15 分钟。车在酒店停车场过夜。', '费城地铁 SEPTA 可以刷卡，一张卡最多能替 5 个人付费。', '酒店在 Arch St 上，独立厅、自由钟、Elfreth\'s Alley 全在步行 5–10 分钟里。']
-      : ['费城地铁 SEPTA 可以刷卡，一张卡最多能替 5 个人付费。', '12/23 是圣诞前出行高峰，大巴千万别坐下午的车。', '酒店在 Arch St 上，独立厅、自由钟、Elfreth\'s Alley 全在步行 5–10 分钟里，明天走之前还能再看一眼。'],
+      ? ['去球馆别开车：散场堵、停车贵，坐地铁 15 分钟。车在酒店停车场过夜。', '独立厅上午 10 点以后要定时票，一般最后一场在 16:15 左右；12/24 只开到 15:00，所以今天看。', '费城地铁 SEPTA 可以刷卡，一张卡最多能替 5 个人付费。', '酒店在 Arch St 上，独立厅、自由钟、Elfreth\'s Alley 全在步行 5–10 分钟里。']
+      : ['费城地铁 SEPTA 可以刷卡，一张卡最多能替 5 个人付费。', '独立厅上午 10 点以后要定时票，一般最后一场在 16:15 左右；12/24 只开到 15:00，所以今天看。', '12/23 是圣诞前出行高峰，大巴千万别坐下午的车。', '酒店在 Arch St 上，独立厅、自由钟、Elfreth\'s Alley 全在步行 5–10 分钟里，明天走之前还能再看一眼。'],
+    pace: { km: 6, lv: 2, cut: '路上堵车到晚了：砍掉 LOVE 雕塑，午饭后直接回老城区看独立厅。' },
     stay: stayText('phl')
   });
 
@@ -198,35 +220,38 @@ export function buildDays(state) {
       '纽约地铁用 OMNY 刷卡，每人用自己的卡或手机，7 天内刷满 $35 后免费。',
       `公寓最近的地铁是${T.nyc}；住布鲁克林进出曼哈顿单程 15–20 分钟。`
     ],
+    pace: { km: 7, lv: 3, cut: '体力不够就跳过 ④ 乐天皇宫和 ⑦ 广场酒店，看完洛克菲勒直接去吃饭。' },
     stay: nycHotel
   });
 
   days.push({
     id: '1225', md: '12/25', wd: '周五', city: 'nyc', title: '圣诞日：公园、唐人街、灯光',
     items: [
-      { t: '08:30', xmas: { s: 'check', note: '往年圣诞日全天亮灯，2026 年的时间官网还没公布；B 线圣诞节不开，按括号里坐 Q 线' }, text: '早起再看一次洛克菲勒圣诞树，早上人最少（DeKalb Av 坐 B 线到 47–50 Sts；圣诞节 B 线停运就坐 Q 到 57 St 走过去）。', pois: ['rockefeller-tree'] },
-      { t: '10:00', xmas: { s: 'open', note: '公园每天 6:00–次日 1:00 开放，圣诞节也开' }, text: '中央公园：Gapstow 桥 → The Mall → 贝塞斯达喷泉 → Bow Bridge。', pois: ['central-park'] },
-      { t: '12:00', game: 'nyk25', xmas: { s: 'check', note: '圣诞中午开门的体育酒吧不多，前一天在 Google 地图上看好营业时间' }, text: '尼克斯 vs 马刺圣诞大战中午开球。票太贵不买，找开门的体育酒吧看直播。' },
-      { t: '13:30', xmas: { s: 'check', note: '唐人街中餐馆大多照常营业，但 Nom Wah、Joe\'s Shanghai 没在官网查到圣诞时间，前一天打电话或看 Google 地图' }, text: '唐人街 + 小意大利。圣诞节中餐馆照常营业：Nom Wah 点心、Joe\'s Shanghai 小笼包。', pois: ['chinatown'] },
-      { t: '16:00', xmas: { s: 'open', note: '居民自家装饰，街区随时能走；天黑后亮灯，21 点后不少人家关灯' }, text: '看 Dyker Heights 圣诞灯：从公寓走到 Atlantic Av–Barclays 站坐 D 线到 79 St（约 35 分钟，不用先绕去曼哈顿）。', pois: ['dyker'] },
-      { t: '20:00', text: 'D 线坐回 Atlantic Av–Barclays，走 12 分钟回公寓。' }
+      { t: '可选 08:30', xmas: { s: 'check', note: '往年圣诞日全天亮灯，2026 年的时间官网还没公布；B 线圣诞节不开，坐 Q 线' }, text: '昨晚没挤进去才需要：早起再看一次洛克菲勒圣诞树，早上人最少（DeKalb Av 坐 Q 到 57 St 走过去）。昨晚看够了就多睡一会儿。', pois: ['rockefeller-tree'] },
+      { t: '09:30', xmas: { s: 'open', note: '公园每天 6:00–次日 1:00 开放，圣诞节也开' }, text: '连着赶了一周路，今天睡够再出门。DeKalb Av 坐 Q 线到 57 St–7 Av，走进中央公园：Gapstow 桥 → The Mall → 贝塞斯达喷泉 → Bow Bridge。', pois: ['central-park'] },
+      { t: '12:00', game: 'nyk25', xmas: { s: 'check', note: '圣诞中午开门的体育酒吧不多，前一天在 Google 地图上看好营业时间' }, text: '尼克斯 vs 马刺圣诞大战中午开球，打到 14:30 左右。票太贵不买，找开门的体育酒吧看直播；只点饮料和小吃，正餐留给唐人街。' },
+      { t: '14:45', xmas: { s: 'check', note: '唐人街中餐馆大多照常营业，但 Nom Wah、Joe\'s Shanghai 没在官网查到圣诞时间，前一天打电话或看 Google 地图' }, text: '从中城坐 D 线到 Grand St（圣诞节 B 线不开）：唐人街 + 小意大利，晚午饭吃 Nom Wah 点心或 Joe\'s Shanghai 小笼包。', pois: ['chinatown'] },
+      { t: '17:00', xmas: { s: 'open', note: '居民自家装饰，街区随时能走；天黑后亮灯，21 点后不少人家关灯' }, text: '看 Dyker Heights 圣诞灯：从唐人街 Grand St 站坐 D 线直达 79 St（约 40 分钟），不用先回公寓。最亮的是 83–86 街、11–13 大道之间那几条街。', pois: ['dyker'] },
+      { t: '19:30', text: 'D 线坐回 Atlantic Av–Barclays，走 12 分钟回公寓。' }
     ],
-    tips: ['圣诞日大都会、多数商店和不少餐厅关门，地铁按周日时刻表跑。', 'Dyker Heights 21 点后不少人家关灯。', '住布鲁克林的好处：晚上看完灯 20 分钟就到家，不用再横穿曼哈顿。'],
+    tips: ['圣诞日大都会、多数商店和不少餐厅关门，地铁按周日时刻表跑，B 线不开。', '球赛要打两个半小时，所以唐人街排在 14:45；不看球就把唐人街提前到 12:30，下午回公寓歇一会儿再去看灯。', '住布鲁克林的好处：晚上看完灯 20 分钟就到家，不用再横穿曼哈顿。'],
+    pace: { km: 8, lv: 2, cut: '太冷：Dyker Heights 只看 84 街那一两个街区，半小时就回。' },
     stay: nycHotel
   });
 
   days.push({
     id: '1226', md: '12/26', wd: '周六', city: 'nyc', title: '布鲁克林大桥、DUMBO、篮网',
     items: [
-      { t: '09:00', text: '从公寓走 20 分钟到 DUMBO（或从 Jay St–MetroTech 坐 F 线一站到 York St），先看桥洞框住帝国大厦的机位、Jane\'s 旋转木马。', pois: ['dumbo'] },
-      { t: '10:00', text: '从布鲁克林一侧走上布鲁克林大桥，往曼哈顿方向走约 30 分钟，下桥在市政厅一带。', pois: ['brooklyn-bridge'] },
-      { t: '12:00', text: '回布鲁克林吃午饭：Juliana\'s 披萨或 Time Out Market 美食广场（都在 DUMBO）。' },
-      { t: '13:30', text: '布鲁克林高地观景步道看天际线，走回公寓方向。', pois: ['promenade'] },
-      { t: '15:00', text: '回公寓放东西。进球馆不能背双肩包。' },
+      { t: '09:00', text: 'DeKalb Av 坐 R 线到 City Hall（约 12 分钟），从曼哈顿一侧走上布鲁克林大桥，往布鲁克林方向走约 30 分钟。回头就是下城天际线，早上人少。', pois: ['brooklyn-bridge'] },
+      { t: '10:00', text: '下桥走 10 分钟到 DUMBO：Washington St 桥洞框住帝国大厦的机位、Jane\'s 旋转木马、河边看两座桥。', pois: ['dumbo'] },
+      { t: '11:30', text: '午饭就在 DUMBO：Juliana\'s 披萨（11:30 开门，赶第一轮）或 Time Out Market 美食广场。' },
+      { t: '13:00', text: '布鲁克林高地观景步道看天际线，然后走回公寓（约 25 分钟）。', pois: ['promenade'] },
+      { t: '14:30', text: '回公寓休息、午睡。进球馆不能背双肩包。' },
       { t: '17:00', text: 'Junior\'s 晚饭和芝士蛋糕（Flatbush & DeKalb），从公寓走 6 分钟，吃完再走 8 分钟到球馆。' },
       { t: '18:00', game: 'bkn' }
     ],
-    tips: ['弱队场次临近开赛常降价。', '12/26 是节后返程高峰，这天别安排城际移动。', '篮网就在 Barclays Center，公寓步行约 15 分钟，散场不用挤地铁。'],
+    tips: ['今天的路线是一条线：坐地铁到桥的曼哈顿一头，走过桥、DUMBO、步道，一路走回公寓，不坐回头车。', '弱队场次临近开赛常降价。', '12/26 是节后返程高峰，这天别安排城际移动。', '篮网就在 Barclays Center，公寓步行约 15 分钟，散场不用挤地铁。'],
+    pace: { km: 7, lv: 1, cut: '这天是全程的恢复日：想补觉就 10 点再出门，跳过观景步道。' },
     stay: nycHotel
   });
 
@@ -241,6 +266,7 @@ export function buildDays(state) {
       { t: '可选', game: 'nyk27', text: '加看一场：尼克斯 vs 篮网，18:00 开球（麦迪逊广场花园，17:00 开门），德比票价偏高。去看球就把 18:00 中央车站提到 15:30（跳过 Summit），时代广场改到散场后，从球馆步行约 10 分钟。' }
     ],
     tips: ['大都会周三和 12/25 闭馆，只能排在这天前后的周日、周一、周二。', '时代广场人偶合影要给钱。'],
+    pace: { km: 8, lv: 2, cut: 'Summit 和时代广场二选一；大都会里走累了，丹铎神庙那个大厅有地方坐。' },
     stay: nycHotel
   });
 
@@ -256,18 +282,21 @@ export function buildDays(state) {
       { t: '18:30', text: 'Joe\'s Pizza，纽约一片披萨，然后地铁回布鲁克林。' }
     ],
     tips: ['史泰登岛渡轮比付费自由女神游船两人省 $50 以上，也不用进移民博物馆。'],
+    pace: { km: 11, lv: 3, cut: '砍掉 SoHo 和格林威治村：午饭后从世贸中心坐 E 线到 14 St，直接去切尔西市场。' },
     stay: nycHotel
   });
 
   days.push({
     id: '1229', md: '12/29', wd: '周二', city: 'nyc', title: '弹性日：天气兜底',
     items: [
+      { t: '可选 11:00', text: '时代广场跨年彩纸试飞：往年都在 12/29 上午 11:00，Broadway 45–46 街之间，几分钟就结束。今年的时间出发前看 Times Square Alliance 官网。', pois: ['times-square'] },
       { t: '方案 1', text: '7 号线去法拉盛吃中餐和奶茶（从 DeKalb Av 坐 Q/R 进曼哈顿，在 Times Sq 换 7 号线）。', pois: ['flushing'] },
       { t: '方案 2', text: '罗斯福岛缆车，刷 OMNY，空中看东河。', pois: ['roosevelt-tram'] },
       { t: '方案 3', text: '哈莱姆：Apollo 剧院外观，125 街。', pois: ['apollo'] },
       { t: '晚上', text: '韩国城 32 街烤肉，吃完回布鲁克林。' }
     ],
-    tips: ['前几天如果遇到暴雪，把取消的户外项目挪到这天。'],
+    tips: ['前几天如果遇到暴雪，把取消的户外项目挪到这天。', '三个方案挑一个就够。明晚 02:30 就要去机场，今天别安排满。'],
+    pace: { km: 5, lv: 1, cut: '什么都不想干也行：睡到自然醒，下午只去韩国城吃饭。' },
     stay: nycHotel
   });
 
@@ -275,37 +304,42 @@ export function buildDays(state) {
     id: '1230', md: '12/30', wd: '周三', city: 'nyc', title: state.opts.ewr ? '纪念品，晚上去机场' : '纪念品，凌晨去机场',
     items: state.opts.ewr ? [
       { t: '10:00', text: '退房，行李寄存到公寓前台/门厅，和房东说好晚上来取。' },
-      { t: '11:00', text: '时代广场：往年 12/30 上午有跨年彩纸“试飞”。', pois: ['times-square'] },
-      { t: '12:00', text: '第五大道 NBA Store：篮球之旅的纪念品，购物只排这天。', pois: ['nba-store'] },
-      { t: '14:00', text: '最后一顿网红小吃：Levain 曲奇、Joe\'s Pizza。' },
+      { t: '11:00', text: '第五大道 NBA Store：篮球之旅的纪念品，购物只排这天。', pois: ['nba-store'] },
+      { t: '12:30', text: '午饭，顺路买最后一轮网红小吃：Levain 曲奇、Joe\'s Pizza。' },
+      { t: '14:00', text: '还想补买东西就在第五大道和布莱恩公园一带逛，不想逛就早点回去歇着。', pois: ['bryant-park'] },
       { t: '18:00', text: '回公寓取行李。' },
       { t: '19:00', nav: { name: '纽瓦克机场', q: 'Newark Liberty International Airport, Newark, NJ' }, text: 'NJ Transit 从 Penn Station 到 Newark Airport 站，换 AirTrain 到航站楼，约 $16.80/人（票里含 AirTrain 费）。', buy: ['njt', 'booking', 'trip'], pois: ['moynihan'] }
     ] : [
-      { t: '上午', text: '不用退房：公寓订到 12/31，行李留在房间里，今天照常玩。' },
-      { t: '11:00', text: '时代广场：往年 12/30 上午有跨年彩纸“试飞”。', pois: ['times-square'] },
-      { t: '12:00', text: '第五大道 NBA Store：篮球之旅的纪念品，购物只排这天。', pois: ['nba-store'] },
-      { t: '14:00', text: '最后一顿网红小吃：Levain 曲奇、Joe\'s Pizza。' },
-      { t: '16:00', text: '回布鲁克林，收拾行李、把护照和充电宝放随身包。' },
-      { t: '21:00', text: '早睡。04:00 前要到纽瓦克机场，等于半夜出发。' },
+      { t: '上午', text: '不用退房：公寓订到 12/31，行李留在房间里。今天只安排半天，下午留给收拾和睡觉。' },
+      { t: '11:00', text: '第五大道 NBA Store：篮球之旅的纪念品，购物只排这天。', pois: ['nba-store'] },
+      { t: '12:30', text: '午饭，顺路买最后一轮网红小吃：Levain 曲奇、Joe\'s Pizza。' },
+      { t: '14:00', text: '还想补买东西就在第五大道和布莱恩公园一带逛，不想逛就直接回布鲁克林。', pois: ['bryant-park'] },
+      { t: '16:00', text: '回公寓收拾行李：护照、充电宝放随身包；洛杉矶 19°C，把卫衣放在箱子最上面。在叫车 App 里预约好 02:30 的车。' },
+      { t: '18:30', text: '晚饭吃早一点、清淡一点。' },
+      { t: '20:00', text: '睡觉。02:00 起床，能睡 6 小时；睡不着也躺着，剩下的在飞机上补。' },
       { t: '02:30 叫车', nav: EWR_C, slot: 'flight-lax', text: 'UA2434 06:00 从纽瓦克 C 航站楼起飞，布鲁克林打车过去约 40–50 分钟。夜里 NJ Transit 班次很稀，别赌地铁；提前一晚在叫车 App 里预约 02:30 的车（跨夜车费大约 $100–130）。' }
     ],
     tips: state.opts.ewr
       ? ['大都会周三闭馆，别挪到这天。', '住机场酒店：晚饭后就动身，NJ Transit 末班在午夜前后；酒店通常有免费接驳，入住时问清楚次日航站楼接驳时间。']
       : ['大都会周三闭馆，别挪到这天。', '公寓订到 12/31，所以这晚不用去机场过夜；代价是 12/31 凌晨 02:30 就得叫车。想睡整觉就把设置里切成机场酒店，并和房东退掉最后一晚。', 'UA2434 是 06:00 起飞，国内段柜台 04:00 左右开，02:30 出发刚好。'],
+    pace: { km: 5, lv: 1, cut: '今天只保留 NBA Store 一件事，买完就回去。' },
     stay: state.opts.ewr ? '纽瓦克机场酒店' : `${nycHotel}（住到 12/31）`
   });
+
 
   days.push({
     id: '1231', md: '12/31', wd: '周四', city: 'la', from: 'nyc', title: '转机半天：圣莫尼卡到威尼斯',
     items: [
-      { t: '06:00 起飞', nav: EWR_C, slot: 'flight-lax', text: 'UA2434 纽瓦克 C 航站楼 06:00 → 洛杉矶 T7 09:12。这两段是同一张票，行李只托运到洛杉矶，落地要取出来。' },
-      { t: '落地', text: '免费接驳车到 LAX/Metro 交通中心 → K 线北行 → Expo/Crenshaw 换 E 线西行 → Downtown Santa Monica，约 60–75 分钟，$1.75。', pois: ['lax-transit'], buy: ['lametro'] },
-      { t: '+1.5h', text: '圣莫尼卡用 App 预约行李寄存。', buy: ['bounce', 'lh'] },
-      { t: '午后', text: '圣莫尼卡码头 → 沿海滩步道走到威尼斯海滩（约 3 公里）→ 威尼斯运河。', pois: ['santa-monica-pier', 'venice-beach', 'venice-canals'] },
-      { t: '起飞前 5h', nav: LAX_T7, text: '取行李回机场：E 线 → K 线 → 接驳车，或打车约 $30–45。12/31 傍晚路况差。' },
+      { t: '06:00 起飞', nav: EWR_C, slot: 'flight-lax', text: 'UA2434 纽瓦克 C 航站楼 06:00 → 洛杉矶 T7 09:12。这两段是同一张票，行李只托运到洛杉矶，落地要取出来。上飞机就睡：这 6 小时是今天唯一能补觉的时候。' },
+      { t: '落地', text: '取完行李大约 09:45。只睡了半夜又带着箱子，推荐直接打车去圣莫尼卡（约 30 分钟，$40–55；出租车和 Uber 都要先坐免费接驳车到 LAX-it 上车点）。想省钱：免费接驳车到 LAX/Metro 交通中心 → K 线北行 → Expo/Crenshaw 换 E 线西行 → Downtown Santa Monica，约 60–75 分钟，$1.75。', pois: ['lax-transit'], buy: ['lametro'] },
+      { t: '11:00', text: '到圣莫尼卡先寄存行李（App 里提前约好），然后吃午饭。下面的时间按航班准点写，晚点就整体顺延。', buy: ['bounce', 'lh'] },
+      { t: '12:30', text: '圣莫尼卡码头 → 沿海滩步道走到威尼斯海滩（约 3 公里，平路）→ 威尼斯运河。', pois: ['santa-monica-pier', 'venice-beach', 'venice-canals'] },
+      { t: '16:15', text: '从威尼斯打车或坐 Big Blue Bus 1 路回圣莫尼卡（10–20 分钟），16:55 在码头看太平洋日落，然后早点吃晚饭。', pois: ['santa-monica-pier'] },
+      { t: '18:30', nav: LAX_T7, text: '取行李回机场：打车约 $30–45，跨年夜傍晚路况差，留足 1 小时；或 E 线 → K 线 → 接驳车。别更早去：联合航空柜台最早在起飞前 4 小时（19:35）才收托运行李。' },
       { t: '20:35 到柜台', nav: LAX_T7, slot: 'flight-home', text: 'UA771 洛杉矶 T7 23:35 起飞，01/02 06:35 到北京首都 T3（票面只印 06:35，跨 2 天）。国际柜台起飞前 3 小时开。' }
     ],
-    tips: ['LAX 机场捷运最新目标 2027-01-06 才通，这次还是坐接驳车。', '跨年夜圣莫尼卡人多，看好手机和钱包。'],
+    tips: ['LAX 机场捷运最新目标 2027-01-06 才通，这次还是坐接驳车。', '跨年夜圣莫尼卡人多，看好手机和钱包。', '回国倒时差：UA771 起飞时是北京时间下午 3 点半，上飞机先吃饭、撑 2–3 小时再睡，落地正好是北京早上。'],
+    pace: { km: 6, lv: 2, cut: '太累就不走去威尼斯：在圣莫尼卡码头和第三街步行街待着，找家咖啡馆坐到日落。' },
     stay: '国际航班'
   });
 

@@ -22,9 +22,10 @@ export function directionsUrl(q, app = 'google', mode = 'transit') {
 }
 
 // 两地之间开车（起点终点都给）
-export function driveUrl(from, to, app = 'google') {
-  if (app === 'apple') return `https://maps.apple.com/?saddr=${enc(from)}&daddr=${enc(to)}&dirflg=d`;
-  return `https://www.google.com/maps/dir/?api=1&origin=${enc(from)}&destination=${enc(to)}&travelmode=driving`;
+// via：中途要停的地方（Google 支持途经点；Apple 不支持，只能先导航到途经点）
+export function driveUrl(from, to, app = 'google', via = '') {
+  if (app === 'apple') return `https://maps.apple.com/?saddr=${enc(from)}&daddr=${enc(via || to)}&dirflg=d`;
+  return `https://www.google.com/maps/dir/?api=1&origin=${enc(from)}&destination=${enc(to)}&travelmode=driving${via ? '&waypoints=' + enc(via) : ''}`;
 }
 
 // 当天路线：按顺序串起多个地点（Google 支持途经点，用步行模式；Apple 不支持途经点）

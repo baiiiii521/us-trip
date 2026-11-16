@@ -101,7 +101,7 @@ function legsCard(state, legs) {
           <div><dt>休息</dt><dd>${esc(d.stops.join('；'))}</dd></div>
         </dl>
         <p class="callout"><b>注意</b>${esc(d.risk)}</p>
-        <div class="btn-row"><a class="btn btn--primary btn--sm" href="${esc(driveUrl(from, to, state.nav))}" target="_blank" rel="noopener">${icon('nav')}开车导航</a></div>
+        <div class="btn-row"><a class="btn btn--primary btn--sm" href="${esc(driveUrl(from, to, state.nav, d.via))}" target="_blank" rel="noopener">${icon('nav')}开车导航</a></div>
       </article>`;
     }).join('')}</div>
   </section>`;

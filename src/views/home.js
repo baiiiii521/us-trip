@@ -21,6 +21,14 @@ import { PICKUP, DROPOFF, PARKING } from '../data/drive.js';
 import { checkoutItems, parkingCities, daySpend } from '../lib/tools.js';
 import { files } from '../lib/storage.js';
 import { usd as usd0 } from '../lib/dom.js';
+import { paceText, jetlagFor, PACKING, PACK_IDS } from '../data/wellbeing.js';
+
+// 倒时差：今天该怎么睡、什么时候喝咖啡
+function jetlagHtml(j, open = false) {
+  if (!j) return '';
+  return `<details class="tbox"${open ? ' open' : ''}><summary><h3>倒时差</h3><span class="tbox__st">${esc(j.title)}</span></summary>
+    <ul class="plain">${j.items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></details>`;
+}
 
 // 停车照片（IndexedDB，只在本机）：{ city: objectURL }
 export const parkingPhotos = { map: {} };
@@ -96,7 +104,16 @@ export function navTarget(state, day, it) {
 export function itemLine(state, it) {
   if (it.game && GAMES[it.game]) { const G = GAMES[it.game]; const a = POI[G.arena]; return `${G.title}${a ? ' · ' + a.name : ''}`; }
   if (it.leg && LEGS[it.leg]) return `${choiceFor(state, it.leg) === 'car' ? '开车' : '城际交通'}：${LEGS[it.leg].route}`;
-  return String(it.text || it.title || '').slice(0, 60);
+  return firstSentence(it.text || it.title || '');
+}
+
+// 一句话摘要：取到第一个句号或冒号；太长就在 56 个字处截断加省略号，不留半个括号
+export function firstSentence(text, max = 56) {
+  const s = String(text).trim();
+  const m = /^[^。：；]{6,}?[。：；]/.exec(s);
+  let out = m && m[0].length <= max ? m[0].replace(/[。：；]$/, '') : s;
+  if (out.length > max) out = out.slice(0, max).replace(/[（(，、\s][^（(，、]*$/, '') + '…';
+  return out;
 }
 
 // 今天模式：当前在做什么、下一项几点、去哪、订单、实时状态
@@ -106,9 +123,9 @@ function todayCard(state, days, ctx) {
   const { current, next, between, minutes } = nowAndNext(day, ctx.now);
   const w = weatherFor(ctx.weather, day.city, day);
   const al = alertFor(w);
-  // 导航：先找下一项及其后两项，再退回到正在进行的那一项
-  const ahead = next ? day.items.slice(next.i, next.i + 3) : [];
-  const go = ahead.map((it) => navTarget(state, day, it)).find(Boolean) || navTarget(state, day, current && current.it);
+  // 下一项没有地点时，先给正在进行的这一项（人就在那儿或正往那儿走），再往后找
+  const ahead = next ? day.items.slice(next.i + 1, next.i + 3) : [];
+  const go = [next && next.it, current && current.it, ...ahead].map((it) => navTarget(state, day, it)).find(Boolean);
   const slots = [...new Set(day.items.flatMap((it) => slotsForItem(it, state)))];
   const slotTitle = Object.fromEntries(walletSlots(state).map((x) => [x.id, shortTitle(x.title)]));
   const leg = day.items.find((i) => i.leg);
@@ -117,6 +134,7 @@ function todayCard(state, days, ctx) {
   return `<section class="card today2">
     <div class="card__h"><h2>今天 ${day.md} ${esc(day.wd)}</h2><span class="meta">${esc(CITIES[day.city].zh)}${w ? ` · ${codeLabel(w.code)} ${Math.round(w.hi)}°/${Math.round(w.lo)}°C` : ''}</span></div>
     <p class="today2__title">${esc(day.title)}</p>
+    ${day.pace ? `<p class="day__pace"><span class="pace pace--${day.pace.lv}" aria-hidden="true"><i></i><i></i><i></i></span>${esc(paceText(day.pace))} · 日落 ${esc(CITIES[day.city].sunset)}</p>` : ''}
     ${al ? `<p class="alert alert--${al.level}" role="alert"><b>天气提醒</b>${esc(al.text)}。室外项目改成室内：${esc(STORM[day.city] || '博物馆、图书馆、商场')}。出发前再看一次交通是否正常。</p>` : ''}
     <dl class="nownext">
       <div><dt>现在</dt><dd>${current ? line(current) : '今天还没开始'}</dd></div>
@@ -134,6 +152,8 @@ function todayCard(state, days, ctx) {
     </nav>
     ${slots.length ? `<div class="buys"><span class="buys__label">今天要出示的订单</span><div class="buys__list">${slots.map((id) => slotChip(state, id, slotTitle[id])).join('')}</div></div>` : ''}
     ${status.length ? `<details class="tbox"><summary><h3>实时路况和地铁 · ${status.length} 个</h3></summary><div class="buys__list">${status.map((l) => ext(l.label, l.url)).join('')}</div></details>` : ''}
+    ${day.pace && day.pace.cut ? `<details class="tbox"><summary><h3>想轻松点</h3><span class="tbox__st">累了或下雨先砍哪一项</span></summary><p class="tbox__p">${esc(day.pace.cut)}</p></details>` : ''}
+    ${jetlagHtml(jetlagFor({ phase: 'during' }, day.id), ctx.now.getHours() < 12)}
     ${checkoutHtml(state, day)}
     ${parkingHtml(state, day)}
     ${spendHtml(state, day)}
@@ -163,8 +183,19 @@ export function renderHome(state, ctx = { now: new Date(), weather: null }) {
 
 
   const today = todayCard(state, days, ctx);
+  const packed = PACK_IDS.filter((id) => isDone(state, id)).length;
+  const jl = phase.phase === 'before' ? jetlagFor(phase) : null;
+  // 出发前两周起：行李清单进度和倒时差提示放到最上面
+  const prep = phase.phase === 'before' && phase.days <= 14 ? `<section class="card prep">
+    <div class="card__h"><h2>还有 ${phase.days} 天出发</h2><span class="meta">12/17 13:45 郑州起飞</span></div>
+    <a class="tbox tbox--link" href="#info" data-action="info-tab" data-tab="pack"><h3>行李清单</h3><span class="tbox__st">${packed}/${PACK_IDS.length} 已装</span>${icon('arrow')}</a>
+    <a class="tbox tbox--link" href="#info" data-action="info-tab" data-tab="todo"><h3>预订清单</h3><span class="tbox__st">${doneCount}/${CHECKLIST.length} 已办</span>${icon('arrow')}</a>
+    ${jetlagHtml(jl, true)}
+  </section>` : '';
+  void PACKING;
   return `
   ${today}
+  ${prep}
   <section class="hero${today ? ' hero--during' : ''}">
     <div>
       <h1 class="hero__h1">两人 14 天美东圣诞篮球行</h1>
@@ -200,6 +231,8 @@ export function renderHome(state, ctx = { now: new Date(), weather: null }) {
     </div>
     <div class="m-nolift card">
       <div class="m-nolift card__h"><h2>14 天行程一览</h2><a href="#days" class="more">看每日行程${arrow}</a></div>
+      <p class="pacekey"><span>每天的强度</span><span><span class="pace pace--1"><i></i><i></i><i></i></span>轻松</span><span><span class="pace pace--2"><i></i><i></i><i></i></span>适中</span><span><span class="pace pace--3"><i></i><i></i><i></i></span>紧凑</span></p>
+      <p class="note">最密的是 12/18–12/24（落地、三座城、开 900 英里）；纽约 7 晚有意放松，12/26 和 12/29 是恢复日。</p>
       <ol class="glance">${days.map((d) => {
         const g = d.items.find((i) => i.game && GAMES[i.game] && !['nyk25', 'nyk27'].includes(i.game));
         const mv = d.items.find((i) => i.leg);
@@ -207,7 +240,7 @@ export function renderHome(state, ctx = { now: new Date(), weather: null }) {
           <span class="glance__md">${d.md}</span><span class="glance__wd">${esc(d.wd)}</span>
           <span class="tag tag--${d.city}">${esc(CITIES[d.city].zh)}</span>
           <span class="glance__t">${esc(d.title)}</span>
-          <span class="glance__ic">${mv ? icon(choiceFor(state, mv.leg)) : ''}${g ? icon('ball', 'ic--ball') : ''}</span>
+          <span class="glance__ic">${mv ? icon(choiceFor(state, mv.leg)) : ''}${g ? icon('ball', 'ic--ball') : ''}${d.pace ? `<span class="pace pace--${d.pace.lv}" title="${esc(paceText(d.pace))}"><i></i><i></i><i></i></span><span class="visually-hidden">${esc(paceText(d.pace))}</span>` : ''}</span>
         </a></li>`;
       }).join('')}</ol>
     </div>

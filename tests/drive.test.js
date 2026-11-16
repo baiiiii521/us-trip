@@ -22,7 +22,7 @@ test('自驾花费：6 天租车 + 油 + 过路费 + 波士顿/华盛顿/费城�
   assert.equal(c.days, 6);
   assert.equal(c.booked, true);
   assert.equal(c.rental, Math.round(4300 / DEFAULTS.budget.rate), '已订 ¥4,300 含保险');
-  assert.equal(c.miles, 215 + 440 + 140 + 100 + 4);
+  assert.equal(c.miles, 215 + 450 + 140 + 100 + 4);
   assert.ok(c.fuel > 80 && c.fuel < 150, `油费 ${c.fuel}`);
   assert.deepEqual(c.parkNights, { bos: 3, dc: 2, phl: 1 });
   assert.equal(c.total, c.rental + c.oneWay + c.fuel + c.tolls + c.parking);

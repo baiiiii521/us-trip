@@ -15,6 +15,7 @@ import { slotsForItem } from '../data/bookings.js';
 import { slotChip } from './wallet.js';
 import { findToday } from '../lib/today.js';
 import { weatherFor, alertFor, codeLabel } from '../lib/weather.js';
+import { paceText } from '../data/wellbeing.js';
 
 // 每段自驾的起点终点（导航用）
 const DRIVE_ENDS = {
@@ -34,7 +35,7 @@ function driveBlock(id, state) {
     <p class="move__d">${esc(d.route)}</p>
     <p class="move__d">${esc(d.tollNote)}</p>
     ${d.stops.length ? `<p class="move__d">休息：${esc(d.stops.join('；'))}</p>` : ''}
-    <div class="btn-row"><a class="btn btn--primary btn--sm" href="${esc(driveUrl(fromQ, to, state.nav))}" target="_blank" rel="noopener">${icon('nav')}开车导航</a></div>
+    <div class="btn-row"><a class="btn btn--primary btn--sm" href="${esc(driveUrl(fromQ, to, state.nav, d.via))}" target="_blank" rel="noopener">${icon('nav')}${d.via ? (state.nav === 'apple' ? '导航到午饭停靠点' : '开车导航（经纽黑文）') : '开车导航'}</a></div>
   </div>`;
 }
 
@@ -119,7 +120,7 @@ export function renderDays(state, ctx = { now: new Date(), weather: null }) {
           <span class="tag tag--${d.city}">${d.from ? esc(CITIES[d.from].zh) + ' → ' : ''}${esc(c.zh)}</span>
           <h2 id="dt-${d.id}">${esc(d.title)}</h2>
           ${(() => { const w = weatherFor(ctx.weather, d.city, d); const al = alertFor(w);
-            return `<p class="day__wx">${icon('sun')}${w ? `预报 ${codeLabel(w.code)} ${Math.round(w.hi)}° / ${Math.round(w.lo)}°C` : `12 月平均 ${c.hi}° / ${c.lo}°`} · 日落 ${c.sunset}</p>${al ? `<p class="alert alert--${al.level}" role="alert"><b>天气提醒</b>${esc(al.text)}，户外项目请准备室内备选。</p>` : ''}`; })()}
+            return `<p class="day__wx">${icon('sun')}${w ? `预报 ${codeLabel(w.code)} ${Math.round(w.hi)}° / ${Math.round(w.lo)}°C` : `12 月平均 ${c.hi}° / ${c.lo}°`} · 日落 ${c.sunset}</p>${d.pace ? `<p class="day__pace"><span class="pace pace--${d.pace.lv}" aria-hidden="true"><i></i><i></i><i></i></span>${esc(paceText(d.pace))}</p>` : ''}${al ? `<p class="alert alert--${al.level}" role="alert"><b>天气提醒</b>${esc(al.text)}，户外项目请准备室内备选。</p>` : ''}`; })()}
         </div>
         ${rUrl ? `<a class="btn btn--secondary" href="${esc(rUrl)}" target="_blank" rel="noopener">${icon('route')}打开当天路线</a>` : ''}
       </header>
@@ -138,6 +139,7 @@ export function renderDays(state, ctx = { now: new Date(), weather: null }) {
             ${(() => { const ids = slotsForItem(it, state); return ids.length ? `<div class="buys"><span class="buys__label">我的订单</span><div class="buys__list">${ids.map((id) => slotChip(state, id)).join('')}</div></div>` : ''; })()}
           </div>
         </li>`).join('')}</ol>
+      ${d.pace && d.pace.cut ? `<p class="day__cut"><b>想轻松点</b>${esc(d.pace.cut)}</p>` : ''}
       ${d.tips && d.tips.length ? `<ul class="day__tips">${d.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
       <p class="day__stay">${icon('bed')}住：${esc(d.stay)}</p>
     </article>`;

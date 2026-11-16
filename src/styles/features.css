@@ -265,3 +265,43 @@ details.tbox[open] > summary::after { transform: rotate(-135deg) translateY(-2px
 /* 今天卡片里各行标题统一：15px 中等字重，比卡片标题轻、比小标签重 */
 .today2 .tbox h3, .today2 details.tbox > summary h3, .today2 .tbox--link h3 { font-size: 15px; font-weight: 600; color: var(--ink); white-space: nowrap; flex: none; }
 .today2 .tbox--link .tbox__st { white-space: normal; line-height: 1.45; }
+
+/* 每天的强度：三格，填几格就是几级。只用中性色，紧凑那一级用强调色 */
+.pace { display: inline-flex; gap: 2px; align-items: center; flex: none; }
+.pace i { width: 6px; height: 12px; border-radius: 2px; background: var(--line-strong); opacity: .45; }
+.pace--1 i:nth-child(-n+1), .pace--2 i:nth-child(-n+2), .pace--3 i { background: var(--ink-2); opacity: 1; }
+.pace--3 i { background: var(--accent); }
+.day__pace { margin: var(--s-1) 0 0; font-size: var(--t-label); color: var(--ink-2); display: flex; align-items: center; gap: var(--s-2); }
+.day__cut { margin: 0; padding: var(--s-3) var(--s-5); border-top: 1px solid var(--line); background: var(--card); font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+.day__cut b { margin-right: var(--s-2); color: var(--ink); }
+@media (max-width: 639px) { .day__cut { padding-inline: var(--s-4); } }
+.glance__ic { align-items: center; }
+.pacekey { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-4); margin: 0 0 var(--s-1); font-size: var(--t-label); color: var(--ink-2); }
+.pacekey > span { display: inline-flex; align-items: center; gap: var(--s-1); white-space: nowrap; }
+.pacekey > span:first-child { color: var(--muted); }
+.plain { margin: var(--s-2) 0 0; padding-left: 20px; display: grid; gap: var(--s-2); font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+.tbox__p { margin: var(--s-2) 0 0; font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+.packgrp { margin-top: var(--s-3); }
+.packgrp h3 { margin: 0; font-size: var(--t-h3); }
+.prep { display: grid; gap: var(--s-2); }
+
+/* 每日行程：时间轴。左边一条细线串起当天每一项，圆点标出球赛和赶路 */
+.tl { padding-top: var(--s-4); padding-bottom: var(--s-4); }
+.tl__i { position: relative; grid-template-columns: 1fr; gap: var(--s-2); padding: 0 0 var(--s-5) var(--s-5); }
+.tl__i + .tl__i { border-top: 0; }
+.tl__i:last-child { padding-bottom: var(--s-1); }
+.tl__i::before { content: ""; position: absolute; left: 3px; top: 7px; width: 9px; height: 9px; border-radius: 50%; background: var(--card); border: 2px solid var(--line-strong); box-sizing: border-box; }
+.tl__i::after { content: ""; position: absolute; left: 7px; top: 22px; bottom: -3px; width: 1px; background: var(--line); }
+.tl__i:last-child::after { display: none; }
+.tl__i--move::before { background: var(--ink-2); border-color: var(--ink-2); }
+.tl__i--game::before { background: var(--accent); border-color: var(--accent); }
+.tl__t { font-size: 15px; font-weight: 700; color: var(--ink); padding-top: 0; letter-spacing: .01em; }
+.tl__b > p { margin: 0; line-height: 1.65; color: var(--ink-2); }
+@media (min-width: 640px) {
+  .tl__i { grid-template-columns: 96px 1fr; gap: var(--s-4); }
+}
+/* 今天卡片：节奏一行和“现在”之间留气口 */
+.today2 .day__pace { margin: 0 0 var(--s-4); }
+.today2__title { margin-bottom: var(--s-2); }
+.today2 .nownext { gap: var(--s-4); }
+.today2 .nownext dd { padding-left: var(--s-4); }

@@ -3,10 +3,25 @@ import { esc, icon, ext, vendorLinks } from '../lib/dom.js';
 import { CHECKLIST, TIPS, SOURCES } from '../data/content.js';
 import { gameLinks } from '../data/games.js';
 import { isDone } from '../state.js';
+import { PACKING, PACK_IDS, JETLAG } from '../data/wellbeing.js';
 
 export const infoUi = { tab: 'todo' };
 
-const TABS = [['todo', '预订清单'], ['tips', '实用提示'], ['sources', '来源']];
+const TABS = [['todo', '预订清单'], ['pack', '行李清单'], ['jetlag', '倒时差'], ['tips', '实用提示'], ['sources', '来源']];
+
+function packHtml(state) {
+  const done = PACK_IDS.filter((id) => isDone(state, id)).length;
+  return `<p class="note">${done}/${PACK_IDS.length} 已装。两个人勾的会同步到一起。</p>
+  ${PACKING.map((g) => `<section class="card packgrp"><h3>${esc(g.group)}</h3>
+    <ul class="outlist">${g.items.map(([k, text]) => { const id = 'pk-' + k; const on = isDone(state, id);
+      return `<li class="${on ? 'is-done' : ''}"><label><input type="checkbox" data-action="todo" data-id="${id}"${on ? ' checked' : ''}><span>${esc(text)}</span></label></li>`; }).join('')}</ul></section>`).join('')}`;
+}
+
+function jetlagTabHtml() {
+  return `<p class="note">纽约比北京晚 13 小时：纽约下午 3 点是北京凌晨 4 点。所以头三天下午最困、凌晨会醒，下面按天写了该怎么做。旅途中当天那一条也会出现在首页“今天”卡片里。</p>
+  ${Object.values(JETLAG).map((j) => `<section class="card packgrp"><h3><span class="mono">${esc(j.when)}</span> ${esc(j.title)}</h3><ul class="plain">${j.items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></section>`).join('')}
+  <p class="note">这些是通用的作息建议，不是医嘱；要不要吃褪黑素或助眠药，问医生或药师。</p>`;
+}
 
 function todoHtml(state) {
   const done = CHECKLIST.filter((t) => isDone(state, t.id)).length;
@@ -33,7 +48,7 @@ function sourcesHtml() {
 }
 
 export function renderInfo(state) {
-  const body = { todo: () => todoHtml(state), tips: tipsHtml, sources: sourcesHtml }[infoUi.tab]();
+  const body = ({ todo: () => todoHtml(state), pack: () => packHtml(state), jetlag: jetlagTabHtml, tips: tipsHtml, sources: sourcesHtml }[infoUi.tab] || (() => todoHtml(state)))();
   return `
   <div class="pagehead"><h1>资料</h1></div>
   <div class="subtabs" role="tablist">${TABS.map(([k, l]) => `<button type="button" role="tab" aria-selected="${infoUi.tab === k}" class="subtab${infoUi.tab === k ? ' is-on' : ''}" data-action="info-tab" data-tab="${k}">${esc(l)}</button>`).join('')}</div>

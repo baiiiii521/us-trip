@@ -35,7 +35,7 @@ export function renderMore(state) {
       ${state.rent !== 'none' ? entry('#drive', '自驾', '租车、每段路线、停车、过路费、加油和驾驶规则', 'car') : ''}
       ${entry('#tickets', '票务', '城际交通对比、6 场 NBA 购票入口、需要预约的景点', 'ball')}
       ${entry('#memories', '回忆', '导入照片，按天整理，生成回忆视频和每日分享卡', 'sun')}
-      ${entry('#info', '资料', `预订清单 ${done}/${CHECKLIST.length}、实用提示、来源`, 'info')}
+      ${entry('#info', '资料', `预订清单 ${done}/${CHECKLIST.length}、行李清单、倒时差、实用提示`, 'info')}
     </div>
   </section>
 
