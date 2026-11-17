@@ -1,14 +1,18 @@
 <view class="page-pad">
   <view class="head">
-    <view class="eyebrow">TRAVEL BOOK</view>
-    <view class="title">我的旅行</view>
-    <view class="subtitle">走过的和要走的，都记在这里。</view>
+    <image class="logo" src="/assets/logo.png" mode="aspectFill" />
+    <view class="head-text">
+      <view class="brand">行前行后</view>
+      <view class="subtitle">走过的和要走的，都记在这里。</view>
+    </view>
   </view>
 
   <view
     wx:for="{{list}}"
     wx:key="id"
     class="card card-tap trip"
+    hover-class="trip-hover"
+    hover-stay-time="80"
     data-id="{{item.id}}"
     bindtap="openTrip"
   >
@@ -41,7 +45,7 @@
       <view class="trip-summary">{{item.summary}}</view>
 
       <view class="trip-foot">
-        <text class="trip-open">{{item.status === 'ready' ? '打开旅程' : '查看'}}</text>
+        <text class="trip-open">打开旅程</text>
         <text class="trip-chev">›</text>
       </view>
     </view>

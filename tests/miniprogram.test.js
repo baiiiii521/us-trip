@@ -99,6 +99,23 @@ test('今天卡片：出发前给倒计时和第一天预览，行程中给第�
   assert.ok(during.pace, '每天都有节奏标签');
 });
 
+test('所有跳转目标都是 app.json 里登记过的页面（防止删了页面忘了改链接）', () => {
+  const files = [
+    ...APP.pages.map((p) => `${MP}/${p}.js`),
+    ...walk(join(MP, 'components')).map((f) => f.path).filter((f) => f.endsWith('.js'))
+  ];
+  const bad = [];
+  for (const f of files) {
+    const txt = readFileSync(f, 'utf8');
+    // 抓 wx.navigateTo({ url: '/pages/x/x?...' }) 里的路径，模板字符串也算
+    for (const m of txt.matchAll(/url:\s*`?['"]?(\/pages\/[A-Za-z0-9_\-/]+)/g)) {
+      const target = m[1].replace(/^\//, '');
+      if (!APP.pages.includes(target)) bad.push(`${f} → ${target}`);
+    }
+  }
+  assert.deepEqual(bad, [], `这些跳转指向不存在的页面：\n${bad.join('\n')}`);
+});
+
 test('景点图鉴：68 个都在，且都有名字和地址', () => {
   assert.equal(POIS.length, 68);
   for (const p of POIS) assert.ok(p.name && p.q, `${p.id} 缺名字或地址`);

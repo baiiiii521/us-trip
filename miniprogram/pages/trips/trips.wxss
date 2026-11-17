@@ -1,9 +1,29 @@
 .head {
   padding: 16rpx 0 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
 }
 
-.head .title {
-  margin: 8rpx 0 8rpx;
+.logo {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 24rpx;
+  flex: none;
+}
+
+.head-text {
+  flex: 1;
+}
+
+.brand {
+  font-size: 40rpx;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.trip-hover {
+  opacity: 0.9;
 }
 
 .trip {
