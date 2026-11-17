@@ -1,0 +1,22 @@
+{
+  "pages": [
+    "pages/trips/trips",
+    "pages/today/today",
+    "pages/days/days",
+    "pages/guide/guide",
+    "pages/poi/poi",
+    "pages/eats/eats",
+    "pages/money/money",
+    "pages/more/more"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#F3F5F7",
+    "navigationBarTitleText": "行前行后",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F3F5F7",
+    "backgroundTextStyle": "dark"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

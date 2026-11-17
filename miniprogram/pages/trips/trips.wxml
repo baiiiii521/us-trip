@@ -1,0 +1,51 @@
+<view class="page-pad">
+  <view class="head">
+    <view class="eyebrow">TRAVEL BOOK</view>
+    <view class="title">我的旅行</view>
+    <view class="subtitle">走过的和要走的，都记在这里。</view>
+  </view>
+
+  <view
+    wx:for="{{list}}"
+    wx:key="id"
+    class="card card-tap trip"
+    data-id="{{item.id}}"
+    bindtap="openTrip"
+  >
+    <view class="trip-cover">
+      <text class="trip-cover-en">{{item.titleEn}}</text>
+      <view class="trip-cover-line"></view>
+    </view>
+
+    <view class="trip-body">
+      <view class="trip-top">
+        <text class="trip-title">{{item.title}}</text>
+        <text class="pill {{item.phaseKey === 'now' ? 'pill-accent' : ''}}">{{item.phaseLabel}}</text>
+      </view>
+
+      <view class="trip-meta">
+        <text>{{item.dateText}}</text>
+        <text class="dot">·</text>
+        <text>{{item.days}} 天</text>
+        <text class="dot">·</text>
+        <text>{{item.people}} 人</text>
+      </view>
+
+      <view class="trip-trail">
+        <block wx:for="{{item.trail}}" wx:for-item="city" wx:for-index="i" wx:key="*this">
+          <text class="trail-city">{{city}}</text>
+          <text wx:if="{{i < item.trail.length - 1}}" class="trail-arrow">→</text>
+        </block>
+      </view>
+
+      <view class="trip-summary">{{item.summary}}</view>
+
+      <view class="trip-foot">
+        <text class="trip-open">{{item.status === 'ready' ? '打开旅程' : '查看'}}</text>
+        <text class="trip-chev">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="foot-note">下一趟旅行做好了，也会出现在这里。</view>
+</view>

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "吃什么",
+  "usingComponents": {
+    "bottom-nav": "/components/nav/nav"
+  }
+}

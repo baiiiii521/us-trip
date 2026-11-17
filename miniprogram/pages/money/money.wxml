@@ -1,0 +1,36 @@
+<view class="page with-nav">
+  <view class="card total-card">
+    <view class="eyebrow">预算（两人）</view>
+    <view class="total">{{total}}</view>
+    <view class="per">每人 {{per}} · 汇率 {{rate}}</view>
+  </view>
+
+  <view class="card">
+    <view class="section-label">按类别</view>
+    <view class="group" wx:for="{{groups}}" wx:key="key">
+      <view class="group-top">
+        <text class="group-name">{{item.label}}</text>
+        <text class="group-amt">{{item.usd}} · {{item.pct}}%</text>
+      </view>
+      <view class="bar"><view class="bar-fill" style="width:{{item.w}}"></view></view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-label">明细</view>
+    <view class="row" wx:for="{{rows}}" wx:key="label">
+      <view class="row-l">
+        <text class="row-label">{{item.label}}</text>
+        <text class="row-kind">{{item.kind}}</text>
+      </view>
+      <text class="row-amt">{{item.usd}}</text>
+    </view>
+  </view>
+
+  <view class="card note-card">
+    <view class="section-label">记账还没搬过来</view>
+    <view class="body-text">这一页现在只读：数字来自网站的预算表（改预算在网站的花费页改）。记账、两人 AA 结算、结账计算器排在下一版——数据和算法已经共用，只差界面。</view>
+  </view>
+</view>
+
+<bottom-nav current="money" tripId="{{tripId}}" />

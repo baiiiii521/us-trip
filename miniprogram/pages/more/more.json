@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "随身",
+  "usingComponents": {
+    "bottom-nav": "/components/nav/nav"
+  }
+}

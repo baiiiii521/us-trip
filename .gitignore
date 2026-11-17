@@ -10,6 +10,9 @@ video/out/
 # 本地截图（用 Playwright/浏览器在 390×844 下检查用，不进仓库）
 .shots/
 
+# 小程序上传产物（预览二维码、错误日志，随时可重出）
+.mp-out/
+
 # 个人信息（护照号、PNR、房号），只在本机
 private/*
 !private/itinerary.example.json

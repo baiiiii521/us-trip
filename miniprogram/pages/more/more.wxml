@@ -1,0 +1,75 @@
+<view class="page with-nav">
+  <!-- 紧急情况：这一块现在就能用 -->
+  <view class="card sos">
+    <view class="section-label">紧急情况</view>
+    <view class="sos-row">
+      <view class="btn-primary sos-btn" bindtap="call911">打 911</view>
+      <view class="btn-ghost sos-btn" bindtap="call12308">12308 领保热线</view>
+    </view>
+    <view class="sos-note">接通先说 “Chinese, I need an interpreter.”，会转中文翻译。12308 是 24 小时。</view>
+
+    <view class="hairline"></view>
+    <view class="consul" wx:for="{{consulates}}" wx:key="id">
+      <view class="consul-main">
+        <text class="consul-name">{{item.name}}</text>
+        <text class="consul-area">{{item.area}}</text>
+        <text class="consul-addr">{{item.addr}}</text>
+      </view>
+      <view class="consul-call" data-tel="{{item.tel}}" bindtap="callConsulate">{{item.telShow}}</view>
+    </view>
+
+    <view class="hairline"></view>
+    <view class="tip" wx:for="{{tips}}" wx:key="*this">· {{item}}</view>
+  </view>
+
+  <!-- 还没搬过来的入口，先列出来 -->
+  <view class="card">
+    <view class="section-label">下一版接入</view>
+    <view class="entry" data-name="证件包" bindtap="soon">
+      <text class="entry-name">证件包</text>
+      <text class="entry-sub">护照、订单、行程单，密码解锁</text>
+    </view>
+    <view class="entry" data-name="订单夹" bindtap="soon">
+      <text class="entry-name">订单夹</text>
+      <text class="entry-sub">机票、酒店、球票的确认号和截图</text>
+    </view>
+    <view class="entry" data-name="票务" bindtap="soon">
+      <text class="entry-name">票务</text>
+      <text class="entry-sub">六场球赛和四段城际的买票入口</text>
+    </view>
+    <view class="entry" data-name="大字卡" bindtap="soon">
+      <text class="entry-name">英文大字卡</text>
+      <text class="entry-sub">给司机看地址、常用句子</text>
+    </view>
+    <view class="entry" data-name="值机提醒" bindtap="soon">
+      <text class="entry-name">提醒</text>
+      <text class="entry-sub">值机、球赛、取还车（订阅消息要有后端）</text>
+    </view>
+  </view>
+
+  <!-- 方案设置 -->
+  <view class="card">
+    <view class="section-label">方案</view>
+    <view class="set-row" bindtap="switchRent">
+      <text class="set-label">交通</text>
+      <text class="set-val">{{rentLabel}} ›</text>
+    </view>
+    <view class="set-row" bindtap="toggleEwr">
+      <text class="set-label">12/30 晚上</text>
+      <text class="set-val">{{ewr ? '机场酒店' : '机场过夜'}} ›</text>
+    </view>
+    <view class="set-note">默认值和网站一致（全程自驾、机场过夜）。改了会跟着这趟旅行的设置走。</view>
+  </view>
+
+  <!-- 租车信息 -->
+  <view class="card">
+    <view class="section-label">租车</view>
+    <view class="kv"><text class="k">车型</text><text class="val">{{rental.car}}</text></view>
+    <view class="kv"><text class="k">租期</text><text class="val">{{rental.from}} – {{rental.to}}（{{rental.days}} 天）</text></view>
+    <view class="kv"><text class="k">还车</text><text class="val">{{dropoff.place}}</text></view>
+  </view>
+
+  <view class="about">行前行后 · 小程序 {{version}} · 内容和 trip.byb521.com 同源</view>
+</view>
+
+<bottom-nav current="more" tripId="{{tripId}}" />

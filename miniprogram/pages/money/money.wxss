@@ -1,0 +1,91 @@
+.total-card {
+  padding: 28rpx;
+}
+
+.total {
+  font-size: 60rpx;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 8rpx;
+}
+
+.per {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: #5E6A76;
+}
+
+.group {
+  padding: 12rpx 0;
+}
+
+.group-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.group-name {
+  font-size: 27rpx;
+  color: #16202B;
+}
+
+.group-amt {
+  font-size: 24rpx;
+  color: #5E6A76;
+}
+
+.bar {
+  height: 8rpx;
+  background: #EEF1F4;
+  border-radius: 4rpx;
+  margin-top: 8rpx;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #C04A0A;
+  border-radius: 4rpx;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+  padding: 12rpx 0;
+  border-bottom: 1rpx solid rgba(22, 32, 43, 0.06);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row-l {
+  flex: 1;
+}
+
+.row-label {
+  font-size: 26rpx;
+  color: #33404C;
+  line-height: 1.45;
+}
+
+.row-kind {
+  display: block;
+  font-size: 21rpx;
+  color: #A3ADB8;
+  margin-top: 2rpx;
+}
+
+.row-amt {
+  flex: none;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #16202B;
+}
+
+.note-card {
+  border-style: dashed;
+}

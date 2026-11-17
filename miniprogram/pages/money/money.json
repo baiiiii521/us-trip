@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "花费",
+  "usingComponents": {
+    "bottom-nav": "/components/nav/nav"
+  }
+}

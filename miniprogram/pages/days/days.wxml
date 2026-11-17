@@ -1,0 +1,73 @@
+<view class="page with-nav">
+  <view class="topbar">
+    <view class="chip" bindtap="switchRent">交通：{{rentLabel}}</view>
+    <text class="topbar-note">点一下切换租车方案</text>
+  </view>
+
+  <!-- 日期条 -->
+  <scroll-view class="strip" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    <view class="strip-inner">
+      <view
+        wx:for="{{strip}}"
+        wx:key="id"
+        class="strip-item {{activeId === item.id ? 'on' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="jump"
+      >
+        <text class="strip-md">{{item.md}}</text>
+        <text class="strip-wd">{{item.wd}}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view wx:for="{{days}}" wx:key="id" wx:for-item="day" id="d-{{day.id}}" class="card day">
+    <view class="day-head">
+      <view class="day-date">
+        <text class="day-md">{{day.md}}</text>
+        <text class="day-wd">{{day.wd}}</text>
+      </view>
+      <view class="day-meta">
+        <text class="day-city">{{day.cityZh}}</text>
+        <text class="pill" wx:if="{{day.pace}}">{{day.pace.km}} 公里 · {{day.pace.label}}</text>
+      </view>
+    </view>
+    <view class="day-title">{{day.title}}</view>
+
+    <view class="tl" wx:for="{{day.items}}" wx:key="t" wx:for-item="it">
+      <view class="tl-rail">
+        <view class="tl-dot {{it.game ? 'game' : ''}} {{it.drive ? 'drive' : ''}}"></view>
+        <view class="tl-line"></view>
+      </view>
+      <view class="tl-body">
+        <view class="tl-time">
+          <text>{{it.t || '—'}}</text>
+          <text class="tag game" wx:if="{{it.game}}">球赛</text>
+          <text class="tag drive" wx:if="{{it.drive}}">取还车</text>
+          <text class="tag leg" wx:if="{{it.leg}}">城际</text>
+          <text class="tag xmas" wx:if="{{it.xmas === 'closed'}}">圣诞关门</text>
+          <text class="tag xmas" wx:if="{{it.xmas === 'check'}}">圣诞待确认</text>
+        </view>
+        <view class="tl-text">{{it.text}}</view>
+        <view class="tl-note" wx:if="{{it.note}}">备注：{{it.note}}</view>
+        <view class="chips" wx:if="{{it.poi.length}}">
+          <text
+            wx:for="{{it.poi}}"
+            wx:key="id"
+            wx:for-item="p"
+            class="poi-chip"
+            data-id="{{p.id}}"
+            bindtap="openPoi"
+          >{{p.name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="day-warn" wx:if="{{day.warn}}">{{day.warn}}</view>
+    <view class="day-tip" wx:for="{{day.tips}}" wx:key="*this">· {{item}}</view>
+    <view class="day-stay" wx:if="{{day.stay}}">住：{{day.stay}}</view>
+  </view>
+
+  <view class="foot-note">行程按网站的版本同步，改内容在网站的 src/data/days.js。</view>
+</view>
+
+<bottom-nav current="days" tripId="{{tripId}}" />

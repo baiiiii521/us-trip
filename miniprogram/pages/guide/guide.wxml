@@ -1,0 +1,42 @@
+<view class="page with-nav">
+  <view class="search">
+    <input
+      class="search-input"
+      placeholder="搜景点（中文或英文）"
+      value="{{q}}"
+      bindinput="search"
+      confirm-type="search"
+    />
+  </view>
+
+  <scroll-view class="filters" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    <view class="filters-inner">
+      <view
+        wx:for="{{cities}}"
+        wx:key="key"
+        class="filter {{active === item.key ? 'on' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="pick"
+      >{{item.label}}</view>
+    </view>
+  </scroll-view>
+
+  <view class="count">{{total}} 个地方</view>
+
+  <view class="card poi-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="open">
+    <view class="poi-head">
+      <text class="poi-name">{{item.name}}</text>
+      <text class="poi-cat">{{item.cat}}</text>
+    </view>
+    <view class="poi-en">{{item.en}}</view>
+    <view class="poi-tag">{{item.tag}}</view>
+    <view class="poi-days" wx:if="{{item.days.length}}">
+      <text class="poi-day" wx:for="{{item.days}}" wx:key="*this" wx:for-item="d">{{d}}</text>
+      <text class="poi-day-note">去这几天</text>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{!list.length}}">没找到，换个词试试。</view>
+</view>
+
+<bottom-nav current="guide" tripId="{{tripId}}" />

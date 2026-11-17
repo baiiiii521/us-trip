@@ -1,0 +1,45 @@
+<view class="page-pad" wx:if="{{poi}}">
+  <!-- 封面：暂时用城市色的排印块，维基照片要经服务器中转，下一版接 -->
+  <view class="cover" style="background:{{poi.coverColor}}">
+    <text class="cover-en">{{poi.en}}</text>
+    <text class="cover-city">{{poi.cityZh}} · {{poi.catZh}}</text>
+  </view>
+
+  <view class="title">{{poi.name}}</view>
+  <view class="tag">{{poi.tag}}</view>
+
+  <view class="actions">
+    <view class="btn-primary half" bindtap="nav">{{ll ? '导航到这里' : '复制地址'}}</view>
+    <view class="btn-ghost half" bindtap="copy">复制英文地址</view>
+  </view>
+
+  <view class="card">
+    <view class="body-text">{{poi.intro}}</view>
+    <view class="hairline" wx:if="{{poi.highlights.length}}"></view>
+    <view class="hl" wx:for="{{poi.highlights}}" wx:key="*this">· {{item}}</view>
+  </view>
+
+  <view class="card">
+    <view class="kv"><text class="k">开放时间</text><text class="val">{{poi.open}}</text></view>
+    <view class="kv"><text class="k">门票</text><text class="val">{{poi.ticket}}</text></view>
+    <view class="kv"><text class="k">建议停留</text><text class="val">{{poi.stay}}</text></view>
+    <view class="kv"><text class="k">怎么去</text><text class="val">{{poi.transit}}</text></view>
+    <view class="kv" wx:if="{{poi.tip}}"><text class="k">提示</text><text class="val tipv">{{poi.tip}}</text></view>
+  </view>
+
+  <view class="card" wx:if="{{days.length}}">
+    <view class="section-label">安排在这几天</view>
+    <view class="day-links">
+      <view class="day-link" wx:for="{{days}}" wx:key="id" data-id="{{item.id}}" bindtap="jumpDay">
+        <text class="day-md">{{item.md}}</text>
+        <text class="day-t">{{item.title}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="foot-note">照片下一版接入（维基图片要经我们自己服务器中转，小程序不能直接加载国外域名）。</view>
+</view>
+
+<view class="page-pad" wx:else>
+  <view class="card"><view class="body-text">没找到这个地点。</view></view>
+</view>

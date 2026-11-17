@@ -1,0 +1,20 @@
+{
+  "appid": "wx678ed2bc735ec846",
+  "projectname": "us-trip-miniprogram",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "./",
+  "libVersion": "3.5.5",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "coverView": true,
+    "showShadowRootInWxmlPanel": true,
+    "packNpmManually": false,
+    "packNpmRelationList": []
+  },
+  "condition": {},
+  "description": "美东圣诞篮球行 → 微信小程序（行程攻略和记录）"
+}

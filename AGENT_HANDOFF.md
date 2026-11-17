@@ -96,3 +96,21 @@ Mac 直连 49.233 的 rsync 会卡死（跨境），国内节点必须经硅谷�
 - 花费页多了“购物清单”（`state.shop`，同步）和“换算”两个标签。
 - 两地时钟：真实时间用时区算；预览模式按当地钟点 +13 / +16 小时推北京时间。
 - 3D 行程片：源码 `video/intro3d/`（huashu-motion，`om render . --blur` 重新出片）；网站用的是压过的 `public/media/intro.mp4`（720p，4.7MB），出发前在首页，之后在旅行总结页。Service Worker 不缓存 mp4。
+
+## 2026-11-17 微信小程序（名字暂定「行前行后」）
+
+- 目录 `miniprogram/`，AppID `wx678ed2bc735ec846`。首页是旅行列表，点进去是这趟美东旅程；结构按多趟旅行写，但只做这一趟。
+- **共用代码**：`node scripts/mp-sync-shared.mjs` 把 `src/data/*`、`src/lib/{calc,today,extras,route,tools,index,geo,exif,money,store}.js`、`src/state.js` 生成到 `miniprogram/shared/`。`shared/` 是生成物，**不要手改**；改内容改 `src/` 那份再跑同步（`--check` 只比对，测试里会跑）。
+- **存储层**：`src/lib/store.js` 是一个接口，网页用 localStorage，小程序的同位置换成 `wx.getStorageSync`（由同步脚本写入）。所以 `state.js` 两边共用一份逻辑。
+- **上传流水线**：服务器 49.233.168.199，`/opt/node20`（不动系统 node 12）+ `~/us-trip-ci`（miniprogram-ci 2.1.31）。密钥 `~/.mp-ci/private.wx678ed2bc735ec846.key`（600），只在命令里引用路径，不读内容、不进仓库。
+  ```bash
+  # 在 49.233.168.199 上
+  cd ~/us-trip-ci && PATH=/opt/node20/bin:$PATH node scripts/mp-upload.mjs \
+    --key ~/.mp-ci/private.wx678ed2bc735ec846.key --version 0.2.0 --desc "..." 
+  ```
+  产物 `.mp-out/preview.png`（其实是 jpg），预览码约 25 分钟有效。上传失败多半是 IP 白名单或密钥不对。
+- **代码怎么同步到服务器**：Mac 直连 49.233 rsync 会卡死，必须经硅谷中转（和 `deploy/deploy.sh` 一个道理）：`rsync miniprogram/ silicon:/tmp/us-trip-mp/ → silicon 上再 rsync 到 49.233:~/us-trip-ci/miniprogram/`。
+- **已做**：旅行列表、今天卡片（两地时钟/现在·下一项/倒计时/导航主按钮/时间轴/节奏）、14 天行程（日期条、球类/取还车/城际/圣诞标记、可切三种租车方案）、景点图鉴 68 个 + 详情（导航用 `wx.openLocation`，没有坐标就复制英文地址）、吃什么 34 家（按城市分组、一键导航）、花费（只读预算：总数/人均/分类占比/明细）、随身（911、12308、三家领馆电话可直接拨、方案设置、租车信息）。
+- **没做**：记账 + 两人 AA、订单夹、证件包（小程序没有 WebCrypto，PBKDF2 + AES-GCM 与现有密文的兼容还没验证）、两人同步、订阅消息（要后端存 openid）、维基照片（国外域名，必须经 `/api` 中转）、回忆/分享卡、大字卡、票务、自驾页、提醒。
+- **域名**：`trip.byb521.com` 已加进小程序的 request 合法域名（2026-11-17 由 Barry 在后台添加，说明备案没问题）。正式版要把 `project.config.json` 的 `urlCheck` 打开。
+- **测试**：`npm test` 105 项，含小程序代码包的隐私扫描（规则在 `scripts/private-patterns.json`，和网站那份同一个文件）、结构检查、共用代码是否同步、今天卡片的日期逻辑。

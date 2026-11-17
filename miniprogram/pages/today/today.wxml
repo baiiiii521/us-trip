@@ -1,0 +1,115 @@
+<view class="page with-nav" wx:if="{{v}}">
+  <!-- 两地时钟 -->
+  <view class="clockbar">
+    <view class="clock">
+      <text class="clock-label">北京</text>
+      <text class="clock-time">{{v.clock.beijing}}</text>
+    </view>
+    <view class="clock-mid"></view>
+    <view class="clock">
+      <text class="clock-label">{{v.clock.place}}</text>
+      <text class="clock-time">{{v.clock.local}}</text>
+    </view>
+    <text class="clock-note">{{v.clock.call.text}}</text>
+  </view>
+
+  <!-- 标题：行程中显示第几天，出发前显示倒计时 -->
+  <view class="hero">
+    <text class="eyebrow">{{v.phase === 'on' ? 'TODAY' : (v.phase === 'before' ? 'COUNTDOWN' : 'TRIP')}}</text>
+    <view class="hero-title">{{v.headline}}</view>
+    <view class="hero-sub">{{v.subline}}</view>
+  </view>
+
+  <!-- 下一项：最重要的一块，带导航主按钮 -->
+  <view class="card next-card" wx:if="{{v.next}}">
+    <view class="next-top">
+      <text class="next-time">{{v.next.t}}</text>
+      <text class="pill pill-accent" wx:if="{{v.next.count}}">{{v.next.count}}</text>
+    </view>
+    <view class="next-text">{{v.next.text}}</view>
+    <view class="next-note" wx:if="{{v.next.note}}">{{v.next.note}}</view>
+    <view class="next-actions">
+      <view class="btn-primary nav-btn" bindtap="navTo" wx:if="{{v.next.hasTarget}}">导航到这里</view>
+      <view class="btn-ghost nav-btn" bindtap="navTo" wx:else>复制英文地址</view>
+    </view>
+  </view>
+
+  <!-- 当前项 -->
+  <view class="card" wx:if="{{v.current}}">
+    <view class="row-head">
+      <text class="section-label">现在</text>
+      <text class="row-time">{{v.current.t}}</text>
+    </view>
+    <view class="body-text">{{v.current.text}}</view>
+    <view class="body-text muted" wx:if="{{v.current.note}}">备注：{{v.current.note}}</view>
+  </view>
+
+  <!-- 现在和下一项之间没时间的安排 -->
+  <view class="card" wx:if="{{v.between.length}}">
+    <view class="section-label">接着按顺序</view>
+    <view class="between-item" wx:for="{{v.between}}" wx:key="t">
+      <text class="between-time">{{item.t || '—'}}</text>
+      <text class="between-text">{{item.text}}</text>
+    </view>
+  </view>
+
+  <!-- 出发前：预览第一天 -->
+  <view class="card" wx:if="{{v.phase !== 'on'}}">
+    <view class="row-head">
+      <text class="section-label">第一天预览</text>
+      <text class="row-time">{{v.cityName}}</text>
+    </view>
+    <view class="preview-title">{{v.dayTitle}}</view>
+    <view class="preview-item" wx:for="{{v.preview}}" wx:key="t">
+      <text class="preview-time">{{item.t}}</text>
+      <text class="preview-text">{{item.text}}</text>
+    </view>
+  </view>
+
+  <!-- 节奏和提示 -->
+  <view class="card" wx:if="{{v.pace || v.warn || v.tips.length}}">
+    <view class="pace-row" wx:if="{{v.pace}}">
+      <text class="pill">今天 {{v.pace.km}} 公里 · {{v.pace.label}}</text>
+    </view>
+    <view class="warn" wx:if="{{v.warn}}">{{v.warn}}</view>
+    <view class="tip" wx:for="{{v.tips}}" wx:key="*this">· {{item}}</view>
+    <view class="pace-cut" wx:if="{{v.pace && v.pace.cut}}">累了先砍：{{v.pace.cut}}</view>
+  </view>
+
+  <!-- 今天整天的时间线（折叠在下面，向下滑就能看） -->
+  <view class="card" wx:if="{{v.phase === 'on'}}">
+    <view class="section-label">今天全部安排</view>
+    <view class="tl" wx:for="{{v.items}}" wx:key="t">
+      <view class="tl-dot {{item.game ? 'game' : ''}}"></view>
+      <view class="tl-body">
+        <view class="tl-time">{{item.t}}</view>
+        <view class="tl-text">{{item.text}}</view>
+      </view>
+    </view>
+    <view class="stay" wx:if="{{v.stay}}">今晚住：{{v.stay}}</view>
+  </view>
+
+  <!-- 快捷入口 -->
+  <view class="quick">
+    <view class="quick-item" data-url="/pages/days/days" bindtap="go">
+      <text class="quick-name">行程</text>
+      <text class="quick-sub">14 天</text>
+    </view>
+    <view class="quick-item" data-url="/pages/guide/guide" bindtap="go">
+      <text class="quick-name">景点</text>
+      <text class="quick-sub">68 个</text>
+    </view>
+    <view class="quick-item" data-url="/pages/eats/eats" bindtap="go">
+      <text class="quick-name">吃什么</text>
+      <text class="quick-sub">34 家</text>
+    </view>
+    <view class="quick-item" data-url="/pages/more/more" bindtap="go">
+      <text class="quick-name">随身</text>
+      <text class="quick-sub">证件·紧急</text>
+    </view>
+  </view>
+
+  <view class="foot-link" bindtap="backToList">← 所有旅行</view>
+</view>
+
+<bottom-nav current="today" tripId="{{tripId}}" />

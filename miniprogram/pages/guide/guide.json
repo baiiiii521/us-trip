@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "景点图鉴",
+  "usingComponents": {
+    "bottom-nav": "/components/nav/nav"
+  }
+}

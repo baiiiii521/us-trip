@@ -5,6 +5,7 @@
 // - 本机设置：提醒、预览日期、云同步房间（口令只存本机）
 // 照片和订单附件存在 IndexedDB（lib/storage.js），不在这里。
 import { detectMode } from './lib/calc.js';
+import { store } from './lib/store.js';
 
 const KEY = 'hoops-trip-v3';
 
@@ -58,7 +59,7 @@ export function migrate(o) {
 function load() {
   const s = clone(DEFAULTS);
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = store.get(KEY);
     if (!raw) return s;
     const o = migrate(JSON.parse(raw));
     for (const k of ['mode', 'rent', 'plan', 'hotel', 'nav']) if (typeof o[k] === 'string') s[k] = o[k];
@@ -80,7 +81,7 @@ export function update(fn, { silent = false } = {}) {
   fn(draft);
   draft.mode = detectMode(draft.choice);
   state = draft;
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* 忽略 */ }
+  try { store.set(KEY, JSON.stringify(state)); } catch (e) { /* 忽略 */ }
   if (!silent) subs.forEach((f) => f(state));
   return state;
 }

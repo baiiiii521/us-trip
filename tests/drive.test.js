@@ -7,6 +7,7 @@ import { DEFAULTS } from '../src/state.js';
 import { carCost, rentCompare, budgetRows, choiceFor, transportCost } from '../src/lib/calc.js';
 import { buildDays } from '../src/data/days.js';
 import { DRIVES, RENT_PLANS, DRIVE_GUIDE, DROPOFF } from '../src/data/drive.js';
+import { PRIVATE_PATTERNS } from '../scripts/mp-scan.mjs';
 
 const state = (over = {}) => ({ ...JSON.parse(JSON.stringify(DEFAULTS)), ...over });
 
@@ -82,7 +83,7 @@ test('每段路线数据齐全，驾驶须知每组都有内容', () => {
 });
 
 test('公开网站的源码和 public/ 里没有护照号、PNR、票号、公寓房号', () => {
-  const bad = /EQ9933134|EP5429850|AXGBBS|016-58811435|334631851748|1128152180334111|2596880428|Apt\.? ?3810|Apartment 3810/;
+  const bad = PRIVATE_PATTERNS;
   const walk = (dir) => readdirSync(dir).flatMap((f) => {
     const p = join(dir, f);
     return statSync(p).isDirectory() ? walk(p) : [p];
