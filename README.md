@@ -142,6 +142,8 @@ git clone https://github.com/baiiiii521/us-trip.git && cd us-trip && bash deploy
 
 ## 接手开发（给本机其他 agent）
 
+要交给别的 agent 直接开工，把 `AGENT_PROMPT.md` 里那段提示词整段发给它（含红线、数据流、发版步骤、当前任务优先级）。
+
 仓库：`https://github.com/baiiiii521/us-trip`（分支 `main`）。这是完整工程，不是只读快照。
 
 ```bash
