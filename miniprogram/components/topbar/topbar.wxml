@@ -8,5 +8,9 @@
       <view class="title">{{title}}</view>
       <view class="sub" wx:if="{{sub}}">{{sub}}</view>
     </view>
+    <view class="badge" wx:if="{{badge}}">{{badge}}</view>
+  </view>
+  <view class="rail" wx:if="{{progress >= 0}}">
+    <view class="rail-fill" style="width:{{progress * 100}}%"></view>
   </view>
 </view>

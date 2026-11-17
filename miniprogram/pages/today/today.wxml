@@ -1,5 +1,5 @@
 <view class="page with-nav" wx:if="{{v}}">
-  <top-bar title="今天" sub="{{v.clock.place}} · {{v.clock.local}}" />
+  <top-bar title="今天" sub="{{v.subline}}" badge="{{badge}}" progress="{{progress}}" />
   <!-- 两地时钟 -->
   <view class="clockbar">
     <view class="clock">

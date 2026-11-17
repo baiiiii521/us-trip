@@ -78,6 +78,19 @@ test('关键页面的数据真的算出来了（不是空页）', async () => {
   assert.equal(days.data.days.length, 14, '行程应该 14 天');
   assert.ok(days.data.days.every((d) => d.md && d.items.length), '每天都要有日期和条目');
 
+  // 每条带地址的行程都必须有经纬度，否则点了打不开地图（只能复制地址）
+  const allItems = days.data.days.flatMap((d) => d.items);
+  const locatable = allItems.filter((it) => it.spot && it.spot.ll);
+  const withAddr = allItems.filter((it) => it.addr);
+  console.log('可导航条目', locatable.length, '/', allItems.length, '｜带英文地址', withAddr.length);
+  assert.ok(locatable.length / allItems.length > 0.75, `大部分行程条目都应该能点开导航（当前 ${locatable.length}/${allItems.length}）`);
+  // 出发头两天是他最先会点的，必须条条能导航
+  for (const d of days.data.days.slice(0, 2)) {
+    const dead = d.items.filter((it) => !it.spot || !it.spot.ll);
+    assert.deepEqual(dead.map((x) => `${x.t}|${x.text.slice(0, 16)}`), [], `${d.md} 有 ${dead.length} 条点不开地图`);
+  }
+  assert.deepEqual(withAddr.filter((it) => !it.spot), [], '有英文地址的条目必须能导航');
+
   const guide = run(await load('pages/guide/guide'));
   assert.equal(guide.data.list.length, 68, '景点应该是 68 个');
   assert.ok(guide.data.list.filter((p) => p.photo).length >= 60, '绝大多数景点要带图片');

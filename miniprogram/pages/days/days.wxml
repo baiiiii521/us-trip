@@ -1,9 +1,9 @@
 <view class="page with-nav">
-  <top-bar title="每日行程" sub="{{rentLabel}}" />
+  <top-bar title="每日行程" sub="{{rentLabel}}" badge="{{badge}}" progress="{{progress}}" />
 
-  <!-- 总览：四座城市怎么走 -->
   <view class="pad">
-    <view class="card map-card">
+    <!-- 总览：四座城市怎么走 -->
+    <view class="card map-card rise">
       <view class="map-head">
         <text class="map-title">这一趟怎么走</text>
         <text class="map-sub">波士顿 → 华盛顿 → 费城 → 纽约 · 12/31 飞洛杉矶转机</text>
@@ -21,7 +21,7 @@
         enable-rotate="{{false}}"
         enable-overlooking="{{false}}"
       />
-      <view class="map-foot" bindtap="openOverview">在微信地图里打开这片区域 ›</view>
+      <view class="map-foot" bindtap="openOverview" hover-class="tap-dim">在微信地图里打开这片区域 ›</view>
     </view>
 
     <!-- 日期条 -->
@@ -33,6 +33,7 @@
           class="strip-item {{activeId === item.id ? 'on' : ''}} {{todayId === item.id ? 'today' : ''}}"
           data-id="{{item.id}}"
           bindtap="jump"
+          hover-class="tap-dim"
         >
           <text class="strip-md">{{item.md}}</text>
           <text class="strip-wd">{{item.wd}}</text>
@@ -41,46 +42,60 @@
     </scroll-view>
 
     <view class="toolbar">
-      <view class="chip" bindtap="switchRent">交通：{{rentLabel}}</view>
-      <view class="chip ghost" bindtap="toTips">小技巧</view>
+      <view class="chip" bindtap="switchRent" hover-class="tap-dim">交通：{{rentLabel}}</view>
+      <view class="chip ghost" bindtap="toTips" hover-class="tap-dim">小技巧</view>
     </view>
   </view>
 
   <!-- 每天 -->
-  <view wx:for="{{days}}" wx:key="id" wx:for-item="day" id="d-{{day.id}}" class="pad">
-    <view class="card day {{open[day.id] ? 'is-open' : ''}}">
-      <view class="day-head">
+  <view wx:for="{{days}}" wx:key="id" wx:for-item="day" wx:for-index="di" id="d-{{day.id}}" class="pad">
+    <view class="card day rise {{open[day.id] ? 'is-open' : ''}}" style="animation-delay:{{di * 30}}ms">
+      <view class="day-head" data-id="{{day.id}}" bindtap="toggle">
         <view class="day-date">
           <text class="day-md">{{day.md}}</text>
-          <text class="day-wd">{{day.wd}}</text>
-          <text class="day-city">{{day.cityZh}}</text>
+          <view class="day-meta">
+            <text class="day-wd">{{day.wd}} · {{day.cityZh}}</text>
+            <text class="day-weather">{{day.weather}}</text>
+          </view>
         </view>
-        <text class="pill" wx:if="{{day.pace}}">{{day.pace.km}} 公里 · {{day.pace.label}}</text>
+        <text class="pace-dot {{day.pace.lv}}" wx:if="{{day.pace}}">{{day.pace.km}} km</text>
       </view>
-      <view class="day-title">{{day.title}}</view>
-      <view class="day-weather" wx:if="{{day.weather}}">12 月平均 {{day.weather}}</view>
 
-      <!-- 收起状态：只看前三条 -->
+      <view class="day-title">{{day.title}}</view>
+
+      <!-- 收起状态：只看前三条，整行可点进导航 -->
       <block wx:if="{{!open[day.id]}}">
-        <view class="mini" wx:for="{{day.head}}" wx:key="t" wx:for-item="it">
+        <view
+          class="mini {{it.canTap ? 'tap' : ''}}"
+          wx:for="{{day.head}}"
+          wx:key="t"
+          wx:for-item="it"
+          wx:for-index="ii"
+          data-id="{{day.id}}"
+          data-i="{{ii}}"
+          bindtap="openItem"
+          hover-class="{{it.canTap ? 'tap-dim' : 'none'}}"
+        >
           <text class="mini-time">{{it.t || '—'}}</text>
           <text class="mini-text">{{it.short}}</text>
+          <text class="mini-go" wx:if="{{it.spot}}">导航</text>
+          <text class="mini-go poi" wx:elif="{{it.poi.length}}">景点</text>
         </view>
-        <view class="more" data-id="{{day.id}}" bindtap="toggle">
-          {{day.more ? '展开全部 ' + day.items.length + ' 项 · 路线图 · 小技巧' : '展开路线图 · 小技巧'}}
+        <view class="more" data-id="{{day.id}}" bindtap="toggle" hover-class="tap-dim">
+          {{day.more ? '展开全部 ' + day.items.length + ' 项' : '展开'}} · 路线图 · 小技巧
         </view>
       </block>
 
       <!-- 展开状态：全部条目 -->
       <block wx:else>
-        <view class="tl" wx:for="{{day.items}}" wx:key="t" wx:for-item="it">
+        <view class="tl" wx:for="{{day.items}}" wx:key="t" wx:for-item="it" wx:for-index="ii">
           <view class="tl-rail">
             <view class="tl-dot {{it.game ? 'game' : ''}} {{it.drive ? 'drive' : ''}}"></view>
             <view class="tl-line"></view>
           </view>
           <view class="tl-body">
             <view class="tl-time">
-              <text>{{it.t || '—'}}</text>
+              <text class="num">{{it.t || '—'}}</text>
               <text class="tag game" wx:if="{{it.game}}">球赛</text>
               <text class="tag drive" wx:if="{{it.drive}}">取还车</text>
               <text class="tag leg" wx:if="{{it.leg}}">城际</text>
@@ -89,6 +104,16 @@
             <view class="tl-text">{{it.text}}</view>
             <view class="tl-xmas" wx:if="{{it.xmasNote}}">{{it.xmasNote}}</view>
             <view class="tl-note" wx:if="{{it.note}}">备注：{{it.note}}</view>
+
+            <!-- 地址 + 导航 -->
+            <view class="addr" wx:if="{{it.addr || it.spot}}">
+              <view class="addr-text" data-id="{{day.id}}" data-i="{{ii}}" bindtap="openItem">{{it.addr || ('导航到：' + it.spot.name)}}</view>
+              <view class="addr-actions">
+                <view class="addr-btn" data-id="{{day.id}}" data-i="{{ii}}" catchtap="openItem">导航</view>
+                <view class="addr-btn ghost" data-q="{{it.addr}}" catchtap="copyAddr">复制</view>
+              </view>
+            </view>
+
             <view class="chips" wx:if="{{it.poi.length}}">
               <text
                 wx:for="{{it.poi}}"
@@ -97,6 +122,7 @@
                 class="poi-chip"
                 data-id="{{p.id}}"
                 bindtap="openPoi"
+                hover-class="tap-dim"
               >{{p.name}}</text>
             </view>
           </view>
@@ -126,7 +152,7 @@
         </view>
         <view class="stay" wx:if="{{day.stay}}">今晚住：{{day.stay}}</view>
 
-        <view class="more" data-id="{{day.id}}" bindtap="toggle">收起</view>
+        <view class="more" data-id="{{day.id}}" bindtap="toggle" hover-class="tap-dim">收起</view>
       </block>
     </view>
   </view>

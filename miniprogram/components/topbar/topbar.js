@@ -1,6 +1,6 @@
 // 自定义顶部栏：系统导航栏不能改字体和排版，所以主页面用这个。
-// 关键点：状态栏高度必须真的读对，否则文字会被刘海/状态栏压住。
-// 读取顺序 getWindowInfo → getSystemInfoSync，再按机型兜底，最后才用默认值。
+// 状态栏高度必须真的读对，否则文字会被刘海/状态栏压住：
+// 读取顺序 getWindowInfo → getSystemInfoSync，读不到再按机型兜底。
 function readMetrics() {
   let sys = {};
   try {
@@ -23,10 +23,8 @@ function readMetrics() {
   }
 
   let sb = Number(sys.statusBarHeight) || 0;
-  // 读不到或明显偏小（iPhone 刘海机是 44–59）时按机型兜底，宁可多留不可压住
   if (sb < 24) sb = /ios/i.test(platform) ? 44 : 24;
 
-  // 导航内容高度：让文字和右上角胶囊垂直居中（拿不到就给 48）
   let navH = 48;
   try {
     const cap = wx.getMenuButtonBoundingClientRect();
@@ -47,7 +45,9 @@ Component({
     sub: { type: String, value: '' },
     showBack: { type: Boolean, value: false },
     brand: { type: Boolean, value: false },
-    transparent: { type: Boolean, value: false }
+    transparent: { type: Boolean, value: false },
+    badge: { type: String, value: '' },
+    progress: { type: Number, value: -1 }
   },
   data: { sb: 24, navH: 48 },
   lifetimes: {

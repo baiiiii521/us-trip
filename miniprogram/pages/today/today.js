@@ -6,7 +6,9 @@ import { openTarget } from '../../lib/nav.js';
 Page({
   data: {
     v: null,
-    tripId: ''
+    tripId: '',
+    badge: '',
+    progress: -1
   },
 
   onLoad(query) {
@@ -24,7 +26,23 @@ Page({
     } catch (e) {
       v = { phase: 'error', headline: '读不到行程数据', subline: String(e && e.message ? e.message : e) };
     }
-    this.setData({ v });
+    // 顶部栏徽标和进度：今天页自己算，别让顶栏再显示一遍美东时间（页面里已有双钟）
+    const TOTAL = 14;
+    let badge = '';
+    let progress = -1;
+    if (v.phase === 'on') {
+      badge = `第 ${v.dayNo} / ${TOTAL} 天`;
+      progress = v.dayNo / TOTAL;
+    } else if (v.phase === 'before') {
+      const m = String(v.headline || '').match(/(\d+)/);
+      badge = m ? `距出发 ${m[1]} 天` : '';
+      progress = 0;
+    } else if (v.phase === 'after') {
+      badge = '已走完';
+      progress = 1;
+    }
+
+    this.setData({ v, badge, progress });
   },
 
   onPullDownRefresh() {

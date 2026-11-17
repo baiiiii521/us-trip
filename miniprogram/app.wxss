@@ -120,3 +120,13 @@ page {
   background: rgba(192, 74, 10, 0.1);
   color: #C04A0A;
 }
+
+/* 全局：按下反馈 + 数字等宽（时间、金额、里程对齐才不会跳） */
+.tap-dim {
+  opacity: 0.65;
+}
+
+.num,
+.tnum {
+  font-variant-numeric: tabular-nums;
+}

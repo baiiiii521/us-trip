@@ -1,6 +1,6 @@
 {
   "name": "us-trip-miniprogram",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "description": "让 Node（跑测试时）按 ES module 解析这里的 .js，和小程序的编译器一致"
