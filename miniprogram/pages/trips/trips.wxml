@@ -1,6 +1,6 @@
-<view class="page-pad">
-  <top-bar brand title="行前行后" sub="走过的和要走的，都记在这里" />
+<top-bar brand title="行前行后" sub="走过的和要走的，都记在这里" />
 
+<view class="page-pad">
   <view
     wx:for="{{list}}"
     wx:key="id"

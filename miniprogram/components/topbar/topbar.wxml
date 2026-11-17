@@ -1,5 +1,5 @@
 <view class="bar {{transparent ? 'ghost' : ''}}" style="padding-top:{{sb}}px">
-  <view class="inner">
+  <view class="inner" style="height:{{navH}}px">
     <view class="back" wx:if="{{showBack}}" bindtap="goBack" hover-class="back-hover">
       <text class="chev">‹</text>
     </view>

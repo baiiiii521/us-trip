@@ -1,5 +1,46 @@
 // 自定义顶部栏：系统导航栏不能改字体和排版，所以主页面用这个。
-// 高度按状态栏自动撑开，右边留出微信胶囊的位置（88rpx）。
+// 关键点：状态栏高度必须真的读对，否则文字会被刘海/状态栏压住。
+// 读取顺序 getWindowInfo → getSystemInfoSync，再按机型兜底，最后才用默认值。
+function readMetrics() {
+  let sys = {};
+  try {
+    sys = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync();
+  } catch (e) {
+    try {
+      sys = wx.getSystemInfoSync();
+    } catch (e2) {
+      sys = {};
+    }
+  }
+
+  let platform = sys.platform || '';
+  if (!platform) {
+    try {
+      platform = (wx.getDeviceInfo ? wx.getDeviceInfo() : {}).platform || '';
+    } catch (e) {
+      platform = '';
+    }
+  }
+
+  let sb = Number(sys.statusBarHeight) || 0;
+  // 读不到或明显偏小（iPhone 刘海机是 44–59）时按机型兜底，宁可多留不可压住
+  if (sb < 24) sb = /ios/i.test(platform) ? 44 : 24;
+
+  // 导航内容高度：让文字和右上角胶囊垂直居中（拿不到就给 48）
+  let navH = 48;
+  try {
+    const cap = wx.getMenuButtonBoundingClientRect();
+    if (cap && cap.height && cap.top) {
+      const h = (cap.top - sb) * 2 + cap.height;
+      if (h >= 36 && h <= 64) navH = Math.max(46, h);
+    }
+  } catch (e) {
+    // 用默认值
+  }
+
+  return { sb, navH, platform };
+}
+
 Component({
   properties: {
     title: { type: String, value: '' },
@@ -8,17 +49,14 @@ Component({
     brand: { type: Boolean, value: false },
     transparent: { type: Boolean, value: false }
   },
-  data: { sb: 20 },
+  data: { sb: 24, navH: 48 },
   lifetimes: {
     attached() {
-      let sb = 20;
-      try {
-        const info = wx.getSystemInfoSync();
-        sb = info.statusBarHeight || 20;
-      } catch (e) {
-        // 取不到就用默认值
-      }
-      this.setData({ sb });
+      const app = getApp();
+      const cached = app && app.globalData && app.globalData.metrics;
+      const m = cached && cached.sb ? cached : readMetrics();
+      if (app && app.globalData) app.globalData.metrics = m;
+      this.setData({ sb: m.sb, navH: m.navH });
     }
   },
   methods: {
