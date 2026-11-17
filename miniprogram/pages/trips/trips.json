@@ -3,6 +3,6 @@
   "enablePullDownRefresh": false,
   "navigationStyle": "custom",
   "usingComponents": {
-    "topbar": "/components/topbar/topbar"
+    "top-bar": "/components/topbar/topbar"
   }
 }

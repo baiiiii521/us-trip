@@ -2,7 +2,7 @@
   "navigationBarTitleText": "花费",
   "usingComponents": {
     "bottom-nav": "/components/nav/nav",
-    "topbar": "/components/topbar/topbar"
+    "top-bar": "/components/topbar/topbar"
   },
   "navigationStyle": "custom"
 }
