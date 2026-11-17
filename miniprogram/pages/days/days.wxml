@@ -50,7 +50,7 @@
   <!-- 每天 -->
   <view wx:for="{{days}}" wx:key="id" wx:for-item="day" wx:for-index="di" id="d-{{day.id}}" class="pad">
     <view class="card day rise {{open[day.id] ? 'is-open' : ''}}" style="animation-delay:{{di * 30}}ms">
-      <view class="day-head" data-id="{{day.id}}" bindtap="toggle">
+      <view hover-class="press" hover-stay-time="60" class="day-head" data-id="{{day.id}}" bindtap="toggle">
         <view class="day-date">
           <text class="day-md">{{day.md}}</text>
           <view class="day-meta">
@@ -107,10 +107,10 @@
 
             <!-- 地址 + 导航 -->
             <view class="addr" wx:if="{{it.addr || it.spot}}">
-              <view class="addr-text" data-id="{{day.id}}" data-i="{{ii}}" bindtap="openItem">{{it.addr || ('导航到：' + it.spot.name)}}</view>
+              <view hover-class="press" hover-stay-time="60" class="addr-text" data-id="{{day.id}}" data-i="{{ii}}" bindtap="openItem">{{it.addr || ('导航到：' + it.spot.name)}}</view>
               <view class="addr-actions">
-                <view class="addr-btn" data-id="{{day.id}}" data-i="{{ii}}" catchtap="openItem">导航</view>
-                <view class="addr-btn ghost" wx:if="{{it.addr}}" data-q="{{it.addr}}" catchtap="copyAddr">复制</view>
+                <view hover-class="press" hover-stay-time="60" class="addr-btn" data-id="{{day.id}}" data-i="{{ii}}" catchtap="openItem">导航</view>
+                <view hover-class="press" hover-stay-time="60" class="addr-btn ghost" wx:if="{{it.addr}}" data-q="{{it.addr}}" catchtap="copyAddr">复制</view>
               </view>
             </view>
 

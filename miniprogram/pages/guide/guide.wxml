@@ -12,7 +12,7 @@
 
   <scroll-view class="filters" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
     <view class="filters-inner">
-      <view
+      <view hover-class="press" hover-stay-time="60"
         wx:for="{{cities}}"
         wx:key="key"
         class="filter {{active === item.key ? 'on' : ''}}"
@@ -22,7 +22,12 @@
     </view>
   </scroll-view>
 
-  <view class="count">{{total}} 个地方</view>
+  <view class="count" wx:if="{{q || active !== 'all'}}">{{total}} 个地方<span wx:if="{{q}}"> · 搜「{{q}}」</span></view>
+
+  <view class="empty" wx:if="{{!list.length}}">
+    <view class="empty-title">没找到「{{q}}」</view>
+    <view class="empty-sub">换中文名试试，或者点上面的城市看全部</view>
+  </view>
 
   <view class="card poi-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="open" hover-class="poi-hover">
     <image

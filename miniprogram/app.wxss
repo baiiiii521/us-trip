@@ -1,63 +1,247 @@
-/* 全局样式：沿用网站的 tokens.css（中性色 + 唯一强调色篮球橙 #C04A0A）。
-   WXSS 里不依赖 CSS 变量（部分安卓内核会丢），颜色直接写字面值。
-   规则：正文 32rpx（16px）、标签 26rpx 起、间距按 8rpx（4px）的倍数。 */
+/* 全局设计系统（按 Apple HIG / WWDC 那套翻译到 WXSS）
+   原则：
+   1) 字号有梯度、字距随字号变：大标题负字距，小标签正字距；
+   2) 层次靠「表面 + 留白 + 字重」，不靠边框和阴影堆；
+   3) 可点的东西按下就立刻有反馈（hover-class 走 .press，0ms 起效）；
+   4) 动效只有一个入口节奏：cubic-bezier(0.16, 1, 0.3, 1)（指数缓出），不做弹跳；
+   5) 数字一律等宽，时间和金额不左右跳。 */
+
 page {
-  background: #F3F5F7;
-  color: #16202B;
-  font-size: 32rpx;
-  line-height: 1.6;
+  background: #F2F3F5;
+  color: #11171E;
+  font-size: 30rpx;
+  line-height: 1.55;
   font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* 有底部导航的页面，内容要给导航条留出位置（含 iPhone 安全区） */
+/* 有底部导航的页面，内容给导航条让位（含安全区） */
 .with-nav {
-  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(168rpx + env(safe-area-inset-bottom));
 }
 
 .page-pad {
-  padding: 32rpx 32rpx 64rpx;
+  padding: 24rpx 32rpx 72rpx;
 }
 
-/* 卡片：白底 + 1px 冷灰细边，不用阴影堆层次 */
+/* ── 字号梯度 ───────────────────────────── */
+.t-display {
+  font-size: 46rpx;
+  line-height: 1.16;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.t-title {
+  font-size: 36rpx;
+  line-height: 1.24;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.t-head {
+  font-size: 30rpx;
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.t-body {
+  font-size: 28rpx;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+
+.t-sub {
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: #5E6A76;
+}
+
+.t-cap {
+  font-size: 21rpx;
+  line-height: 1.4;
+  letter-spacing: 0.03em;
+  color: #8A94A0;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 表面 ───────────────────────────────── */
 .card {
   background: #FFFFFF;
-  border: 1rpx solid rgba(22, 32, 43, 0.12);
-  border-radius: 24rpx;
+  border-radius: 28rpx;
   padding: 28rpx;
-  margin-bottom: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 1rpx 4rpx rgba(16, 24, 32, 0.05);
+}
+
+/* 分组列表：一行一件事，行间用发丝线，外面不再套边框 */
+.group {
+  background: #FFFFFF;
+  border-radius: 28rpx;
+  overflow: hidden;
+  box-shadow: 0 1rpx 4rpx rgba(16, 24, 32, 0.05);
+}
+
+.group-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 26rpx 28rpx;
+  border-bottom: 1rpx solid rgba(17, 23, 30, 0.06);
+}
+
+.group-row:last-child {
+  border-bottom: none;
+}
+
+.group-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.chev {
+  flex: none;
+  font-size: 32rpx;
+  line-height: 1;
+  color: #C3CAD2;
+}
+
+/* 区块小标题：比正文小、字距大，起分组作用，不做装饰 */
+.section-label {
+  margin: 34rpx 36rpx 12rpx;
+  font-size: 21rpx;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #8A94A0;
+}
+
+.hairline {
+  height: 1rpx;
+  background: rgba(17, 23, 30, 0.08);
+  margin: 22rpx 0;
+}
+
+/* ── 按下反馈（0ms 起效，松手不延迟） ───── */
+.press {
+  opacity: 0.62;
+  transform: scale(0.985);
+}
+
+.tap-dim {
+  opacity: 0.62;
 }
 
 .card-tap {
-  transition: transform 160ms ease, border-color 160ms ease;
+  transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1), opacity 120ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card-tap:active {
   transform: scale(0.985);
-  border-color: rgba(22, 32, 43, 0.28);
+  opacity: 0.9;
 }
 
-.eyebrow {
-  font-size: 24rpx;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #5E6A76;
+/* ── 按钮 ───────────────────────────────── */
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 92rpx;
+  padding: 0 36rpx;
+  border-radius: 999rpx;
+  background: #C04A0A;
+  color: #FFFFFF;
+  font-size: 29rpx;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
+.btn-primary:active {
+  background: #A83F08;
+  transform: scale(0.99);
+}
+
+.btn-ghost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 92rpx;
+  padding: 0 36rpx;
+  border-radius: 999rpx;
+  background: rgba(17, 23, 30, 0.05);
+  color: #11171E;
+  font-size: 29rpx;
+}
+
+.btn-ghost:active {
+  background: rgba(17, 23, 30, 0.1);
+}
+
+/* ── 小标签 ─────────────────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  height: 44rpx;
+  padding: 0 18rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  letter-spacing: 0.02em;
+  background: rgba(17, 23, 30, 0.055);
+  color: #33404C;
+}
+
+.pill-accent {
+  background: rgba(192, 74, 10, 0.1);
+  color: #C04A0A;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 12rpx 22rpx;
+  border-radius: 999rpx;
+  font-size: 23rpx;
+  background: rgba(17, 23, 30, 0.05);
+  color: #33404C;
+}
+
+.chip-accent {
+  background: rgba(192, 74, 10, 0.09);
+  color: #C04A0A;
+}
+
+/* ── 材质：半透明功能层，内容从底下滚过 ─── */
+.material {
+  background: rgba(242, 243, 245, 0.86);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+}
+
+.material-light {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+}
+
+/* ── 文字 ───────────────────────────────── */
 .title {
-  font-size: 44rpx;
-  line-height: 1.25;
+  font-size: 40rpx;
+  line-height: 1.24;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
-  font-size: 26rpx;
+  font-size: 24rpx;
   color: #5E6A76;
 }
 
 .body-text {
-  font-size: 30rpx;
+  font-size: 28rpx;
+  line-height: 1.6;
   color: #33404C;
 }
 
@@ -69,64 +253,46 @@ page {
   color: #C04A0A;
 }
 
-.hairline {
-  height: 1rpx;
-  background: rgba(22, 32, 43, 0.1);
-  margin: 24rpx 0;
+/* ── 空状态 ─────────────────────────────── */
+.empty {
+  padding: 72rpx 48rpx;
+  text-align: center;
 }
 
-/* 主按钮只有一种：橙底白字，最小 88rpx 高（44px）好点 */
-.btn-primary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 88rpx;
-  padding: 0 32rpx;
-  border-radius: 20rpx;
-  background: #C04A0A;
-  color: #FFFFFF;
-  font-size: 30rpx;
+.empty-title {
+  font-size: 28rpx;
   font-weight: 600;
-}
-
-.btn-primary:active {
-  opacity: 0.88;
-}
-
-.btn-ghost {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 88rpx;
-  padding: 0 32rpx;
-  border-radius: 20rpx;
-  border: 1rpx solid rgba(22, 32, 43, 0.24);
-  color: #16202B;
-  font-size: 30rpx;
-}
-
-.pill {
-  display: inline-flex;
-  align-items: center;
-  height: 44rpx;
-  padding: 0 18rpx;
-  border-radius: 22rpx;
-  font-size: 24rpx;
-  background: #EEF1F4;
   color: #33404C;
 }
 
-.pill-accent {
-  background: rgba(192, 74, 10, 0.1);
-  color: #C04A0A;
+.empty-sub {
+  margin-top: 8rpx;
+  font-size: 23rpx;
+  line-height: 1.6;
+  color: #8A94A0;
 }
 
-/* 全局：按下反馈 + 数字等宽（时间、金额、里程对齐才不会跳） */
-.tap-dim {
-  opacity: 0.65;
+/* ── 进场：一次渐进，不逐块弹 ───────────── */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.num,
-.tnum {
-  font-variant-numeric: tabular-nums;
+.rise {
+  animation: rise 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade {
+  animation: fade 260ms ease-out both;
 }

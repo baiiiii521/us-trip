@@ -1,7 +1,7 @@
 <view class="page with-nav">
   <scroll-view class="filters" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
     <view class="filters-inner">
-      <view
+      <view hover-class="press" hover-stay-time="60"
         wx:for="{{cities}}"
         wx:key="key"
         class="filter {{active === item.key ? 'on' : ''}}"
@@ -25,7 +25,7 @@
       <view class="eat-foot">
         <text class="eat-book">{{e.book}}</text>
         <text class="eat-day" wx:if="{{e.day}}">{{e.day}}</text>
-        <view class="eat-nav" data-key="{{e.key}}" bindtap="nav">导航</view>
+        <view hover-class="press" hover-stay-time="60" class="eat-nav" data-key="{{e.key}}" bindtap="nav">导航</view>
       </view>
     </view>
   </view>

@@ -14,18 +14,18 @@
     <view class="game-meta">
       <text class="game-arena">{{item.arena}}</text>
       <text class="game-price">{{item.price}}</text>
-      <text class="game-nav" data-id="{{item.id}}" bindtap="nav">球馆位置</text>
+      <text hover-class="press" hover-stay-time="60" class="game-nav" data-id="{{item.id}}" bindtap="nav">球馆位置</text>
     </view>
 
     <view class="links">
-      <view class="link" wx:for="{{item.links}}" wx:key="label" wx:for-item="l" data-url="{{l.url}}" bindtap="copy">
+      <view hover-class="press" hover-stay-time="60" class="link" wx:for="{{item.links}}" wx:key="label" wx:for-item="l" data-url="{{l.url}}" bindtap="copy">
         {{l.label}}
       </view>
     </view>
   </view>
 
   <view class="section-label">比价平台</view>
-  <view class="card plat" wx:for="{{platforms}}" wx:key="name" data-url="{{item.url}}" bindtap="copy">
+  <view hover-class="press" hover-stay-time="60" class="card plat" wx:for="{{platforms}}" wx:key="name" data-url="{{item.url}}" bindtap="copy">
     <view class="plat-top">
       <text class="plat-name">{{item.name}}</text>
       <text class="plat-copy">复制链接</text>
@@ -35,7 +35,7 @@
 
   <view class="section-label">订票与预约入口</view>
   <view class="card vendors">
-    <view class="vendor" wx:for="{{vendors}}" wx:key="key" data-url="{{item.url}}" bindtap="copy">
+    <view hover-class="press" hover-stay-time="60" class="vendor" wx:for="{{vendors}}" wx:key="key" data-url="{{item.url}}" bindtap="copy">
       <text class="vendor-name">{{item.label}}</text>
       <text class="vendor-copy">复制</text>
     </view>

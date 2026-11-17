@@ -1,14 +1,32 @@
+/* 顶部栏：半透明材质，内容从下面滚过去；底下不是硬分割线，是一道很轻的渐隐 */
 .bar {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: #F3F5F7;
-  border-bottom: 1rpx solid rgba(22, 32, 43, 0.07);
+  background: rgba(242, 243, 245, 0.86);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+}
+
+.bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -14rpx;
+  height: 14rpx;
+  background: linear-gradient(180deg, rgba(16, 24, 32, 0.07), rgba(16, 24, 32, 0));
+  pointer-events: none;
 }
 
 .bar.ghost {
   background: transparent;
-  border-bottom: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.bar.ghost::after {
+  display: none;
 }
 
 .inner {
@@ -16,7 +34,7 @@
   align-items: center;
   gap: 16rpx;
   padding: 0 32rpx;
-  /* 右边给微信胶囊让位 */
+  /* 右边整块给微信胶囊 */
   padding-right: 200rpx;
   box-sizing: border-box;
 }
@@ -29,17 +47,18 @@
   align-items: center;
   justify-content: center;
   margin-left: -10rpx;
-  background: rgba(22, 32, 43, 0.06);
+  background: rgba(17, 23, 30, 0.06);
 }
 
 .back-hover {
-  background: rgba(22, 32, 43, 0.14);
+  background: rgba(17, 23, 30, 0.14);
+  transform: scale(0.94);
 }
 
 .chev {
   font-size: 40rpx;
   line-height: 1;
-  color: #16202B;
+  color: #11171E;
   margin-top: -4rpx;
 }
 
@@ -55,11 +74,12 @@
   min-width: 0;
 }
 
+/* 大标题负字距，小字正字距——同一页里不同字号各用各的 */
 .title {
   font-size: 36rpx;
   font-weight: 700;
-  color: #16202B;
-  letter-spacing: -0.015em;
+  color: #11171E;
+  letter-spacing: -0.02em;
   line-height: 1.18;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -69,6 +89,7 @@
 .sub {
   font-size: 21rpx;
   color: #5E6A76;
+  letter-spacing: 0.01em;
   margin-top: 3rpx;
   line-height: 1.25;
   overflow: hidden;
@@ -76,7 +97,6 @@
   white-space: nowrap;
 }
 
-/* 右上角进度徽标：有信息才出现，不做装饰 */
 .badge {
   flex: none;
   margin-left: auto;
@@ -87,13 +107,13 @@
   border-radius: 999rpx;
   padding: 8rpx 16rpx;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
 }
 
-/* 底部 3rpx 进度条：这一趟走完多少 */
+/* 底部 3rpx 进度：这一趟走完多少 */
 .rail {
   height: 3rpx;
-  background: rgba(22, 32, 43, 0.07);
+  background: rgba(17, 23, 30, 0.06);
   overflow: hidden;
 }
 

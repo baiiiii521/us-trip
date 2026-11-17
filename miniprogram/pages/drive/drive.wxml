@@ -12,7 +12,7 @@
     <view class="section-label">取车 {{pickup.md}} {{pickup.at}}</view>
     <view class="strong">{{pickup.place}}</view>
     <view class="body-text mt">{{pickup.how}}</view>
-    <view class="btn-primary mt" bindtap="navPickup">导航到取车点</view>
+    <view hover-class="press" hover-stay-time="60" class="btn-primary mt" bindtap="navPickup">导航到取车点</view>
   </view>
 
   <view class="card">
@@ -22,7 +22,7 @@
     <view class="warn mt">{{dropoff.why}}</view>
     <view class="note mt">{{dropoff.hours}}</view>
     <view class="note">{{dropoff.toll}}</view>
-    <view class="btn-ghost mt" bindtap="navDropoff">导航到还车门店</view>
+    <view hover-class="press" hover-stay-time="60" class="btn-ghost mt" bindtap="navDropoff">导航到还车门店</view>
   </view>
 
   <view class="section-label block">四段路</view>
@@ -33,7 +33,7 @@
     </view>
     <view class="drive-h">{{item.h}} · 过路费约 ${{item.toll}}</view>
     <view class="drive-route">{{item.route}}</view>
-    <view class="drive-via" wx:if="{{item.via}}" data-q="{{item.via}}" bindtap="navVia">途经：{{item.via}}</view>
+    <view hover-class="press" hover-stay-time="60" class="drive-via" wx:if="{{item.via}}" data-q="{{item.via}}" bindtap="navVia">途经：{{item.via}}</view>
     <view class="drive-stops">
       <text class="stop" wx:for="{{item.stops}}" wx:key="*this" wx:for-item="s">{{s}}</text>
     </view>
@@ -48,7 +48,7 @@
       <text class="val">${{item.nightly}}/晚 · {{item.note}}</text>
     </view>
     <view class="note">租车公司代扣过路费另收一次服务费，约 ${{tollFee}} 封顶；油按 ${{gas.usdPerGal}}/加仑、{{gas.mpg}} 英里/加仑估。</view>
-    <view class="btn-ghost mt" bindtap="soon">车停在哪（拍照记位置）</view>
+    <view hover-class="press" hover-stay-time="60" class="btn-ghost mt" bindtap="soon">车停在哪（拍照记位置）</view>
   </view>
 
   <view class="section-label block">自驾须知</view>

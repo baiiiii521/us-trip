@@ -18,7 +18,7 @@ page {
 .tab {
   flex: 1;
   text-align: center;
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: rgba(255, 255, 255, 0.6);
   padding: 14rpx 0;
   border-radius: 14rpx;
@@ -87,7 +87,7 @@ page {
   border-radius: 16rpx;
   background: #C04A0A;
   color: #FFFFFF;
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 
 .hint {

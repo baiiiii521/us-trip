@@ -13,7 +13,7 @@
 
 .sos-note {
   margin-top: 12rpx;
-  font-size: 23rpx;
+  font-size: 22rpx;
   color: #5E6A76;
   line-height: 1.55;
 }
@@ -30,7 +30,7 @@
 }
 
 .consul-name {
-  font-size: 27rpx;
+  font-size: 28rpx;
   font-weight: 600;
   color: #16202B;
 }
@@ -94,7 +94,7 @@
 }
 
 .entry-go.soon {
-  font-size: 20rpx;
+  font-size: 21rpx;
   color: #A3ADB8;
 }
 
@@ -107,12 +107,12 @@
 }
 
 .set-label {
-  font-size: 27rpx;
+  font-size: 28rpx;
   color: #33404C;
 }
 
 .set-val {
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #C04A0A;
 }
 
@@ -138,7 +138,7 @@
 
 .val {
   flex: 1;
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #16202B;
   line-height: 1.5;
 }

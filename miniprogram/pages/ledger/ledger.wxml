@@ -51,7 +51,7 @@
       </picker>
     </view>
 
-    <view class="btn-primary add" bindtap="add">记上</view>
+    <view hover-class="press" hover-stay-time="60" class="btn-primary add" bindtap="add">记上</view>
     <view class="rate-note">人民币按预算汇率 {{rate}} 折算，只在这里换算，不改账。</view>
   </view>
 
@@ -66,7 +66,7 @@
       <view class="row-r">
         <text class="row-amt">{{item.amount}}</text>
         <text class="row-usd" wx:if="{{item.usd !== item.amount}}">≈ {{item.usd}}</text>
-        <text class="row-del" data-id="{{item.id}}" catchtap="del">删</text>
+        <text hover-class="press" hover-stay-time="60" class="row-del" data-id="{{item.id}}" catchtap="del">删</text>
       </view>
     </view>
   </view>

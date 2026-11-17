@@ -16,11 +16,6 @@
   <view class="title">{{poi.name}}</view>
   <view class="tag">{{poi.tag}}</view>
 
-  <view class="actions">
-    <view class="btn-primary half" bindtap="nav">{{ll ? '导航到这里' : '复制地址'}}</view>
-    <view class="btn-ghost half" bindtap="copy">复制英文地址</view>
-  </view>
-
   <view class="card">
     <view class="body-text">{{poi.intro}}</view>
     <view class="hairline" wx:if="{{poi.highlights.length}}"></view>
@@ -38,7 +33,7 @@
   <view class="card" wx:if="{{days.length}}">
     <view class="section-label">安排在这几天</view>
     <view class="day-links">
-      <view class="day-link" wx:for="{{days}}" wx:key="id" data-id="{{item.id}}" bindtap="jumpDay">
+      <view hover-class="press" hover-stay-time="60" class="day-link" wx:for="{{days}}" wx:key="id" data-id="{{item.id}}" bindtap="jumpDay">
         <text class="day-md">{{item.md}}</text>
         <text class="day-t">{{item.title}}</text>
       </view>
@@ -46,6 +41,12 @@
   </view>
 
   <view class="foot-note">图片来自维基百科 / 维基共享资源，点击标题可在浏览器查看原图。文字内容与 trip.byb521.com 同源。</view>
+</view>
+
+<!-- 常驻操作条：进到任何位置都能一键导航 -->
+<view class="action-bar" wx:if="{{poi}}">
+  <view hover-class="press" hover-stay-time="60" class="btn-primary bar-main" bindtap="nav">{{ll ? '导航到这里' : '复制地址'}}</view>
+  <view hover-class="press" hover-stay-time="60" class="btn-ghost bar-ghost" bindtap="copy">复制</view>
 </view>
 
 <view class="page-pad" wx:else>

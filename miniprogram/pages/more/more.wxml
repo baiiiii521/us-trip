@@ -4,8 +4,8 @@
   <view class="card sos">
     <view class="section-label">紧急情况</view>
     <view class="sos-row">
-      <view class="btn-primary sos-btn" bindtap="call911">打 911</view>
-      <view class="btn-ghost sos-btn" bindtap="call12308">12308 领保热线</view>
+      <view hover-class="press" hover-stay-time="60" class="btn-primary sos-btn" bindtap="call911">打 911</view>
+      <view hover-class="press" hover-stay-time="60" class="btn-ghost sos-btn" bindtap="call12308">12308 领保热线</view>
     </view>
     <view class="sos-note">接通先说 “Chinese, I need an interpreter.”，会转中文翻译。12308 是 24 小时。</view>
 
@@ -16,7 +16,7 @@
         <text class="consul-area">{{item.area}}</text>
         <text class="consul-addr">{{item.addr}}</text>
       </view>
-      <view class="consul-call" data-tel="{{item.tel}}" bindtap="callConsulate">{{item.telShow}}</view>
+      <view hover-class="press" hover-stay-time="60" class="consul-call" data-tel="{{item.tel}}" bindtap="callConsulate">{{item.telShow}}</view>
     </view>
 
     <view class="hairline"></view>
@@ -25,42 +25,42 @@
 
   <!-- 功能入口 -->
   <view class="card">
-    <view class="entry" data-url="/pages/tips/tips" bindtap="go">
+    <view hover-class="press" hover-stay-time="60" class="entry" data-url="/pages/tips/tips" bindtap="go">
       <text class="entry-name">小技巧</text>
       <text class="entry-sub">入境、刷卡坐车、买票、穿衣…网站的实用提示整页</text>
       <text class="entry-go">›</text>
     </view>
-    <view class="entry" data-url="/pages/wallet/wallet" bindtap="go">
+    <view hover-class="press" hover-stay-time="60" class="entry" data-url="/pages/wallet/wallet" bindtap="go">
       <text class="entry-name">订单夹</text>
       <text class="entry-sub">机票、酒店、球票的确认号和截图</text>
       <text class="entry-go">›</text>
     </view>
-    <view class="entry" data-url="/pages/tickets/tickets" bindtap="go">
+    <view hover-class="press" hover-stay-time="60" class="entry" data-url="/pages/tickets/tickets" bindtap="go">
       <text class="entry-name">票务</text>
       <text class="entry-sub">六场球赛和比价平台，链接一键复制</text>
       <text class="entry-go">›</text>
     </view>
-    <view class="entry" data-url="/pages/drive/drive" bindtap="go">
+    <view hover-class="press" hover-stay-time="60" class="entry" data-url="/pages/drive/drive" bindtap="go">
       <text class="entry-name">自驾须知</text>
       <text class="entry-sub">四段路线、取还车、停车、租车要带什么</text>
       <text class="entry-go">›</text>
     </view>
-    <view class="entry" data-url="/pages/cards/cards" bindtap="go">
+    <view hover-class="press" hover-stay-time="60" class="entry" data-url="/pages/cards/cards" bindtap="go">
       <text class="entry-name">英文大字卡</text>
       <text class="entry-sub">给司机看地址、球馆、常用句子，横屏常亮</text>
       <text class="entry-go">›</text>
     </view>
-    <view class="entry" data-url="/pages/ledger/ledger" bindtap="go">
+    <view hover-class="press" hover-stay-time="60" class="entry" data-url="/pages/ledger/ledger" bindtap="go">
       <text class="entry-name">记账与结算</text>
       <text class="entry-sub">记一笔、两人 AA、最后谁给谁多少</text>
       <text class="entry-go">›</text>
     </view>
-    <view class="entry" data-name="证件包" bindtap="soon">
+    <view hover-class="press" hover-stay-time="60" class="entry" data-name="证件包" bindtap="soon">
       <text class="entry-name">证件包</text>
       <text class="entry-sub">护照、订单、行程单：正在做密码解锁</text>
       <text class="entry-go soon">下一版</text>
     </view>
-    <view class="entry" data-name="提醒" bindtap="soon">
+    <view hover-class="press" hover-stay-time="60" class="entry" data-name="提醒" bindtap="soon">
       <text class="entry-name">提醒</text>
       <text class="entry-sub">值机、球赛、取还车（订阅消息要后端）</text>
       <text class="entry-go soon">下一版</text>
@@ -70,11 +70,11 @@
   <!-- 方案设置 -->
   <view class="card">
     <view class="section-label">方案</view>
-    <view class="set-row" bindtap="switchRent">
+    <view hover-class="press" hover-stay-time="60" class="set-row" bindtap="switchRent">
       <text class="set-label">交通</text>
       <text class="set-val">{{rentLabel}} ›</text>
     </view>
-    <view class="set-row" bindtap="toggleEwr">
+    <view hover-class="press" hover-stay-time="60" class="set-row" bindtap="toggleEwr">
       <text class="set-label">12/30 晚上</text>
       <text class="set-val">{{ewr ? '机场酒店' : '机场过夜'}} ›</text>
     </view>

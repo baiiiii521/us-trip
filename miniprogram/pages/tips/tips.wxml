@@ -2,7 +2,7 @@
   <view class="lead">网站「实用提示」整页搬过来的：{{groups.length}} 组、{{checklist.length}} 条待办，出发前按这个勾。</view>
 
   <view class="card group" wx:for="{{groups}}" wx:key="group" wx:for-item="g" wx:for-index="gi">
-    <view class="group-head" data-i="{{gi}}" bindtap="toggle">
+    <view hover-class="press" hover-stay-time="60" class="group-head" data-i="{{gi}}" bindtap="toggle">
       <view class="group-l">
         <text class="group-name">{{g.group}}</text>
         <text class="group-count">{{g.items.length}} 条</text>
@@ -27,7 +27,7 @@
   <view class="card">
     <view class="source" wx:for="{{sources}}" wx:key="*this" wx:for-item="s">
       <text class="source-name">{{s[0]}}</text>
-      <text class="source-url" data-url="{{s[1]}}" bindtap="copyLink" catchtap="copyLink">{{s[1]}}</text>
+      <text hover-class="press" hover-stay-time="60" class="source-url" data-url="{{s[1]}}" bindtap="copyLink" catchtap="copyLink">{{s[1]}}</text>
     </view>
   </view>
 

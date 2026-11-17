@@ -25,16 +25,16 @@
 .filter {
   flex: none;
   padding: 10rpx 22rpx;
-  border-radius: 20rpx;
+  border-radius: 28rpx;
   background: #FFFFFF;
   border: 1rpx solid rgba(22, 32, 43, 0.12);
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #33404C;
 }
 
 .filter.on {
-  background: #16202B;
-  border-color: #16202B;
+  background: #C04A0A;
+  border-color: #C04A0A;
   color: #FFFFFF;
 }
 
@@ -109,7 +109,7 @@
 
 .poi-tag {
   margin-top: 8rpx;
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #33404C;
   line-height: 1.5;
 }
@@ -137,7 +137,23 @@
 
 .empty {
   text-align: center;
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #5E6A76;
   padding: 60rpx 0;
+}
+
+/* 卡片里的元信息：纯文字，不加底色，避免和筛选胶囊混淆 */
+.poi-tag,
+.tag-inline {
+  display: inline;
+  background: none;
+  padding: 0;
+  font-size: 21rpx;
+  color: #8A94A0;
+}
+
+/* 卡片本身就是可点提示，去掉右侧箭头 */
+.poi-card .chev,
+.poi-card .arrow {
+  display: none;
 }

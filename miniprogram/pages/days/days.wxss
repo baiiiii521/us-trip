@@ -27,7 +27,7 @@
 }
 
 .map-title {
-  font-size: 31rpx;
+  font-size: 30rpx;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
@@ -87,12 +87,12 @@
 }
 
 .strip-item.on {
-  background: #16202B;
-  border-color: #16202B;
+  background: #C04A0A;
+  border-color: #C04A0A;
 }
 
 .strip-md {
-  font-size: 25rpx;
+  font-size: 24rpx;
   font-weight: 600;
   color: #16202B;
   font-variant-numeric: tabular-nums;
@@ -116,7 +116,7 @@
 }
 
 .chip {
-  font-size: 23rpx;
+  font-size: 22rpx;
   color: #C04A0A;
   background: rgba(192, 74, 10, 0.08);
   border-radius: 999rpx;
@@ -168,13 +168,13 @@
 }
 
 .day-weather {
-  font-size: 20rpx;
+  font-size: 21rpx;
   color: #A3ADB8;
 }
 
 .pace-dot {
   flex: none;
-  font-size: 20rpx;
+  font-size: 21rpx;
   color: #5E6A76;
   background: rgba(22, 32, 43, 0.05);
   border-radius: 999rpx;
@@ -187,7 +187,7 @@
 
 .day-title {
   margin-top: 12rpx;
-  font-size: 29rpx;
+  font-size: 30rpx;
   font-weight: 600;
   line-height: 1.45;
   letter-spacing: -0.01em;
@@ -209,7 +209,7 @@
 .mini-time {
   flex: none;
   width: 118rpx;
-  font-size: 23rpx;
+  font-size: 22rpx;
   color: #C04A0A;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -217,14 +217,14 @@
 
 .mini-text {
   flex: 1;
-  font-size: 25rpx;
+  font-size: 24rpx;
   color: #33404C;
   line-height: 1.5;
 }
 
 .mini-go {
   flex: none;
-  font-size: 20rpx;
+  font-size: 21rpx;
   color: #C04A0A;
   border: 1rpx solid rgba(192, 74, 10, 0.35);
   border-radius: 999rpx;
@@ -240,7 +240,7 @@
   margin-top: 4rpx;
   padding: 20rpx 0;
   text-align: center;
-  font-size: 23rpx;
+  font-size: 22rpx;
   color: #C04A0A;
   border-top: 1rpx solid rgba(22, 32, 43, 0.06);
 }
@@ -314,14 +314,14 @@
 
 .tl-text {
   margin-top: 8rpx;
-  font-size: 26rpx;
+  font-size: 28rpx;
   line-height: 1.66;
   color: #33404C;
 }
 
 .tl-xmas {
   margin-top: 8rpx;
-  font-size: 23rpx;
+  font-size: 22rpx;
   color: #8A5A0B;
   line-height: 1.5;
 }
@@ -435,7 +435,7 @@
   margin-top: 16rpx;
   padding-top: 16rpx;
   border-top: 1rpx solid rgba(22, 32, 43, 0.07);
-  font-size: 23rpx;
+  font-size: 22rpx;
   color: #5E6A76;
 }
 
