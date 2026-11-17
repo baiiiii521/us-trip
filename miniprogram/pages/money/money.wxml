@@ -1,5 +1,5 @@
 <view class="page with-nav">
-  <top-bar title="花费" sub="两人预算 · 只读" />
+  <top-bar show-back title="花费" sub="两人预算 · 只读" />
   <view class="card total-card">
     <view class="eyebrow">预算（两人）</view>
     <view class="total">{{total}}</view>

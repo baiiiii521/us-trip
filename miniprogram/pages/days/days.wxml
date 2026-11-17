@@ -1,5 +1,5 @@
 <view class="page with-nav">
-  <top-bar title="每日行程" sub="{{rentLabel}}" badge="{{badge}}" progress="{{progress}}" />
+  <top-bar show-back title="每日行程" sub="{{rentLabel}}" badge="{{badge}}" progress="{{progress}}" />
 
   <view class="pad">
     <!-- 总览：四座城市怎么走 -->

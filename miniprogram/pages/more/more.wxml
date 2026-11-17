@@ -1,5 +1,5 @@
 <view class="page with-nav">
-  <top-bar title="随身" sub="紧急情况 · 证件 · 设置" />
+  <top-bar show-back title="随身" sub="紧急情况 · 证件 · 设置" />
   <!-- 紧急情况：这一块现在就能用 -->
   <view class="card sos">
     <view class="section-label">紧急情况</view>

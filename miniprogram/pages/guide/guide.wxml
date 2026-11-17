@@ -1,5 +1,5 @@
 <view class="page with-nav">
-  <top-bar title="景点图鉴" sub="68 个地方 · 按城市筛" />
+  <top-bar show-back title="景点图鉴" sub="68 个地方 · 按城市筛" />
   <view class="search">
     <input
       class="search-input"

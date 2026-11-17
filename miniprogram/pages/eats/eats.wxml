@@ -1,4 +1,5 @@
 <view class="page with-nav">
+  <top-bar show-back title="吃什么" sub="按城市分 · 都在步行或地铁范围" />
   <scroll-view class="filters" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
     <view class="filters-inner">
       <view hover-class="press" hover-stay-time="60"

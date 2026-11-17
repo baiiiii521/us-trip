@@ -1,5 +1,5 @@
 <view class="page with-nav">
-  <top-bar title="今天" sub="{{barSub}}" badge="{{badge}}" progress="{{progress}}" />
+  <top-bar show-back title="今天" sub="{{barSub}}" badge="{{badge}}" progress="{{progress}}" />
 
   <!-- 城市横幅 -->
   <view class="banner">

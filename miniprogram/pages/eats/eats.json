@@ -1,6 +1,8 @@
 {
   "navigationBarTitleText": "吃什么",
   "usingComponents": {
-    "bottom-nav": "/components/nav/nav"
-  }
+    "bottom-nav": "/components/nav/nav",
+    "top-bar": "/components/topbar/topbar"
+  },
+  "navigationStyle": "custom"
 }

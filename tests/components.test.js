@@ -80,6 +80,16 @@ test('每个登记过的组件都存在，并且有 js / json / wxml 三件套',
   }
 });
 
+test('带底部导航的五个页，顶栏必须有返回按钮（否则进了行程回不到首页）', () => {
+  for (const page of APP.pages) {
+    const src = readFileSync(join(MP, `${page}.wxml`), 'utf8');
+    if (!src.includes('<bottom-nav')) continue;
+    const m = src.match(/<top-bar[^>]*>/);
+    assert.ok(m, `${page} 用了底部导航却没有顶栏`);
+    assert.ok(/show-back/.test(m[0]), `${page} 的顶栏没有 show-back，用户回不到旅行列表`);
+  }
+});
+
 test('开了自定义导航栏的页面，wxml 里必须真的有顶部栏', () => {
   for (const page of APP.pages) {
     const cfg = JSON.parse(readFileSync(join(MP, `${page}.json`), 'utf8'));
