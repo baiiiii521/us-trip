@@ -1,20 +1,69 @@
+.arena {
+  position: relative;
+  height: 360rpx;
+  background: var(--night);
+  overflow: hidden;
+}
+
+.arena-img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.arena-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 80%;
+  background: linear-gradient(180deg, rgba(14, 26, 58, 0) 0%, rgba(14, 26, 58, 0.8) 60%, #0E1A3A 100%);
+}
+
+.arena-text {
+  position: absolute;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: 26rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.arena-big {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.arena-sub {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: var(--on-night-2);
+}
+
+.arena-credit {
+  position: absolute;
+  right: 20rpx;
+  top: 16rpx;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.82);
+  padding: 4rpx 12rpx;
+  border-radius: 999rpx;
+  background: rgba(14, 26, 58, 0.45);
+}
+
 .lead {
   font-size: 24rpx;
-  color: #5E6A76;
+  color: var(--muted);
   line-height: 1.6;
   padding: 8rpx 4rpx 16rpx;
 }
 
-.section-label {
-  font-size: 24rpx;
-  letter-spacing: 0.1em;
-  color: #5E6A76;
-  padding: 20rpx 4rpx 12rpx;
-}
-
 .pill-warn {
   background: rgba(138, 90, 11, 0.12);
-  color: #8A5A0B;
+  color: var(--warn);
 }
 
 .game {
@@ -29,16 +78,18 @@
 }
 
 .game-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #16202B;
+  display: block;
+  margin-top: 4rpx;
+  font-size: 32rpx;
+  font-weight: 750;
+  color: var(--ink);
 }
 
 .game-when {
   display: block;
-  font-size: 22rpx;
-  color: #5E6A76;
-  margin-top: 4rpx;
+  font-size: 25rpx;
+  font-weight: 650;
+  color: var(--ink-2);
 }
 
 .game-meta {
@@ -46,24 +97,24 @@
   align-items: center;
   gap: 14rpx;
   margin-top: 12rpx;
-  font-size: 22rpx;
+  font-size: 24rpx;
 }
 
 .game-arena {
-  color: #33404C;
+  color: var(--ink-2);
 }
 
 .game-price {
-  color: #C04A0A;
+  color: var(--ink);
 }
 
 .game-nav {
   margin-left: auto;
-  color: #1F4E8C;
+  color: #1F4FC4;
   border: 1rpx solid rgba(31, 78, 140, 0.3);
   border-radius: 12rpx;
   padding: 8rpx 16rpx;
-  font-size: 22rpx;
+  font-size: 24rpx;
 }
 
 .links {
@@ -74,9 +125,9 @@
 }
 
 .link {
-  font-size: 22rpx;
-  color: #33404C;
-  background: #EEF1F4;
+  font-size: 24rpx;
+  color: var(--ink-2);
+  background: var(--ground);
   border-radius: 10rpx;
   padding: 10rpx 18rpx;
 }
@@ -97,14 +148,14 @@
 }
 
 .plat-copy {
-  font-size: 21rpx;
-  color: #C04A0A;
+  font-size: 24rpx;
+  color: var(--ink);
 }
 
 .plat-note {
   margin-top: 6rpx;
-  font-size: 22rpx;
-  color: #5E6A76;
+  font-size: 24rpx;
+  color: var(--muted);
   line-height: 1.55;
 }
 
@@ -117,7 +168,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 18rpx 0;
-  border-bottom: 1rpx solid rgba(22, 32, 43, 0.07);
+  border-bottom: 1rpx solid rgba(14, 26, 58, 0.07);
 }
 
 .vendor:last-child {
@@ -126,17 +177,77 @@
 
 .vendor-name {
   font-size: 28rpx;
-  color: #16202B;
+  color: var(--ink);
 }
 
 .vendor-copy {
-  font-size: 21rpx;
-  color: #A3ADB8;
+  font-size: 24rpx;
+  color: var(--muted);
 }
 
 .foot-note {
-  font-size: 21rpx;
-  color: #A3ADB8;
+  font-size: 24rpx;
+  color: var(--muted);
   line-height: 1.6;
   padding: 20rpx 4rpx 40rpx;
+}
+
+/* 六场球：竖着一条线，每场一站 */
+.games {
+  margin-bottom: 8rpx;
+}
+
+.gst {
+  display: flex;
+  gap: 14rpx;
+}
+
+.g-rail {
+  position: relative;
+  flex: none;
+  width: 40rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.g-line {
+  position: absolute;
+  left: 16rpx;
+  top: 0;
+  bottom: 0;
+  width: 8rpx;
+  background: var(--night);
+  opacity: 0.18;
+}
+
+.g-line.first {
+  top: 40rpx;
+}
+
+.g-line.last {
+  bottom: auto;
+  height: 40rpx;
+}
+
+.g-dot {
+  position: relative;
+  z-index: 1;
+  margin-top: 30rpx;
+  width: 34rpx;
+  height: 34rpx;
+  border-radius: 50%;
+  border: 9rpx solid;
+  background: #FFFFFF;
+  box-sizing: border-box;
+}
+
+.gst .game {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 已排进：午夜蓝实底（琥珀只留给「去哪」的按钮） */
+.pill-on {
+  background: var(--night);
+  color: #FFFFFF;
 }

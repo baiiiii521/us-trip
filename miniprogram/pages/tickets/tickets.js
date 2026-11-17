@@ -4,19 +4,29 @@ import { CITIES } from '../../shared/data/trip.js';
 import { VENDORS, TICKET_PLATFORMS } from '../../shared/data/vendors.js';
 import { openTarget, qqTarget } from '../../lib/nav.js';
 import { POI_LL } from '../../shared/data/extras.js';
+import { ARENA as ARENA_IMG } from '../../lib/media.js';
+
+// 球馆所在城市的线色：每场球是那条线上的一站
+const LINE = { bos: '#2FB36B', dc: '#E63A3A', phl: '#2F6BFF', nyc: '#FFC233', la: '#19B5C9' };
 
 const ARENA = new Map(POIS.map((p) => [p.id, p]));
 
 Page({
-  data: { games: [], platforms: [], vendors: [], rent: '' },
+  data: { games: [], platforms: [], vendors: [], rent: '', arena: ARENA_IMG, arenaFail: false },
+
+  arenaError() {
+    this.setData({ arenaFail: true });
+  },
 
   onShow() {
     const games = GAME_ORDER.map((id) => {
       const g = GAMES[id];
       const arena = ARENA.get(g.arena);
       const st = gameStatus(id);
+      const city = arena ? arena.city : '';
       return {
         id,
+        color: LINE[city] || '#0E1A3A',
         title: g.title,
         when: `${g.date} ${g.wd} ${g.time}（美东）`,
         price: g.price,

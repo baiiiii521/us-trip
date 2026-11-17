@@ -8,7 +8,8 @@ import { openTarget, poiTarget } from '../../lib/nav.js';
 import { photoOf, creditLine } from '../../lib/photos.js';
 
 const BY_ID = new Map(POIS.map((p) => [p.id, p]));
-const CITY_COLOR = { bos: '#1E7A4C', dc: '#2B4C8C', phl: '#1D6FB8', nyc: '#C04A0A', la: '#0E8A8A' };
+// 城市线色（和行程页、今天页同一套）
+const CITY_COLOR = { bos: '#2FB36B', dc: '#E63A3A', phl: '#2F6BFF', nyc: '#FFC233', la: '#19B5C9' };
 
 Page({
   data: { poi: null, days: [], ll: false },
@@ -25,7 +26,8 @@ Page({
         ...p,
         cityZh: CITIES[p.city] ? CITIES[p.city].zh : '',
         catZh: CATEGORIES[p.cat] || '',
-        coverColor: CITY_COLOR[p.city] || '#16202B',
+        coverColor: CITY_COLOR[p.city] || '#0E1A3A',
+        line: CITY_COLOR[p.city] || '#0E1A3A',
         photo: photoOf(p.id),
         credit: creditLine(p.id),
         highlights: p.highlights || []

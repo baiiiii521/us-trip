@@ -1,5 +1,6 @@
 <view class="page with-nav">
   <top-bar show-back title="吃什么" sub="按城市分 · 都在步行或地铁范围" />
+  <view class="band">
   <scroll-view class="filters" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
     <view class="filters-inner">
       <view hover-class="press" hover-stay-time="60"
@@ -8,14 +9,15 @@
         class="filter {{active === item.key ? 'on' : ''}}"
         data-key="{{item.key}}"
         bindtap="pick"
-      >{{item.label}}</view>
+      ><view class="fdot" wx:if="{{item.color}}" style="background:{{item.color}}"></view>{{item.label}}</view>
     </view>
   </scroll-view>
+  </view>
 
   <view class="count">{{total}} 家 · 营业时间以店里为准</view>
 
   <view wx:for="{{groups}}" wx:key="city" wx:for-item="g">
-    <view class="city-head">{{g.zh}}</view>
+    <view class="city-head"><view class="city-line" style="background:{{g.color}}"></view><text>{{g.zh}}</text></view>
     <view class="card eat-card" wx:for="{{g.items}}" wx:key="key" wx:for-item="e">
       <view class="eat-top">
         <text class="eat-name">{{e.name}}</text>

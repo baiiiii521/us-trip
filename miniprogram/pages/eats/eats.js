@@ -2,14 +2,16 @@ import { EATS } from '../../shared/data/extras.js';
 import { CITIES } from '../../shared/data/trip.js';
 import { openTarget, qqTarget } from '../../lib/nav.js';
 
-const CITY_ORDER = ['bos', 'nyc', 'phl', 'dc', 'la'];
+// 按行程顺序；颜色是每座城的线色（和行程页、今天页同一套）
+const CITY_ORDER = ['bos', 'dc', 'phl', 'nyc', 'la'];
+const LINE = { bos: '#2FB36B', dc: '#E63A3A', phl: '#2F6BFF', nyc: '#FFC233', la: '#19B5C9' };
 
 Page({
   data: { cities: [], active: 'all', groups: [], total: 0 },
 
   onLoad() {
     this.setData({
-      cities: [{ key: 'all', label: '全部' }, ...CITY_ORDER.filter((c) => CITIES[c]).map((c) => ({ key: c, label: CITIES[c].zh }))]
+      cities: [{ key: 'all', label: '全部' }, ...CITY_ORDER.filter((c) => CITIES[c]).map((c) => ({ key: c, label: CITIES[c].zh, color: LINE[c] }))]
     });
   },
 
@@ -24,6 +26,7 @@ Page({
       .map((c) => ({
         city: c,
         zh: CITIES[c] ? CITIES[c].zh : c,
+        color: LINE[c],
         items: picked.filter((e) => e.city === c).map((e, i) => ({
           key: `${c}-${i}`,
           name: e.name,

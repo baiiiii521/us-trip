@@ -1,163 +1,200 @@
+/* 首页：整页午夜蓝。一趟旅程是一张带五城线路的卡片 */
 page {
-  background: #EFF1F4;
+  background: #0E1A3A;
 }
 
 .page {
-  padding-bottom: 60rpx;
+  min-height: 100vh;
+  padding-bottom: calc(56rpx + env(safe-area-inset-bottom));
+  color: #F4F6FA;
 }
 
-/* ── 封面 ───────────────────────────────── */
-.hero {
-  position: relative;
-  min-height: 960rpx;
-  background: #16202B;
-  overflow: hidden;
+.brand {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+  padding-left: 32rpx;
+  padding-right: 200rpx;
+  height: 44px;
 }
 
-.hero-img {
+.mark {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 16rpx;
+}
+
+.mark-name {
+  font-size: 30rpx;
+  font-weight: 750;
+}
+
+.phase {
+  font-size: 24rpx;
+  font-weight: 700;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.12);
+  color: #A9B6D6;
+}
+
+.phase.now {
+  background: #FFC233;
+  color: #0E1A3A;
+}
+
+.lede {
+  margin: 40rpx 32rpx 24rpx;
+  font-size: 56rpx;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* 旅程卡 */
+.trip-card {
+  margin: 0 24rpx;
+  border-radius: 32rpx;
+  background: #17264D;
+  overflow: hidden;
+  box-shadow: 0 24rpx 48rpx -24rpx rgba(0, 0, 0, 0.6);
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-press {
+  transform: scale(0.985);
+}
+
+.cover {
+  position: relative;
+  height: 560rpx;
+  background: #22335F;
+}
+
+.cover-img {
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  animation: kenburns 24s ease-out both;
 }
 
-@keyframes kenburns {
-  from { transform: scale(1.02); }
-  to { transform: scale(1.12); }
-}
-
-/* 从下往上的暗部，保证白字永远读得清 */
-.hero-fade {
+.cover-fade {
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
   bottom: 0;
-  background:
-    linear-gradient(180deg, rgba(10, 15, 20, 0.58) 0%, rgba(10, 15, 20, 0.06) 24%, rgba(10, 15, 20, 0.28) 50%, rgba(8, 12, 16, 0.97) 100%);
+  height: 70%;
+  background: linear-gradient(180deg, rgba(23, 38, 77, 0) 0%, rgba(23, 38, 77, 0.78) 58%, #17264D 100%);
 }
 
-.hero-top {
-  position: relative;
+.cover-text {
+  position: absolute;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: 22rpx;
   display: flex;
-  align-items: center;
-  gap: 14rpx;
-  padding: 16rpx 36rpx 0;
-  /* 右边整块留给微信胶囊，任何东西都不许放进去 */
-  padding-right: 210rpx;
+  flex-direction: column;
 }
 
-.mark {
-  width: 52rpx;
-  height: 52rpx;
-  border-radius: 16rpx;
-}
-
-.mark-name {
+.cover-kicker {
   font-size: 24rpx;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
-  letter-spacing: 0.04em;
-}
-
-.phase {
-  margin-left: 18rpx;
-  font-size: 21rpx;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.94);
-  background: rgba(255, 255, 255, 0.16);
-  border: 1rpx solid rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(12px);
-  border-radius: 999rpx;
-  padding: 7rpx 16rpx;
-  letter-spacing: 0.02em;
-}
-
-.phase.later {
-  color: rgba(255, 255, 255, 0.78);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.hero-body {
-  position: relative;
-  margin-top: auto;
-  padding: 0 40rpx calc(76rpx + env(safe-area-inset-bottom));
-  animation: rise 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes rise {
-  from { opacity: 0; transform: translateY(26rpx); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.hero-title {
-  font-size: 66rpx;
-  line-height: 1.14;
-  font-weight: 800;
-  color: #FFFFFF;
-  letter-spacing: -0.03em;
-}
-
-.hero-meta {
-  margin-top: 16rpx;
-  font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.82);
-  letter-spacing: 0.01em;
-  font-variant-numeric: tabular-nums;
-}
-
-.cta {
-  margin-top: 34rpx;
-  display: inline-flex;
-  align-items: center;
-  gap: 14rpx;
-  /* 玻璃质感：压在照片上，不和下面那张白卡抢注意力 */
-  background: rgba(255, 255, 255, 0.16);
-  border: 1rpx solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(14px);
-  color: #FFFFFF;
-  border-radius: 999rpx;
-  padding: 22rpx 36rpx;
-  align-self: flex-start;
-}
-
-.cta-press {
-  opacity: 0.86;
-  transform: scale(0.985);
-}
-
-.cta-text {
-  font-size: 28rpx;
   font-weight: 700;
-  letter-spacing: 0.01em;
+  color: #FFC233;
 }
 
-.cta-arrow {
-  font-size: 28rpx;
-  color: #FFC08A;
+.cover-title {
+  margin-top: 6rpx;
+  font-size: 58rpx;
+  line-height: 1.12;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+}
+
+.cover-meta {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #C9D3EA;
 }
 
 .credit {
   position: absolute;
   right: 20rpx;
-  bottom: 12rpx;
-  font-size: 17rpx;
-  color: rgba(255, 255, 255, 0.38);
+  top: 18rpx;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.82);
+  padding: 4rpx 12rpx;
+  border-radius: 999rpx;
+  background: rgba(14, 26, 58, 0.45);
 }
 
-/* ── 今天 ───────────────────────────────── */
-.now {
+/* 五城线路 */
+.line {
+  display: flex;
+  padding: 22rpx 20rpx 8rpx;
+}
+
+.ln {
+  flex: 1;
   position: relative;
-  margin: -76rpx 28rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ln-bar {
+  position: absolute;
+  top: 13rpx;
+  right: 50%;
+  width: 100%;
+  height: 8rpx;
+  border-radius: 4rpx;
+}
+
+.ln-stop {
+  position: relative;
+  z-index: 1;
+  width: 34rpx;
+  height: 34rpx;
+  border-radius: 50%;
   background: #FFFFFF;
-  border-radius: 30rpx;
-  padding: 30rpx 30rpx 28rpx;
-  box-shadow: 0 18rpx 50rpx rgba(16, 24, 32, 0.14);
-  animation: rise 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  border: 8rpx solid;
+  box-sizing: border-box;
+}
+
+.ln-name {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  font-weight: 650;
+  color: #FFFFFF;
+}
+
+.ln-md {
+  margin-top: 2rpx;
+  font-size: 24rpx;
+  color: #A9B6D6;
+}
+
+.cta {
+  margin: 26rpx 28rpx 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 96rpx;
+  border-radius: 999rpx;
+  background: #FFC233;
+  color: #0E1A3A;
+  font-size: 31rpx;
+  font-weight: 750;
+}
+
+/* 今天 */
+.now {
+  margin: 24rpx 24rpx 0;
+  padding: 28rpx 30rpx;
+  border-radius: 28rpx;
+  background: #FFFFFF;
+  color: #0E1A3A;
 }
 
 .now-head {
@@ -167,149 +204,90 @@ page {
 }
 
 .now-label {
-  font-size: 21rpx;
+  font-size: 24rpx;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  color: #C04A0A;
+  color: #6F7B96;
 }
 
 .now-nav {
-  font-size: 22rpx;
-  color: #1F4E8C;
+  min-height: 60rpx;
+  padding: 0 26rpx;
+  display: flex;
+  align-items: center;
+  border-radius: 999rpx;
+  background: #FFC233;
+  font-size: 25rpx;
+  font-weight: 700;
 }
 
 .now-title {
-  margin-top: 10rpx;
   font-size: 40rpx;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
+  font-weight: 800;
 }
 
 .now-sub {
-  margin-top: 8rpx;
-  font-size: 24rpx;
-  color: #33404C;
-  line-height: 1.5;
-}
-
-.now-sub.dim {
-  color: #5E6A76;
+  margin-top: 4rpx;
+  font-size: 25rpx;
+  color: #3D4A68;
 }
 
 .now-detail {
-  margin-top: 14rpx;
-  padding-top: 14rpx;
-  border-top: 1rpx solid rgba(22, 32, 43, 0.07);
-  font-size: 22rpx;
-  color: #33404C;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid rgba(14, 26, 58, 0.1);
+  font-size: 26rpx;
   line-height: 1.6;
+  color: #3D4A68;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* ── 分组列表 ───────────────────────────── */
+/* 工具：两列格子 */
 .section {
-  margin: 40rpx 40rpx 12rpx;
-  font-size: 21rpx;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: #8A94A0;
+  margin: 48rpx 32rpx 18rpx;
+  font-size: 28rpx;
+  font-weight: 750;
+  color: #A9B6D6;
 }
 
-.card {
-  margin: 0 28rpx;
-  background: #FFFFFF;
-  border-radius: 28rpx;
-  box-shadow: 0 2rpx 10rpx rgba(16, 24, 32, 0.05);
-}
-
-.group {
-  padding: 4rpx 30rpx;
-}
-
-.row {
-  display: flex;
-  align-items: center;
+.tools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 16rpx;
-  padding: 26rpx 0;
-  border-bottom: 1rpx solid rgba(22, 32, 43, 0.06);
+  margin: 0 24rpx;
 }
 
-.row:last-child {
-  border-bottom: none;
-}
-
-.row-press {
-  opacity: 0.6;
-}
-
-.row-l {
-  flex: 1;
-  min-width: 0;
-}
-
-.row-name {
-  font-size: 30rpx;
-  font-weight: 500;
-  color: #16202B;
-  letter-spacing: -0.01em;
-}
-
-.row-sub {
-  display: block;
-  margin-top: 4rpx;
-  font-size: 22rpx;
-  color: #939DA9;
-}
-
-.row-chev {
-  font-size: 32rpx;
-  color: #C3CAD2;
-  line-height: 1;
-}
-
-/* ── 所有旅程 ───────────────────────────── */
-.trip {
+.tool {
   display: flex;
-  align-items: center;
-  gap: 16rpx;
-  padding: 26rpx 30rpx;
-  margin-bottom: 14rpx;
+  flex-direction: column;
+  gap: 6rpx;
+  padding: 26rpx 26rpx 28rpx;
+  border-radius: 24rpx;
+  background: #17264D;
+  min-height: 120rpx;
 }
 
-.trip-l {
-  flex: 1;
-  min-width: 0;
+.tool-press {
+  background: #22335F;
 }
 
-.trip-name {
+.tool-name {
   font-size: 30rpx;
-  font-weight: 600;
-  color: #16202B;
+  font-weight: 700;
+  color: #FFFFFF;
 }
 
-.trip-meta {
-  display: block;
-  margin-top: 4rpx;
-  font-size: 22rpx;
-  color: #939DA9;
-  font-variant-numeric: tabular-nums;
-}
-
-.trip-trail {
-  display: block;
-  margin-top: 6rpx;
-  font-size: 21rpx;
-  color: #A3ADB8;
-}
-
-.trip-chev {
-  font-size: 32rpx;
-  color: #C3CAD2;
+.tool-sub {
+  font-size: 24rpx;
+  line-height: 1.45;
+  color: #A9B6D6;
 }
 
 .foot {
-  margin-top: 34rpx;
-  text-align: center;
-  font-size: 21rpx;
-  color: #A3ADB8;
+  margin: 40rpx 32rpx 0;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #A9B6D6;
 }

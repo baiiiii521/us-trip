@@ -1,31 +1,38 @@
+<top-bar show-back title="自驾须知" sub="四段路 · 取车还车" />
 <view class="page-pad">
   <view class="card">
-    <view class="section-label">当前方案</view>
     <view class="plan">{{rentLabel}}</view>
-    <view class="hairline"></view>
     <view class="kv"><text class="k">车型</text><text class="val">{{rental.car}}</text></view>
-    <view class="kv"><text class="k">租期</text><text class="val">{{rental.from}} – {{rental.to}}（{{rental.days}} 天）</text></view>
+    <view class="kv"><text class="k">租期</text><text class="val num">{{rental.from}} – {{rental.to}}（{{rental.days}} 天）</text></view>
     <view class="kv"><text class="k">含</text><text class="val">{{termsText}}</text></view>
   </view>
 
-  <view class="card" wx:if="{{pickup}}">
-    <view class="section-label">取车 {{pickup.md}} {{pickup.at}}</view>
-    <view class="strong">{{pickup.place}}</view>
-    <view class="body-text mt">{{pickup.how}}</view>
-    <view hover-class="press" hover-stay-time="60" class="btn-primary mt" bindtap="navPickup">导航到取车点</view>
+  <!-- 取车 → 还车：同一条线上的两站 -->
+  <view class="card run">
+    <view class="run-st" wx:if="{{pickup}}">
+      <view class="run-rail"><view class="run-line first"></view><view class="run-dot" style="border-color:#2FB36B"></view></view>
+      <view class="run-body">
+        <view class="run-head">取车 · <text class="num">{{pickup.md}} {{pickup.at}}</text></view>
+        <view class="strong">{{pickup.place}}</view>
+        <view class="body-text mt">{{pickup.how}}</view>
+        <view hover-class="press" hover-stay-time="60" class="btn-primary mt" bindtap="navPickup">导航到取车点</view>
+      </view>
+    </view>
+    <view class="run-st">
+      <view class="run-rail"><view class="run-line last"></view><view class="run-dot" style="border-color:#FFC233"></view></view>
+      <view class="run-body">
+        <view class="run-head">还车 · <text class="num">{{dropoff.md}} {{dropoff.at}}</text></view>
+        <view class="strong">{{dropoff.place}}</view>
+        <view class="body-text mt">{{dropoff.how}}</view>
+        <view class="warn mt">{{dropoff.why}}</view>
+        <view class="note mt">{{dropoff.hours}}</view>
+        <view class="note">{{dropoff.toll}}</view>
+        <view hover-class="press" hover-stay-time="60" class="btn-ghost mt" bindtap="navDropoff">导航到还车门店</view>
+      </view>
+    </view>
   </view>
 
-  <view class="card">
-    <view class="section-label">还车 {{dropoff.md}} {{dropoff.at}}</view>
-    <view class="strong">{{dropoff.place}}</view>
-    <view class="body-text mt">{{dropoff.how}}</view>
-    <view class="warn mt">{{dropoff.why}}</view>
-    <view class="note mt">{{dropoff.hours}}</view>
-    <view class="note">{{dropoff.toll}}</view>
-    <view hover-class="press" hover-stay-time="60" class="btn-ghost mt" bindtap="navDropoff">导航到还车门店</view>
-  </view>
-
-  <view class="section-label block">四段路</view>
+  <view class="section-label">四段路</view>
   <view class="card drive" wx:for="{{drives}}" wx:key="id">
     <view class="drive-top">
       <text class="drive-name">{{item.from}} → {{item.to}}</text>
@@ -35,7 +42,7 @@
     <view class="drive-route">{{item.route}}</view>
     <view hover-class="press" hover-stay-time="60" class="drive-via" wx:if="{{item.via}}" data-q="{{item.via}}" bindtap="navVia">途经：{{item.via}}</view>
     <view class="drive-stops">
-      <text class="stop" wx:for="{{item.stops}}" wx:key="*this" wx:for-item="s">{{s}}</text>
+      <text class="rest" wx:for="{{item.stops}}" wx:key="*this" wx:for-item="s">{{s}}</text>
     </view>
     <view class="drive-risk" wx:if="{{item.risk}}">{{item.risk}}</view>
     <view class="drive-toll" wx:if="{{item.tollNote}}">{{item.tollNote}}</view>

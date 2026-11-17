@@ -12,6 +12,8 @@ import { overviewMap, dayMap } from '../../lib/mapview.js';
 import { openTarget, qqTarget } from '../../lib/nav.js';
 
 const POI = new Map(POIS.map((p) => [p.id, p]));
+// 一座城一条线（和今天页、顶栏五色线同一套）
+const LINE = { bos: '#2FB36B', dc: '#E63A3A', phl: '#2F6BFF', nyc: '#FFC233', la: '#19B5C9' };
 
 const poiChips = (ids) => (ids || []).filter((id) => POI.has(id)).map((id) => ({ id, name: POI.get(id).name }));
 
@@ -115,7 +117,7 @@ Page({
     const open = {};
     for (const d of raw) open[d.id] = !!(this.data.open && this.data.open[d.id]);
 
-    const days = raw.map((d) => {
+    const days = raw.map((d, di) => {
       const c = CITIES[d.city] || {};
       const items = d.items.map((it) => {
         const explicit = it.nav && it.nav.q ? { name: it.nav.name || '', q: it.nav.q, ll: llOf(it.nav.q) } : null;
@@ -151,8 +153,13 @@ Page({
       });
       return {
         id: d.id,
+        no: di + 1,
         md: d.md,
         wd: d.wd,
+        city: d.city,
+        color: LINE[d.city] || '#6F7B96',
+        // 换城的那天是换乘站：从哪条线换到哪条线
+        from: d.from && LINE[d.from] ? { color: LINE[d.from], zh: (CITIES[d.from] || {}).zh || '' } : null,
         cityZh: c.zh || '',
         title: d.title || '',
         stay: d.stay || '',
@@ -185,9 +192,10 @@ Page({
     this.setData({
       days,
       overview: overviewMap(raw),
-      strip: days.map((d) => ({ id: d.id, md: d.md, wd: d.wd })),
+      strip: days.map((d) => ({ id: d.id, md: d.md, wd: d.wd, no: d.no, color: d.color, city: d.cityZh, xfer: !!d.from, first: d.no === 1 || (d.from && d.from.zh) })),
       rent: state.rent || '',
       rentLabel,
+      rentShort: { jfk: '全程自驾', bos: '波士顿起自驾', none: '火车和大巴' }[state.rent] || '',
       todayId: underway ? days[idx].id : '',
       open,
       progress,

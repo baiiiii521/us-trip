@@ -54,7 +54,7 @@ export function overviewMap(days) {
       height: 34,
       callout: {
         content: `${CITIES[c].zh}${nights[c] ? ` ${nights[c]} 天` : ''}`,
-        color: '#16202B',
+        color: '#0E1A3A',
         fontSize: 11,
         borderRadius: 6,
         padding: 5,
@@ -64,7 +64,7 @@ export function overviewMap(days) {
     })),
     polyline: [{
       points: ORDER.filter((c) => CITY_LL[c]).map((c) => ({ latitude: CITY_LL[c][0], longitude: CITY_LL[c][1] })),
-      color: '#C04A0Acc',
+      color: '#2F6BFFcc',
       width: 3,
       dottedLine: true,
       arrowLine: true
@@ -100,7 +100,7 @@ export function dayMap(day) {
       height: 28,
       callout: {
         content: `${i + 1}. ${s.name}`,
-        color: '#16202B',
+        color: '#0E1A3A',
         fontSize: 10,
         borderRadius: 6,
         padding: 4,

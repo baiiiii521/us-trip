@@ -1,3 +1,7 @@
 {
-  "navigationBarTitleText": "票务"
+  "navigationBarTitleText": "票务",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "top-bar": "/components/topbar/topbar"
+  }
 }

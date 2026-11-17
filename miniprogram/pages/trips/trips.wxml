@@ -1,75 +1,64 @@
 <view class="page">
-  <!-- 封面：整幅图压到状态栏下面，白字压在暗部 -->
-  <view class="hero" style="padding-top:{{sb}}px">
-    <image class="hero-img" wx:if="{{hero.cover}}" src="{{hero.cover}}" mode="aspectFill" />
-    <view class="hero-fade"></view>
+  <!-- 页头：自己让开状态栏（页面是自定义导航栏），品牌行 + 大标题 -->
+  <view class="hero" style="padding-top:{{sb + 10}}px">
+  <view class="brand">
+    <image class="mark" src="/assets/logo.png" mode="aspectFill" />
+    <text class="mark-name">行前行后</text>
+    <text class="phase {{hero.phaseKey}}">{{hero.phaseLabel}}</text>
+  </view>
 
-    <view class="hero-top">
-      <image class="mark" src="/assets/logo.png" mode="aspectFill" />
-      <text class="mark-name">行前行后</text>
-      <text class="phase {{hero.phaseKey}}">{{hero.phaseLabel}}</text>
+  <view class="lede">我的旅行</view>
+  </view>
+
+  <!-- 这一趟：封面图 + 五城线路 -->
+  <view class="trip-card" wx:if="{{hero}}" data-id="{{hero.id}}" bindtap="openTrip" hover-class="card-press">
+    <view class="cover">
+      <image class="cover-img" wx:if="{{hero.cover}}" src="{{hero.cover}}" mode="aspectFill" />
+      <view class="cover-fade"></view>
+      <view class="cover-text">
+        <text class="cover-title">{{hero.title}}</text>
+        <text class="cover-meta num">美国东部 · {{hero.shortMeta}} · 4 场 NBA</text>
+      </view>
+      <text class="credit" wx:if="{{hero.credit}}">AI 示意图</text>
     </view>
 
-    <view class="hero-body">
-      <view class="hero-title">{{hero.title}}</view>
-      <view class="hero-meta">{{hero.metaText}}</view>
-
-      <view class="cta" data-id="{{hero.id}}" bindtap="openTrip" hover-class="cta-press">
-        <text class="cta-text">进入行程</text>
-        <text class="cta-arrow">→</text>
+    <view class="line">
+      <view class="ln" wx:for="{{line}}" wx:key="key">
+        <view class="ln-bar" wx:if="{{index > 0}}" style="background:{{item.color}}"></view>
+        <view class="ln-stop" style="border-color:{{item.color}}"></view>
+        <text class="ln-name">{{item.name}}</text>
+        <text class="ln-md num">{{item.md}}</text>
       </view>
     </view>
 
-    <text class="credit" wx:if="{{hero.credit}}">{{hero.credit}}</text>
+    <view class="cta">进入行程</view>
   </view>
 
   <!-- 今天 / 出发前 -->
   <view class="now" wx:if="{{now}}">
     <view class="now-head">
-      <text class="now-label">{{now.label}}</text>
-      <text class="now-nav" wx:if="{{now.canNav}}" bindtap="navNow" hover-class="tap-dim">导航 ›</text>
+      <view class="now-title">{{now.title}}</view>
+      <view class="now-nav" wx:if="{{now.canNav}}" bindtap="navNow" hover-class="tap-dim">导航</view>
     </view>
-    <view class="now-title">{{now.title}}</view>
     <view class="now-sub">{{now.sub}}</view>
     <view class="now-detail" wx:if="{{now.detail}}">{{now.detail}}</view>
   </view>
 
-  <!-- 工具：分组列表，一行一件事 -->
-  <view class="section">工具</view>
-  <view class="card group">
+  <!-- 工具 -->
+  <view class="section">随身工具</view>
+  <view class="tools">
     <view
-      class="row"
+      class="tool"
       wx:for="{{tools}}"
       wx:key="key"
       data-url="{{item.url}}"
       bindtap="go"
-      hover-class="row-press"
+      hover-class="tool-press"
     >
-      <view class="row-l">
-        <text class="row-name">{{item.name}}</text>
-        <text class="row-sub">{{item.sub}}</text>
-      </view>
-      <text class="row-chev">›</text>
+      <text class="tool-name">{{item.name}}</text>
+      <text class="tool-sub">{{item.sub}}</text>
     </view>
   </view>
 
-  <!-- 所有旅程 -->
-  <view class="section">所有旅程</view>
-  <view
-    class="card trip"
-    wx:for="{{trips}}"
-    wx:key="id"
-    data-id="{{item.id}}"
-    bindtap="openTrip"
-    hover-class="row-press"
-  >
-    <view class="trip-l">
-      <text class="trip-name">{{item.title}}</text>
-      <text class="trip-meta">{{item.dateText}} · {{item.days}} 天 · {{item.people}} 人</text>
-      <text class="trip-trail">{{item.trail}}</text>
-    </view>
-    <text class="trip-chev">›</text>
-  </view>
-
-  <view class="foot">内容与 trip.byb521.com 同源 · 改内容改网站那份</view>
+  <view class="foot">内容和 trip.byb521.com 同一份 · 景点照片来自维基共享资源，城市夜景为 AI 示意图</view>
 </view>

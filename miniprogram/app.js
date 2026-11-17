@@ -40,7 +40,7 @@ function readMetrics() {
 App({
   globalData: {
     trips: TRIPS,
-    version: '0.8.2',
+    version: '0.9.0',
     brand: '行前行后',
     metrics: null
   },

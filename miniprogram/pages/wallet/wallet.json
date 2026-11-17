@@ -1,3 +1,7 @@
 {
-  "navigationBarTitleText": "订单夹"
+  "navigationBarTitleText": "订单夹",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "top-bar": "/components/topbar/topbar"
+  }
 }

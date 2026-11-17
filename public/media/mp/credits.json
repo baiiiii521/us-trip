@@ -1,0 +1,77 @@
+{
+  "bos-day": {
+    "kind": "photo",
+    "source": "Wikimedia Commons",
+    "poi": "public-garden",
+    "author": "Gaby Azeem",
+    "license": "CC0"
+  },
+  "dc-day": {
+    "kind": "photo",
+    "source": "Wikimedia Commons",
+    "poi": "capitol",
+    "author": "Martin Falbisoner",
+    "license": "CC BY-SA 3.0"
+  },
+  "phl-day": {
+    "kind": "photo",
+    "source": "Wikimedia Commons",
+    "poi": "independence-hall",
+    "author": "Rdsmith4",
+    "license": "CC BY-SA 2.5"
+  },
+  "nyc-day": {
+    "kind": "photo",
+    "source": "Wikimedia Commons",
+    "poi": "brooklyn-bridge",
+    "author": "Christian David",
+    "license": "CC BY-SA 4.0"
+  },
+  "la-day": {
+    "kind": "photo",
+    "source": "Wikimedia Commons",
+    "poi": "santa-monica",
+    "author": "web4camguy",
+    "license": "CC BY-SA 2.0"
+  },
+  "bos-night": {
+    "kind": "ai",
+    "source": "codex 本机生图（AI 生成示意图，不是实拍）",
+    "file": "video/intro3d/assets/gen/boston.jpg"
+  },
+  "dc-night": {
+    "kind": "ai",
+    "source": "codex 本机生图（AI 生成示意图，不是实拍）",
+    "file": "video/intro3d/assets/gen/dc.jpg"
+  },
+  "phl-night": {
+    "kind": "ai",
+    "source": "codex 本机生图（AI 生成示意图，不是实拍）",
+    "file": "video/intro3d/assets/gen/philly.jpg"
+  },
+  "nyc-night": {
+    "kind": "ai",
+    "source": "codex 本机生图（AI 生成示意图，不是实拍）",
+    "file": "video/intro3d/assets/gen/nyc.jpg"
+  },
+  "la-night": {
+    "kind": "ai",
+    "source": "codex 本机生图（AI 生成示意图，不是实拍）",
+    "file": "video/intro3d/assets/gen/la.jpg"
+  },
+  "cover": {
+    "kind": "ai",
+    "source": "codex 本机生图（AI 生成示意图，不是实拍）",
+    "file": "video/intro3d/assets/gen/nyc.jpg"
+  },
+  "arena": {
+    "kind": "ai",
+    "source": "codex 本机生图（AI 生成示意图，不是实拍）",
+    "file": "video/intro3d/assets/gen/arena.jpg"
+  },
+  "brooklyn": {
+    "kind": "ai",
+    "source": "codex 本机生图（AI 生成示意图，不是实拍）",
+    "file": "video/intro3d/assets/gen/brooklyn.jpg"
+  }
+}

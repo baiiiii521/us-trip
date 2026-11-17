@@ -1,49 +1,30 @@
 <view class="page with-nav">
-  <top-bar show-back title="每日行程" sub="{{rentLabel}}" badge="{{badge}}" progress="{{progress}}" />
+  <top-bar show-back title="每日行程" sub="{{rentShort}}" badge="{{badge}}" />
 
-  <view class="pad">
-    <!-- 总览：四座城市怎么走 -->
-    <view class="card map-card rise">
-      <view class="map-head">
-        <text class="map-title">这一趟怎么走</text>
-        <text class="map-sub">波士顿 → 华盛顿 → 费城 → 纽约 · 12/31 飞洛杉矶转机</text>
-      </view>
-      <map
-        class="map"
-        latitude="{{overview.latitude}}"
-        longitude="{{overview.longitude}}"
-        scale="{{overview.scale}}"
-        markers="{{overview.markers}}"
-        polyline="{{overview.polyline}}"
-        show-location="{{false}}"
-        enable-zoom="{{false}}"
-        enable-scroll="{{false}}"
-        enable-rotate="{{false}}"
-        enable-overlooking="{{false}}"
-      />
-      <view class="map-foot" bindtap="openOverview" hover-class="tap-dim">在微信地图里打开这片区域 ›</view>
-    </view>
-
-    <!-- 日期条 -->
-    <scroll-view class="strip" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
-      <view class="strip-inner">
+  <!-- 全程线路：14 天是 14 个站，一座城一种颜色，换城那天是换乘站；点一站跳到那天 -->
+  <view class="board">
+    <scroll-view class="line" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+      <view class="line-inner">
         <view
           wx:for="{{strip}}"
           wx:key="id"
-          class="strip-item {{activeId === item.id ? 'on' : ''}} {{todayId === item.id ? 'today' : ''}}"
+          class="ls {{activeId === item.id ? 'on' : ''}} {{todayId === item.id ? 'today' : ''}}"
           data-id="{{item.id}}"
           bindtap="jump"
           hover-class="tap-dim"
         >
-          <text class="strip-md">{{item.md}}</text>
-          <text class="strip-wd">{{item.wd}}</text>
+          <view class="ls-bar" wx:if="{{index > 0}}" style="background:{{item.color}}"></view>
+          <view class="ls-stop {{item.xfer ? 'xfer' : ''}}" style="border-color:{{item.color}}"></view>
+          <text class="ls-city" wx:if="{{item.first}}">{{item.city}}</text>
+          <text class="ls-md num">{{item.md}}</text>
+          <text class="ls-wd">{{item.wd}}</text>
         </view>
       </view>
     </scroll-view>
 
     <view class="toolbar">
-      <view class="chip" bindtap="switchRent" hover-class="tap-dim">交通：{{rentLabel}}</view>
-      <view class="chip ghost" bindtap="toTips" hover-class="tap-dim">小技巧</view>
+      <view class="tchip" bindtap="switchRent" hover-class="tap-dim">交通：{{rentLabel}}</view>
+      <view class="tchip ghost" bindtap="toTips" hover-class="tap-dim">小技巧</view>
     </view>
   </view>
 
@@ -51,14 +32,19 @@
   <view wx:for="{{days}}" wx:key="id" wx:for-item="day" wx:for-index="di" id="d-{{day.id}}" class="pad">
     <view class="card day rise {{open[day.id] ? 'is-open' : ''}}" style="animation-delay:{{di * 30}}ms">
       <view hover-class="press" hover-stay-time="60" class="day-head" data-id="{{day.id}}" bindtap="toggle">
+        <view class="day-no num" style="border-color:{{day.color}}">{{day.no}}</view>
         <view class="day-date">
-          <text class="day-md">{{day.md}}</text>
-          <view class="day-meta">
-            <text class="day-wd">{{day.wd}} · {{day.cityZh}}</text>
-            <text class="day-weather">{{day.weather}}</text>
+          <view class="day-line1">
+            <text class="day-md num">{{day.md}}</text>
+            <text class="day-wd">{{day.wd}}</text>
+            <text class="day-city">{{day.from ? day.from.zh + ' → ' : ''}}{{day.cityZh}}</text>
           </view>
+          <text class="day-weather">{{day.weather}}</text>
         </view>
-        <text class="pace-dot {{day.pace.lv}}" wx:if="{{day.pace}}">{{day.pace.km}} km</text>
+        <view class="pace" wx:if="{{day.pace}}">
+          <view class="pace-bars"><view class="pb {{day.pace.lv >= 1 ? 'on' : ''}}"></view><view class="pb {{day.pace.lv >= 2 ? 'on' : ''}}"></view><view class="pb {{day.pace.lv >= 3 ? 'on' : ''}}"></view></view>
+          <text class="pace-km num">{{day.pace.km}} km</text>
+        </view>
       </view>
 
       <view class="day-title">{{day.title}}</view>
@@ -76,7 +62,8 @@
           bindtap="openItem"
           hover-class="{{it.canTap ? 'tap-dim' : 'none'}}"
         >
-          <text class="mini-time">{{it.t || '—'}}</text>
+          <view class="mini-rail"><view class="mini-line" style="background:{{day.color}}"></view><view class="mini-stop {{it.leg ? 'xfer' : ''}}" style="border-color:{{day.color}}"></view></view>
+          <text class="mini-time num">{{it.t || '—'}}</text>
           <text class="mini-text">{{it.short}}</text>
           <text class="mini-go" wx:if="{{it.spot}}">导航</text>
           <text class="mini-go poi" wx:elif="{{it.poi.length}}">景点</text>
@@ -90,8 +77,8 @@
       <block wx:else>
         <view class="tl" wx:for="{{day.items}}" wx:key="t" wx:for-item="it" wx:for-index="ii">
           <view class="tl-rail">
-            <view class="tl-dot {{it.game ? 'game' : ''}} {{it.drive ? 'drive' : ''}}"></view>
-            <view class="tl-line"></view>
+            <view class="tl-line" style="background:{{day.color}}"></view>
+            <view class="tl-dot {{it.game ? 'game' : ''}} {{it.drive ? 'drive' : ''}} {{it.leg ? 'xfer' : ''}}" style="border-color:{{day.color}}"></view>
           </view>
           <view class="tl-body">
             <view class="tl-time">
@@ -154,6 +141,30 @@
 
         <view class="more" data-id="{{day.id}}" bindtap="toggle" hover-class="tap-dim">收起</view>
       </block>
+    </view>
+  </view>
+
+  <!-- 地图上看整趟怎么走 -->
+  <view class="pad">
+    <view class="card map-card">
+      <view class="map-head">
+        <text class="map-title">在地图上看整趟</text>
+        <text class="map-sub">波士顿 → 华盛顿 → 费城 → 纽约 · 12/31 飞洛杉矶转机</text>
+      </view>
+      <map
+        class="map"
+        latitude="{{overview.latitude}}"
+        longitude="{{overview.longitude}}"
+        scale="{{overview.scale}}"
+        markers="{{overview.markers}}"
+        polyline="{{overview.polyline}}"
+        show-location="{{false}}"
+        enable-zoom="{{false}}"
+        enable-scroll="{{false}}"
+        enable-rotate="{{false}}"
+        enable-overlooking="{{false}}"
+      />
+      <view class="map-foot" bindtap="openOverview" hover-class="tap-dim">在微信地图里打开</view>
     </view>
   </view>
 

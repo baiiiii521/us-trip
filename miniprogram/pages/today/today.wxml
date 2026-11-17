@@ -1,92 +1,108 @@
 <view class="page with-nav">
-  <top-bar show-back title="今天" sub="{{barSub}}" badge="{{badge}}" progress="{{progress}}" />
+  <top-bar show-back title="今天" sub="{{barSub}}" badge="{{badge}}" />
 
-  <!-- 城市横幅 -->
-  <view class="banner">
-    <image class="banner-img" wx:if="{{photo}}" src="{{photo}}" mode="aspectFill" />
-    <view class="banner-fade"></view>
-    <view class="banner-text">
-      <text class="banner-city">{{cityZh || '在路上'}}</text>
-      <text class="banner-wx" wx:if="{{weather}}">{{weather}}</text>
-    </view>
-  </view>
-
-  <!-- 今天第几天 -->
-  <view class="head">
-    <view class="head-big">{{bigLine}}</view>
-    <view class="head-sub">{{subLine}}</view>
-    <view class="head-pace" wx:if="{{paceText}}">{{paceText}}</view>
-  </view>
-
-  <!-- 现在做的那件事 -->
-  <view class="now" wx:if="{{nowIndex >= 0 && phase === 'on'}}">
-    <view class="now-top">
-      <text class="now-time">{{items[nowIndex].t}}</text>
-      <text class="now-flag">现在</text>
-    </view>
-    <view class="now-text">{{items[nowIndex].text}}</view>
-    <view class="now-go" wx:if="{{items[nowIndex].spot}}" data-i="{{nowIndex}}" bindtap="goItem" hover-class="tap-dim">
-      导航去 {{items[nowIndex].spot.name}} ›
-    </view>
-  </view>
-
-  <!-- 出发前：先给第一天的前四件事 -->
-  <block wx:if="{{phase === 'before'}}">
-    <view class="section">落地第一天</view>
-    <view class="card list">
-      <view class="row" wx:for="{{preview}}" wx:key="i" wx:for-item="it" data-i="{{it.i}}" bindtap="goItem" hover-class="row-press">
-        <text class="row-time">{{it.t}}</text>
-        <view class="row-body">
-          <text class="row-text">{{it.text}}</text>
-          <text class="row-go" wx:if="{{it.spot}}">导航 · {{it.spot.name}}</text>
-        </view>
+  <!-- 城市图：白天是实拍，天黑后是 AI 夜景；城名和天气压在图的暗部 -->
+  <view class="photo">
+    <image class="photo-img" wx:if="{{img.src && !imgFail}}" src="{{img.src}}" mode="aspectFill" binderror="imgError" />
+    <view class="photo-fade"></view>
+    <view class="where">
+      <view class="where-l">
+        <text class="where-city">{{phase === 'before' ? bigLine : cityZh}}</text>
+        <text class="where-day num">{{subLine}}</text>
+      </view>
+      <view class="where-r" wx:if="{{weather}}">
+        <text class="wx-big num">{{weatherHi}}</text>
+        <text class="wx-small">{{weatherLo}}</text>
       </view>
     </view>
-    <view hover-class="press" hover-stay-time="60" class="see-all" bindtap="openDay">
-      看全天 {{itemCount}} 项 ›
-    </view>
-  </block>
+    <text class="photo-credit" wx:if="{{img.src && !imgFail}}">{{img.credit}}</text>
+  </view>
 
-  <!-- 全天时间轴 -->
-  <block wx:else>
-    <view class="section">今天的时间</view>
-    <view class="card timeline">
-      <view class="tl" wx:for="{{items}}" wx:key="i" wx:for-item="it">
-        <view class="tl-rail">
-          <view class="tl-dot {{it.state}} {{it.hot ? 'hot' : ''}}"></view>
-          <view class="tl-line"></view>
-        </view>
-        <view class="tl-body">
-          <view class="tl-top">
-            <text class="tl-time {{it.state}}">{{it.t}}</text>
-            <text class="tl-tag" wx:if="{{it.tag}}">{{it.tag}}</text>
-          </view>
-          <text class="tl-text">{{it.text}}</text>
-          <text class="tl-note" wx:if="{{it.note}}">备注：{{it.note}}</text>
-          <view class="tl-go" wx:if="{{it.spot}}" data-i="{{it.i}}" catchtap="goItem" hover-class="tap-dim">
-            导航 · {{it.spot.name}}
-          </view>
-        </view>
+  <!-- 午夜蓝站牌：五城线、三地时间 -->
+  <view class="board">
+    <view class="cities">
+      <view class="city-seg" wx:for="{{stations}}" wx:key="key">
+        <view class="seg-line" wx:if="{{index > 0}}" style="background:{{item.color}};opacity:{{item.state === 'later' ? 0.3 : 1}}"></view>
+        <view class="seg-stop {{item.state}}" style="border-color:{{item.color}}"></view>
+        <text class="seg-name {{item.state}}">{{item.name}}</text>
       </view>
     </view>
 
-    <view class="card warn" wx:if="{{warn}}">{{warn}}</view>
+    <view class="clocks">
+      <view class="clock" wx:for="{{clocks}}" wx:key="city">
+        <text class="cl-city">{{item.city}}</text>
+        <text class="cl-time num">{{item.time}}</text>
+      </view>
+    </view>
+  </view>
 
-    <view class="section" wx:if="{{tips.length}}">小技巧</view>
+  <view class="pace" wx:if="{{phase === 'on' && paceText}}">
+    <view class="pace-bars"><view class="pb {{paceLv >= 1 ? 'on' : ''}}"></view><view class="pb {{paceLv >= 2 ? 'on' : ''}}"></view><view class="pb {{paceLv >= 3 ? 'on' : ''}}"></view></view>
+    <text class="pace-text">{{paceShort}}</text>
+  </view>
+
+  <view class="sec">{{phase === 'before' ? '落地第一天' : phase === 'after' ? '最后一天' : dayTitle}}</view>
+
+  <!-- 一天一条线：每一项是一站 -->
+  <view class="route">
+    <view class="st past-fold" wx:if="{{phase === 'on' && pastCount}}" bindtap="togglePast" hover-class="tap-dim">
+      <view class="rail"><view class="rail-line first" style="background:#C9CFDC"></view><view class="stop past"></view></view>
+      <view class="st-body fold-body">{{showPast ? '收起走过的站' : '已走过 ' + pastCount + ' 站 · 点开看'}}</view>
+    </view>
+    <view
+      class="st {{it.state}} {{it.xfer ? 'xfer' : ''}}"
+      wx:for="{{phase === 'before' ? preview : items}}"
+      wx:key="i"
+      wx:for-item="it"
+      wx:for-index="k"
+      wx:if="{{!it.hide || showPast}}"
+    >
+      <view class="rail">
+        <view class="rail-line {{k === 0 ? 'first' : ''}}" style="background:{{it.state === 'past' ? '#C9CFDC' : line}}"></view>
+        <view class="stop {{it.state}} {{it.xfer ? 'xfer' : ''}}" style="border-color:{{it.state === 'next' ? '#FFC233' : it.state === 'past' ? '#C9CFDC' : line}}"></view>
+      </view>
+
+      <view class="st-body">
+        <view class="st-top">
+          <text class="st-time num">{{it.t}}</text>
+          <text class="st-flag now" wx:if="{{it.state === 'now'}}">现在</text>
+          <text class="st-flag next" wx:if="{{it.state === 'next'}}">{{phase === 'before' ? '第一站' : '下一站 · ' + nextCount}}</text>
+          <text class="st-tag" wx:if="{{it.tag}}">{{it.tag}}</text>
+        </view>
+
+        <!-- 下一站：展开成一张白卡，导航按钮在这里 -->
+        <view class="next-card" wx:if="{{it.state === 'next'}}">
+          <text class="next-text">{{it.text}}</text>
+          <text class="next-note" wx:if="{{it.note}}">备注：{{it.note}}</text>
+          <view class="btn-primary next-go" wx:if="{{it.spot}}" data-i="{{it.i}}" bindtap="goItem">导航过去 · {{it.spot.name}}</view>
+        </view>
+
+        <block wx:else>
+          <text class="st-text">{{it.state === 'past' ? it.short : it.text}}</text>
+          <text class="st-note" wx:if="{{it.note}}">备注：{{it.note}}</text>
+          <view class="st-go" wx:if="{{it.spot && it.state !== 'past'}}" data-i="{{it.i}}" catchtap="goItem" hover-class="tap-dim">
+            <view class="st-go-dot"></view>导航 · {{it.spot.name}}
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <view hover-class="press" hover-stay-time="60" class="btn-ghost see-all" wx:if="{{phase === 'before'}}" bindtap="openDay">看第一天全部 {{itemCount}} 站</view>
+
+  <block wx:if="{{phase !== 'before'}}">
+    <view class="notice warn" wx:if="{{warn}}">{{warn}}</view>
+
+    <view class="sec" wx:if="{{tips.length}}">今天的小技巧</view>
     <view class="card tips" wx:if="{{tips.length}}">
-      <view class="tip" wx:for="{{tips}}" wx:key="*this">· {{item}}</view>
+      <view class="tip" wx:for="{{tips}}" wx:key="*this">{{item}}</view>
     </view>
 
-    <view class="stay" wx:if="{{stay}}">今晚住 {{stay}}</view>
+    <view class="stay" wx:if="{{stay}}">
+      <text class="stay-k">今晚住</text>
+      <text class="stay-v">{{stay}}</text>
+    </view>
   </block>
-
-  <!-- 三个地方的时间 -->
-  <view class="clocks">
-    <view class="clock" wx:for="{{clocks}}" wx:key="city">
-      <text class="cl-city">{{item.city}}</text>
-      <text class="cl-time">{{item.time}}</text>
-    </view>
-  </view>
 </view>
 
 <bottom-nav current="today" tripId="{{tripId}}" />

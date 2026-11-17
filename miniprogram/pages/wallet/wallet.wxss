@@ -1,15 +1,28 @@
 .lead {
   font-size: 24rpx;
-  color: #5E6A76;
+  color: var(--muted);
   line-height: 1.6;
   padding: 8rpx 4rpx 20rpx;
 }
 
 .group-head {
-  font-size: 22rpx;
-  color: #5E6A76;
-  letter-spacing: 0.08em;
-  padding: 16rpx 6rpx 10rpx;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin: 30rpx 0 14rpx;
+  font-size: 28rpx;
+  font-weight: 750;
+  color: var(--ink);
+}
+
+/* 和其它页的区块标题一样：前面一小段线路 */
+.group-head::before {
+  content: '';
+  flex: none;
+  width: 34rpx;
+  height: 8rpx;
+  border-radius: 4rpx;
+  background: var(--night);
 }
 
 .slot {
@@ -31,27 +44,27 @@
 .slot-title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #16202B;
+  color: var(--ink);
   line-height: 1.4;
 }
 
 .slot-hint {
   display: block;
-  font-size: 21rpx;
-  color: #A3ADB8;
+  font-size: 24rpx;
+  color: var(--muted);
   margin-top: 4rpx;
   line-height: 1.4;
 }
 
 .slot-md {
   flex: none;
-  font-size: 21rpx;
-  color: #C04A0A;
+  font-size: 24rpx;
+  color: var(--ink);
 }
 
 .slot-val {
   margin-top: 12rpx;
-  background: #EEF1F4;
+  background: var(--ground);
   border-radius: 12rpx;
   padding: 14rpx 16rpx;
   display: flex;
@@ -62,20 +75,20 @@
 .v {
   font-size: 28rpx;
   font-family: ui-monospace, Menlo, monospace;
-  color: #16202B;
+  color: var(--ink);
   letter-spacing: 0.02em;
 }
 
 .copy {
-  font-size: 21rpx;
-  color: #5E6A76;
+  font-size: 24rpx;
+  color: var(--muted);
 }
 
 .slot-empty {
   margin-top: 12rpx;
   font-size: 24rpx;
-  color: #A3ADB8;
-  border: 1rpx dashed rgba(22, 32, 43, 0.2);
+  color: var(--muted);
+  border: 1rpx dashed rgba(14, 26, 58, 0.2);
   border-radius: 12rpx;
   padding: 16rpx;
   text-align: center;
@@ -89,18 +102,18 @@
 }
 
 .slot-shots {
-  font-size: 21rpx;
-  color: #A3ADB8;
+  font-size: 24rpx;
+  color: var(--muted);
 }
 
 .slot-edit {
-  font-size: 22rpx;
-  color: #C04A0A;
+  font-size: 24rpx;
+  color: var(--ink);
 }
 
 .foot-note {
-  font-size: 21rpx;
-  color: #A3ADB8;
+  font-size: 24rpx;
+  color: var(--muted);
   text-align: center;
   padding: 16rpx 0 40rpx;
 }
@@ -109,7 +122,7 @@
 .mask {
   position: fixed;
   inset: 0;
-  background: rgba(22, 32, 43, 0.45);
+  background: rgba(14, 26, 58, 0.45);
   z-index: 90;
 }
 
@@ -132,8 +145,8 @@
 }
 
 .sheet-hint {
-  font-size: 22rpx;
-  color: #5E6A76;
+  font-size: 24rpx;
+  color: var(--muted);
   margin-top: 6rpx;
   line-height: 1.5;
 }
@@ -143,14 +156,14 @@
 }
 
 .field-label {
-  font-size: 22rpx;
-  color: #5E6A76;
+  font-size: 24rpx;
+  color: var(--muted);
 }
 
 .field-input {
   margin-top: 8rpx;
   height: 84rpx;
-  background: #EEF1F4;
+  background: var(--ground);
   border-radius: 14rpx;
   padding: 0 20rpx;
   font-size: 28rpx;
@@ -171,8 +184,8 @@
 }
 
 .shot-count {
-  font-size: 22rpx;
-  color: #5E6A76;
+  font-size: 24rpx;
+  color: var(--muted);
 }
 
 .shots {
@@ -192,7 +205,7 @@
   width: 150rpx;
   height: 150rpx;
   border-radius: 12rpx;
-  background: #EEF1F4;
+  background: var(--ground);
 }
 
 .shot-del {
@@ -204,7 +217,7 @@
   line-height: 36rpx;
   text-align: center;
   border-radius: 28rpx;
-  background: rgba(22, 32, 43, 0.78);
+  background: rgba(14, 26, 58, 0.78);
   color: #FFFFFF;
   font-size: 28rpx;
 }

@@ -1,376 +1,456 @@
-page {
-  background: #EFF1F4;
+/* 今天：上半是午夜蓝站牌，下半是一天的线路 */
+.page {
+  min-height: 100vh;
+  background: var(--ground);
 }
 
-/* 城市横幅 */
-.banner {
-  position: relative;
-  height: 320rpx;
-  background: #16202B;
-  overflow: hidden;
+.board {
+  background: var(--night);
+  color: var(--on-night);
+  padding: 10rpx 32rpx 22rpx;
 }
 
-.banner-img {
-  width: 100%;
-  height: 100%;
-  animation: drift 26s ease-out both;
-}
-
-@keyframes drift {
-  from { transform: scale(1.02); }
-  to { transform: scale(1.1); }
-}
-
-.banner-fade {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, rgba(10, 15, 20, 0.45) 0%, rgba(10, 15, 20, 0) 42%, rgba(8, 12, 16, 0.86) 100%);
-}
-
-.banner-text {
-  position: absolute;
-  left: 32rpx;
-  right: 32rpx;
-  bottom: 22rpx;
-}
-
-.banner-city {
-  text-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.45);
-  font-size: 44rpx;
-  font-weight: 800;
-  color: #FFFFFF;
-  letter-spacing: -0.02em;
-}
-
-.banner-wx {
-  display: block;
-  margin-top: 4rpx;
-  font-size: 22rpx;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.88);
-  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.5);
-  font-variant-numeric: tabular-nums;
-}
-
-/* 大日期 */
-.head {
-  padding: 28rpx 32rpx 8rpx;
-}
-
-.head-big {
-  font-size: 42rpx;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.3;
-  color: #16202B;
-}
-
-.head-sub {
-  margin-top: 10rpx;
-  font-size: 24rpx;
-  color: #5E6A76;
-  line-height: 1.5;
-}
-
-.head-pace {
-  margin-top: 10rpx;
-  display: inline-block;
-  font-size: 21rpx;
-  color: #33404C;
-  background: rgba(22, 32, 43, 0.06);
-  border-radius: 999rpx;
-  padding: 8rpx 16rpx;
-}
-
-/* 现在 */
-.now {
-  margin: 22rpx 28rpx 0;
-  background: #FFFFFF;
-  border-radius: 28rpx;
-  padding: 26rpx 28rpx 24rpx;
-  box-shadow: 0 10rpx 30rpx rgba(16, 24, 32, 0.08);
-}
-
-.now-top {
+/* 五城线 */
+.cities {
   display: flex;
-  align-items: center;
-  gap: 14rpx;
+  align-items: flex-start;
+  padding: 4rpx 0 20rpx;
 }
 
-.now-time {
-  font-size: 30rpx;
-  font-weight: 700;
-  color: #C04A0A;
-  font-variant-numeric: tabular-nums;
-}
-
-.now-flag {
-  font-size: 19rpx;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: #FFFFFF;
-  background: #C04A0A;
-  border-radius: 999rpx;
-  padding: 4rpx 12rpx;
-}
-
-.now-text {
-  margin-top: 12rpx;
-  font-size: 28rpx;
-  line-height: 1.6;
-  color: #16202B;
-}
-
-.now-go {
-  margin-top: 16rpx;
-  display: inline-block;
-  font-size: 22rpx;
-  font-weight: 600;
-  color: #C04A0A;
-  background: rgba(192, 74, 10, 0.09);
-  border-radius: 999rpx;
-  padding: 12rpx 22rpx;
-}
-
-/* 分组 */
-.section {
-  margin: 34rpx 36rpx 12rpx;
-  font-size: 21rpx;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: #8A94A0;
-}
-
-.card {
-  margin: 0 28rpx;
-  background: #FFFFFF;
-  border-radius: 28rpx;
-  box-shadow: 0 2rpx 10rpx rgba(16, 24, 32, 0.05);
-}
-
-.row-press {
-  opacity: 0.6;
-}
-
-/* 出发前 */
-.list {
-  padding: 2rpx 28rpx;
-}
-
-.row {
-  display: flex;
-  gap: 18rpx;
-  padding: 24rpx 0;
-  border-bottom: 1rpx solid rgba(22, 32, 43, 0.06);
-}
-
-.row:last-child {
-  border-bottom: none;
-}
-
-.row-time {
-  flex: none;
-  width: 110rpx;
-  font-size: 22rpx;
-  font-weight: 600;
-  color: #1F4E8C;
-  font-variant-numeric: tabular-nums;
-}
-
-.row-body {
+.city-seg {
   flex: 1;
-  min-width: 0;
-}
-
-.row-text {
-  font-size: 28rpx;
-  line-height: 1.55;
-  color: #16202B;
-}
-
-.row-go {
-  display: block;
-  margin-top: 8rpx;
-  font-size: 21rpx;
-  color: #C04A0A;
-}
-
-/* 时间轴 */
-.timeline {
-  padding: 10rpx 28rpx 6rpx;
-}
-
-.tl {
-  display: flex;
-  gap: 16rpx;
-  padding-top: 18rpx;
-}
-
-.tl-rail {
-  flex: none;
-  width: 14rpx;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.tl-dot {
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 6rpx;
-  background: rgba(22, 32, 43, 0.2);
-  margin-top: 12rpx;
+.seg-line {
+  position: absolute;
+  top: 17rpx;
+  right: 50%;
+  width: 100%;
+  height: 8rpx;
+  border-radius: 4rpx;
 }
 
-.tl-dot.past {
-  background: rgba(22, 32, 43, 0.14);
-}
-
-.tl-dot.hot {
-  background: #C04A0A;
-}
-
-.tl-dot.next {
-  background: #C04A0A;
-  box-shadow: 0 0 0 6rpx rgba(192, 74, 10, 0.16);
-}
-
-.tl-line {
-  flex: 1;
-  width: 2rpx;
-  background: rgba(22, 32, 43, 0.07);
+.seg-stop {
+  position: relative;
+  z-index: 1;
+  width: 30rpx;
+  height: 30rpx;
   margin-top: 6rpx;
+  border-radius: 50%;
+  background: var(--night);
+  border: 7rpx solid;
+  box-sizing: border-box;
 }
 
-.tl-body {
-  flex: 1;
-  padding-bottom: 22rpx;
-  min-width: 0;
+.seg-stop.past {
+  background: #FFFFFF;
 }
 
-.tl-top {
-  display: flex;
-  align-items: center;
-  gap: 10rpx;
+.seg-stop.now,
+.seg-stop.next {
+  width: 42rpx;
+  height: 42rpx;
+  margin-top: 0;
+  background: #FFFFFF;
+  border-width: 10rpx;
+  box-shadow: 0 0 0 6rpx var(--night), 0 0 0 9rpx rgba(255, 255, 255, 0.85);
 }
 
-.tl-time {
-  font-size: 24rpx;
-  font-weight: 600;
-  color: #16202B;
-  font-variant-numeric: tabular-nums;
+.seg-stop.later {
+  opacity: 0.55;
 }
 
-.tl-time.past {
-  color: #A3ADB8;
-  font-weight: 500;
-}
-
-.tl-tag {
-  font-size: 19rpx;
-  color: #5E6A76;
-  background: #EEF1F4;
-  border-radius: 6rpx;
-  padding: 2rpx 8rpx;
-}
-
-.tl-text {
-  display: block;
-  margin-top: 8rpx;
-  font-size: 28rpx;
-  line-height: 1.62;
-  color: #33404C;
-}
-
-.tl-note {
-  display: block;
-  margin-top: 6rpx;
-  font-size: 22rpx;
-  color: #8A94A0;
-}
-
-.tl-go {
-  display: inline-block;
+.seg-name {
   margin-top: 10rpx;
-  font-size: 21rpx;
-  color: #C04A0A;
-  border: 1rpx solid rgba(192, 74, 10, 0.3);
+  font-size: 24rpx;
+  color: var(--on-night-2);
+}
+
+.seg-name.now,
+.seg-name.next {
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.seg-name.later {
+  color: #8C9AC0;
+}
+
+/* 城市图 + 城名 + 天气 */
+.photo {
+  position: relative;
+  height: 300rpx;
+  background: var(--night-3);
+  overflow: hidden;
+}
+
+.photo-img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 往下渐变进午夜蓝，城名压在暗部；不是装饰，是让白字看得清 */
+.photo-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 75%;
+  background: linear-gradient(180deg, rgba(14, 26, 58, 0) 0%, rgba(14, 26, 58, 0.72) 55%, #0E1A3A 100%);
+}
+
+.photo-credit {
+  position: absolute;
+  right: 20rpx;
+  top: 16rpx;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.82);
+  padding: 4rpx 12rpx;
   border-radius: 999rpx;
-  padding: 6rpx 14rpx;
+  background: rgba(14, 26, 58, 0.45);
 }
 
-/* 提示 */
-.warn {
-  margin-top: 18rpx;
-  padding: 22rpx 26rpx;
+.where {
+  position: absolute;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: 24rpx;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24rpx;
+}
+
+.where-l {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.where-city {
+  font-size: 68rpx;
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+}
+
+.where-day {
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  color: var(--on-night-2);
+}
+
+.where-r {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.wx-big {
+  font-size: 56rpx;
+  line-height: 1;
+  font-weight: 300;
+  color: #FFFFFF;
+}
+
+.wx-small {
+  margin-top: 8rpx;
   font-size: 24rpx;
-  line-height: 1.65;
-  color: #8A5A0B;
-  background: #FFF8EC;
+  color: var(--on-night-2);
 }
 
-.tips {
-  padding: 20rpx 26rpx;
-}
-
-.tip {
-  font-size: 24rpx;
-  line-height: 1.7;
-  color: #5E6A76;
-}
-
-.stay {
-  margin: 22rpx 36rpx 0;
-  font-size: 22rpx;
-  color: #8A94A0;
-}
-
-/* 三地时间 */
 .clocks {
   display: flex;
-  gap: 12rpx;
-  margin: 32rpx 28rpx 40rpx;
+  justify-content: space-between;
+  padding-top: 18rpx;
+  border-top: 1rpx solid var(--line-night);
 }
 
 .clock {
-  flex: 1;
-  background: rgba(22, 32, 43, 0.045);
-  border-radius: 28rpx;
-  padding: 18rpx 0;
-  text-align: center;
+  display: flex;
+  align-items: baseline;
+  gap: 10rpx;
 }
 
 .cl-city {
-  display: block;
-  font-size: 19rpx;
-  color: #8A94A0;
-  letter-spacing: 0.06em;
+  font-size: 24rpx;
+  color: var(--on-night-2);
 }
 
 .cl-time {
-  display: block;
-  margin-top: 4rpx;
   font-size: 30rpx;
+  font-weight: 650;
+  color: #FFFFFF;
+}
+
+/* 强度 */
+.pace {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin: 22rpx 32rpx 0;
+}
+
+.pace-bars {
+  display: flex;
+  gap: 4rpx;
+}
+
+.pb {
+  width: 12rpx;
+  height: 24rpx;
+  border-radius: 3rpx;
+  background: #D5DAE5;
+}
+
+.pb.on {
+  background: var(--ink);
+}
+
+.pace-text {
+  font-size: 24rpx;
+  color: var(--ink-2);
+}
+
+.sec {
+  margin: 26rpx 32rpx 14rpx;
+  font-size: 30rpx;
+  font-weight: 750;
+  color: var(--ink);
+}
+
+/* ── 一天的线路 ── */
+.route {
+  padding: 0 32rpx 0 20rpx;
+}
+
+.st {
+  display: flex;
+  align-items: stretch;
+}
+
+.rail {
+  position: relative;
+  flex: none;
+  width: 72rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.rail-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 32rpx;
+  width: 8rpx;
+}
+
+.rail-line.first {
+  top: 20rpx;
+}
+
+.st:last-child .rail-line {
+  bottom: auto;
+  height: 24rpx;
+}
+
+.rail .stop {
+  position: relative;
+  z-index: 1;
+  margin-top: 6rpx;
+}
+
+.rail .stop.past {
+  margin-top: 10rpx;
+}
+
+.rail .stop.next {
+  margin-top: 0;
+  animation: pulse 1600ms cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.st-body {
+  flex: 1;
+  min-width: 0;
+  padding: 0 0 40rpx 12rpx;
+}
+
+.st.past .st-body {
+  padding-bottom: 28rpx;
+}
+
+.fold-body {
+  min-height: 60rpx;
+  padding-top: 4rpx;
+  font-size: 26rpx;
+  font-weight: 650;
+  color: var(--ink-2);
+}
+
+.st-top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  min-height: 42rpx;
+}
+
+.st-time {
+  font-size: 30rpx;
+  font-weight: 750;
+  color: var(--ink);
+}
+
+.st.past .st-time {
+  color: #5E6A84;
   font-weight: 600;
-  color: #16202B;
-  font-variant-numeric: tabular-nums;
 }
 
-.tap-dim {
-  opacity: 0.65;
+.st-flag {
+  font-size: 24rpx;
+  font-weight: 700;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
 }
 
-/* 出发前预览的出口：想看全天就去行程页那一天 */
+.st-flag.now {
+  background: var(--night);
+  color: #FFFFFF;
+}
+
+.st-flag.next {
+  background: var(--go);
+  color: var(--go-ink);
+}
+
+.st-tag {
+  font-size: 24rpx;
+  color: var(--muted);
+  padding: 2rpx 12rpx;
+  border-radius: 999rpx;
+  box-shadow: inset 0 0 0 2rpx var(--line);
+}
+
+.st-text {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 29rpx;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.st.past .st-text {
+  font-size: 25rpx;
+  color: #5E6A84;
+}
+
+.st.now .st-text {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.st-note,
+.next-note {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: var(--warn);
+}
+
+.st-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 14rpx;
+  min-height: 60rpx;
+  padding: 0 22rpx;
+  border-radius: 999rpx;
+  background: var(--panel);
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 2rpx var(--line);
+}
+
+.st-go-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: var(--l-phl);
+}
+
+/* 下一站的白卡 */
+.next-card {
+  margin-top: 14rpx;
+  padding: 26rpx 28rpx 28rpx;
+  border-radius: 24rpx;
+  background: var(--panel);
+  box-shadow: 0 2rpx 6rpx rgba(14, 26, 58, 0.06), 0 16rpx 36rpx -20rpx rgba(14, 26, 58, 0.35);
+}
+
+.next-text {
+  display: block;
+  font-size: 31rpx;
+  line-height: 1.55;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.next-go {
+  margin-top: 24rpx;
+}
+
 .see-all {
-  margin: 0 28rpx;
-  padding: 22rpx 0;
-  text-align: center;
-  font-size: 23rpx;
-  color: #C04A0A;
-  background: #FFFFFF;
-  border-radius: 0 0 28rpx 28rpx;
-  margin-top: -20rpx;
+  margin: 0 32rpx;
+}
+
+.warn {
+  margin: 8rpx 32rpx 0;
+}
+
+.tips {
+  margin: 0 32rpx;
+}
+
+.tip {
+  font-size: 27rpx;
+  line-height: 1.6;
+  color: var(--ink-2);
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid var(--line);
+}
+
+.tip:last-child {
+  border-bottom: none;
+}
+
+.stay {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  margin: 28rpx 32rpx 0;
+  padding: 26rpx 28rpx;
+  border-radius: 24rpx;
+  background: var(--night);
+}
+
+.stay-k {
+  font-size: 24rpx;
+  color: var(--on-night-2);
+}
+
+.stay-v {
+  font-size: 27rpx;
+  line-height: 1.5;
+  color: #FFFFFF;
 }

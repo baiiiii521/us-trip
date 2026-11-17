@@ -5,8 +5,9 @@ import { getState } from '../../shared/state.js';
 import { poiAppearances } from '../../shared/lib/index.js';
 import { thumbOf } from '../../lib/photos.js';
 
-const CITY_ORDER = ['bos', 'nyc', 'phl', 'dc', 'la'];
-const CITY_COLOR = { bos: '#1E7A4C', dc: '#2B4C8C', phl: '#1D6FB8', nyc: '#C04A0A', la: '#0E8A8A' };
+// 按行程顺序；颜色是每座城的线色（和行程页、今天页同一套）
+const CITY_ORDER = ['bos', 'dc', 'phl', 'nyc', 'la'];
+const LINE = { bos: '#2FB36B', dc: '#E63A3A', phl: '#2F6BFF', nyc: '#FFC233', la: '#19B5C9' };
 
 Page({
   data: {
@@ -18,7 +19,7 @@ Page({
   },
 
   onLoad() {
-    const cities = [{ key: 'all', label: '全部' }, ...CITY_ORDER.filter((c) => CITIES[c]).map((c) => ({ key: c, label: CITIES[c].zh }))];
+    const cities = [{ key: 'all', label: '全部' }, ...CITY_ORDER.filter((c) => CITIES[c]).map((c) => ({ key: c, label: CITIES[c].zh, color: LINE[c] }))];
     this.setData({ cities });
   },
 
@@ -45,7 +46,7 @@ Page({
         days: (appears[p.id] || []).map((d) => d.md).slice(0, 4),
         moreDays: Math.max(0, (appears[p.id] || []).length - 4),
         photo: thumbOf(p.id, 480),
-        color: CITY_COLOR[p.city] || '#16202B'
+        color: LINE[p.city] || '#0E1A3A'
       }));
 
     this.setData({ list, total: list.length });

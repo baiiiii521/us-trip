@@ -1,97 +1,126 @@
-/* 全局设计系统（按 Apple HIG / WWDC 那套翻译到 WXSS）
-   原则：
-   1) 字号有梯度、字距随字号变：大标题负字距，小标签正字距；
-   2) 层次靠「表面 + 留白 + 字重」，不靠边框和阴影堆；
-   3) 可点的东西按下就立刻有反馈（hover-class 走 .press，0ms 起效）；
-   4) 动效只有一个入口节奏：cubic-bezier(0.16, 1, 0.3, 1)（指数缓出），不做弹跳；
-   5) 数字一律等宽，时间和金额不左右跳。 */
+/* 「行前行后」设计系统：地铁线路图（2026-11-17 Barry 选定）
+   整趟旅程是一张线路图：五座城是五条颜色线，一天是一条线，每一项是一站。
+   - 午夜蓝搪瓷（--night）做顶栏和线路区，瓷白（--ground）做阅读区；
+   - 线色只做「线、站点、城市标记」，不拿来刷大面积底色；
+   - 能按的东西只有两种颜色：琥珀（主操作，导航过去）和午夜蓝（次要操作）；
+   - 站点状态靠圆点大小、实心、灰度区分：已过 / 现在 / 下一站 / 之后；
+   - 时间、里程、金额一律等宽数字。 */
 
 page {
-  background: #F2F3F5;
-  color: #11171E;
+  /* 底色 */
+  --night: #0E1A3A;
+  --night-2: #17264D;
+  --night-3: #22335F;
+  --ground: #F3F4F7;
+  --panel: #FFFFFF;
+  /* 字 */
+  --ink: #0E1A3A;
+  --ink-2: #3D4A68;
+  --muted: #56627E;
+  --faint: #9AA4BA;
+  --on-night: #F4F6FA;
+  --on-night-2: #A9B6D6;
+  --line: rgba(14, 26, 58, 0.1);
+  --line-night: rgba(255, 255, 255, 0.12);
+  /* 五条线 */
+  --l-bos: #2FB36B;
+  --l-dc: #E63A3A;
+  --l-phl: #2F6BFF;
+  --l-nyc: #FFC233;
+  --l-la: #19B5C9;
+  /* 操作和状态 */
+  --go: #FFC233;
+  --go-press: #F0AE12;
+  --go-ink: #0E1A3A;
+  --warn: #B4540A;
+  --warn-soft: #FFF3E0;
+  --ok: #1E8E52;
+  --crit: #D33232;
+
+  background: var(--ground);
+  color: var(--ink);
   font-size: 30rpx;
   line-height: 1.55;
-  font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  font-family: -apple-system, "SF Pro Text", "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 /* 有底部导航的页面，内容给导航条让位（含安全区） */
 .with-nav {
-  padding-bottom: calc(168rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(176rpx + env(safe-area-inset-bottom));
 }
 
 .page-pad {
   padding: 24rpx 32rpx 72rpx;
 }
 
-/* ── 字号梯度 ───────────────────────────── */
+/* ── 字号：站名字号固定，时间等宽 ─────────── */
 .t-display {
-  font-size: 46rpx;
-  line-height: 1.16;
+  font-size: 52rpx;
+  line-height: 1.12;
   font-weight: 800;
-  letter-spacing: -0.03em;
-}
-
-.t-title {
-  font-size: 36rpx;
-  line-height: 1.24;
-  font-weight: 700;
   letter-spacing: -0.02em;
 }
 
-.t-head {
-  font-size: 30rpx;
-  line-height: 1.35;
-  font-weight: 600;
+.t-title {
+  font-size: 38rpx;
+  line-height: 1.22;
+  font-weight: 700;
   letter-spacing: -0.01em;
 }
 
+.t-head {
+  font-size: 32rpx;
+  line-height: 1.35;
+  font-weight: 650;
+}
+
 .t-body {
-  font-size: 28rpx;
-  line-height: 1.6;
-  letter-spacing: 0;
+  font-size: 29rpx;
+  line-height: 1.62;
 }
 
 .t-sub {
-  font-size: 24rpx;
+  font-size: 25rpx;
   line-height: 1.5;
-  color: #5E6A76;
+  color: var(--muted);
 }
 
 .t-cap {
-  font-size: 21rpx;
+  font-size: 24rpx;
   line-height: 1.4;
-  letter-spacing: 0.03em;
-  color: #8A94A0;
+  letter-spacing: 0.02em;
+  color: var(--muted);
 }
 
 .num {
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
 
-/* ── 表面 ───────────────────────────────── */
+/* ── 面板：搪瓷站牌那种圆角，阴影带偏移 ───── */
 .card {
-  background: #FFFFFF;
-  border-radius: 28rpx;
-  padding: 28rpx;
+  background: var(--panel);
+  border-radius: 24rpx;
+  padding: 30rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 1rpx 4rpx rgba(16, 24, 32, 0.05);
+  box-shadow: 0 2rpx 6rpx rgba(14, 26, 58, 0.06), 0 12rpx 28rpx -18rpx rgba(14, 26, 58, 0.25);
 }
 
-/* 分组列表：一行一件事，行间用发丝线，外面不再套边框 */
+/* 分组列表：一行一件事，行间细线 */
 .group {
-  background: #FFFFFF;
-  border-radius: 28rpx;
+  background: var(--panel);
+  border-radius: 24rpx;
   overflow: hidden;
-  box-shadow: 0 1rpx 4rpx rgba(16, 24, 32, 0.05);
+  box-shadow: 0 2rpx 6rpx rgba(14, 26, 58, 0.06), 0 12rpx 28rpx -18rpx rgba(14, 26, 58, 0.25);
 }
 
 .group-row {
   display: flex;
   align-items: center;
-  gap: 16rpx;
-  padding: 26rpx 28rpx;
-  border-bottom: 1rpx solid rgba(17, 23, 30, 0.06);
+  gap: 20rpx;
+  padding: 28rpx 30rpx;
+  border-bottom: 1rpx solid var(--line);
 }
 
 .group-row:last-child {
@@ -105,34 +134,91 @@ page {
 
 .chev {
   flex: none;
-  font-size: 32rpx;
+  font-size: 34rpx;
   line-height: 1;
-  color: #C3CAD2;
+  color: var(--faint);
 }
 
-/* 区块小标题：比正文小、字距大，起分组作用，不做装饰 */
+/* 区块标题：前面一小段线路（三个站点），和整套线路图对上 */
 .section-label {
-  margin: 34rpx 36rpx 12rpx;
-  font-size: 21rpx;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: #8A94A0;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin: 40rpx 32rpx 16rpx;
+  font-size: 28rpx;
+  font-weight: 750;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+
+.section-label::before {
+  content: '';
+  flex: none;
+  width: 34rpx;
+  height: 8rpx;
+  border-radius: 4rpx;
+  background: var(--night);
+}
+
+/* 卡片里的区块标题贴着卡片的文字边，不再多缩进 */
+.card .section-label {
+  margin: 0 0 18rpx;
 }
 
 .hairline {
   height: 1rpx;
-  background: rgba(17, 23, 30, 0.08);
-  margin: 22rpx 0;
+  background: var(--line);
+  margin: 24rpx 0;
 }
 
-/* ── 按下反馈（0ms 起效，松手不延迟） ───── */
+/* ── 站点：白芯粗描边圆点，线色由 style 传进来 ─ */
+.stop {
+  flex: none;
+  width: 30rpx;
+  height: 30rpx;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 8rpx solid var(--faint);
+  box-sizing: border-box;
+}
+
+.stop.past {
+  width: 22rpx;
+  height: 22rpx;
+  border-width: 6rpx;
+  border-color: var(--faint);
+}
+
+.stop.now {
+  width: 34rpx;
+  height: 34rpx;
+  border-width: 10rpx;
+}
+
+.stop.next {
+  width: 46rpx;
+  height: 46rpx;
+  border-width: 12rpx;
+  border-color: var(--go);
+  box-shadow: 0 0 0 10rpx rgba(255, 194, 51, 0.28);
+}
+
+/* 换乘站：双圈 */
+.stop.xfer {
+  width: 40rpx;
+  height: 40rpx;
+  border-width: 6rpx;
+  box-shadow: 0 0 0 5rpx #FFFFFF, 0 0 0 11rpx var(--ink);
+}
+
+/* ── 按下反馈 ───────────────────────────── */
 .press {
-  opacity: 0.62;
+  opacity: 0.66;
   transform: scale(0.985);
 }
 
 .tap-dim {
-  opacity: 0.62;
+  opacity: 0.6;
 }
 
 .card-tap {
@@ -144,84 +230,119 @@ page {
   opacity: 0.9;
 }
 
-/* ── 按钮 ───────────────────────────────── */
+/* ── 按钮：琥珀是「去」，午夜蓝是「次要」 ─── */
 .btn-primary {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 92rpx;
+  min-height: 96rpx;
   padding: 0 36rpx;
   border-radius: 999rpx;
-  background: #C04A0A;
-  color: #FFFFFF;
-  font-size: 29rpx;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  background: var(--go);
+  color: var(--go-ink);
+  font-size: 30rpx;
+  font-weight: 700;
+  box-shadow: 0 8rpx 20rpx -10rpx rgba(160, 110, 0, 0.55);
 }
 
 .btn-primary:active {
-  background: #A83F08;
-  transform: scale(0.99);
+  background: var(--go-press);
+  transform: translateY(2rpx);
 }
 
 .btn-ghost {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 92rpx;
+  min-height: 96rpx;
   padding: 0 36rpx;
   border-radius: 999rpx;
-  background: rgba(17, 23, 30, 0.05);
-  color: #11171E;
+  background: rgba(14, 26, 58, 0.06);
+  color: var(--ink);
   font-size: 29rpx;
+  font-weight: 600;
 }
 
 .btn-ghost:active {
-  background: rgba(17, 23, 30, 0.1);
+  background: rgba(14, 26, 58, 0.12);
+}
+
+.btn-night {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 96rpx;
+  padding: 0 36rpx;
+  border-radius: 999rpx;
+  background: var(--night);
+  color: var(--on-night);
+  font-size: 29rpx;
+  font-weight: 600;
 }
 
 /* ── 小标签 ─────────────────────────────── */
 .pill {
   display: inline-flex;
   align-items: center;
-  height: 44rpx;
+  height: 46rpx;
   padding: 0 18rpx;
   border-radius: 999rpx;
-  font-size: 22rpx;
-  letter-spacing: 0.02em;
-  background: rgba(17, 23, 30, 0.055);
-  color: #33404C;
+  font-size: 24rpx;
+  font-weight: 600;
+  background: rgba(14, 26, 58, 0.06);
+  color: var(--ink-2);
 }
 
 .pill-accent {
-  background: rgba(192, 74, 10, 0.1);
-  color: #C04A0A;
+  background: var(--go);
+  color: var(--go-ink);
 }
 
 .chip {
   display: inline-flex;
   align-items: center;
-  padding: 12rpx 22rpx;
+  gap: 10rpx;
+  min-height: 64rpx;
+  padding: 0 24rpx;
   border-radius: 999rpx;
-  font-size: 23rpx;
-  background: rgba(17, 23, 30, 0.05);
-  color: #33404C;
+  font-size: 26rpx;
+  font-weight: 600;
+  background: var(--panel);
+  color: var(--ink-2);
+  box-shadow: inset 0 0 0 2rpx var(--line);
 }
 
-.chip-accent {
-  background: rgba(192, 74, 10, 0.09);
-  color: #C04A0A;
+/* 选中：午夜蓝实底，像站牌上被点亮的那条线 */
+.chip-accent,
+.chip.on {
+  background: var(--night);
+  color: var(--on-night);
+  box-shadow: none;
 }
 
-/* ── 材质：半透明功能层，内容从底下滚过 ─── */
+/* 城市色点：放在城市名前面 */
+.dot {
+  display: inline-block;
+  flex: none;
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 50%;
+  background: var(--faint);
+}
+
+.dot.bos { background: var(--l-bos); }
+.dot.dc { background: var(--l-dc); }
+.dot.phl { background: var(--l-phl); }
+.dot.nyc { background: var(--l-nyc); }
+.dot.la { background: var(--l-la); }
+
+/* ── 材质：午夜蓝顶栏 ───────────────────── */
 .material {
-  background: rgba(242, 243, 245, 0.86);
-  backdrop-filter: blur(22px) saturate(180%);
-  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  background: var(--night);
 }
 
 .material-light {
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(22px) saturate(180%);
   -webkit-backdrop-filter: blur(22px) saturate(180%);
 }
@@ -230,27 +351,39 @@ page {
 .title {
   font-size: 40rpx;
   line-height: 1.24;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 750;
+  letter-spacing: -0.01em;
 }
 
 .subtitle {
-  font-size: 24rpx;
-  color: #5E6A76;
+  font-size: 25rpx;
+  color: var(--muted);
 }
 
 .body-text {
-  font-size: 28rpx;
-  line-height: 1.6;
-  color: #33404C;
+  font-size: 29rpx;
+  line-height: 1.62;
+  color: var(--ink-2);
 }
 
 .muted {
-  color: #5E6A76;
+  color: var(--muted);
 }
 
 .accent {
-  color: #C04A0A;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ── 提醒块：浅底 + 细边，不用左侧粗色条 ─── */
+.notice {
+  border-radius: 20rpx;
+  padding: 22rpx 26rpx;
+  background: var(--warn-soft);
+  color: #6B3A08;
+  font-size: 26rpx;
+  line-height: 1.6;
+  box-shadow: inset 0 0 0 2rpx rgba(180, 84, 10, 0.18);
 }
 
 /* ── 空状态 ─────────────────────────────── */
@@ -260,23 +393,23 @@ page {
 }
 
 .empty-title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #33404C;
+  font-size: 29rpx;
+  font-weight: 700;
+  color: var(--ink-2);
 }
 
 .empty-sub {
   margin-top: 8rpx;
-  font-size: 23rpx;
+  font-size: 25rpx;
   line-height: 1.6;
-  color: #8A94A0;
+  color: var(--muted);
 }
 
-/* ── 进场：一次渐进，不逐块弹 ───────────── */
+/* ── 进场：线路从上往下画出来，只在进页面时一次 ── */
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(16rpx);
+    transform: translateY(18rpx);
   }
   to {
     opacity: 1;
@@ -295,4 +428,30 @@ page {
 
 .fade {
   animation: fade 260ms ease-out both;
+}
+
+@keyframes draw {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+.draw {
+  transform-origin: top center;
+  animation: draw 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 194, 51, 0.5); }
+  100% { box-shadow: 0 0 0 22rpx rgba(255, 194, 51, 0); }
+}
+
+/* 页面里直接放的面板，左右留出边距（行程页这类自己包了 .pad 的不受影响） */
+.page > .card,
+.page > .group {
+  margin-left: 24rpx;
+  margin-right: 24rpx;
+}
+
+.page > .card:first-of-type {
+  margin-top: 24rpx;
 }

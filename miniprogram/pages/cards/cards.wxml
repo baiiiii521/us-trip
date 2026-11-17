@@ -1,3 +1,4 @@
+<top-bar show-back title="大字卡" sub="给司机、店员看" />
 <view class="wrap">
   <view class="tabs">
     <view hover-class="press" hover-stay-time="60"

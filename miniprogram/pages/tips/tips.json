@@ -1,3 +1,7 @@
 {
-  "navigationBarTitleText": "小技巧"
+  "navigationBarTitleText": "小技巧",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "top-bar": "/components/topbar/topbar"
+  }
 }

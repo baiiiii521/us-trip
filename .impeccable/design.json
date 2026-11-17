@@ -1,0 +1,28 @@
+{
+  "source": "DESIGN.md",
+  "system": "行前行后 · 地铁线路图",
+  "scope": "miniprogram/",
+  "extras": {
+    "shadows": {
+      "panel": "0 2rpx 6rpx rgba(14,26,58,.06), 0 12rpx 28rpx -18rpx rgba(14,26,58,.25)",
+      "button-go": "0 8rpx 20rpx -10rpx rgba(160,110,0,.55)"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.16,1,0.3,1)",
+      "rise": "420ms",
+      "next-stop-pulse": "1600ms infinite"
+    },
+    "station-states": {
+      "past": "22rpx #C9CFDC",
+      "now": "34rpx line colour",
+      "next": "46rpx #FFC233 + halo",
+      "later": "30rpx line colour",
+      "xfer": "double ring"
+    },
+    "media": {
+      "base": "https://trip.byb521.com/media/mp/",
+      "day-hours": "7-16 real photo",
+      "night": "codex AI image, labelled"
+    }
+  }
+}

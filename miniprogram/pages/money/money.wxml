@@ -1,17 +1,16 @@
 <view class="page with-nav">
   <top-bar show-back title="花费" sub="两人预算 · 只读" />
   <view class="card total-card">
-    <view class="eyebrow">预算（两人）</view>
     <view class="total">{{total}}</view>
-    <view class="per">每人 {{per}} · 汇率 {{rate}}</view>
+    <view class="per">两人预算 · 每人 {{per}} · 汇率 {{rate}}</view>
   </view>
 
   <view class="card">
     <view class="section-label">按类别</view>
-    <view class="group" wx:for="{{groups}}" wx:key="key">
-      <view class="group-top">
-        <text class="group-name">{{item.label}}</text>
-        <text class="group-amt">{{item.usd}} · {{item.pct}}%</text>
+    <view class="cat" wx:for="{{groups}}" wx:key="key">
+      <view class="cat-top">
+        <text class="cat-name">{{item.label}}</text>
+        <text class="cat-amt">{{item.usd}} · {{item.pct}}%</text>
       </view>
       <view class="bar"><view class="bar-fill" style="width:{{item.w}}"></view></view>
     </view>

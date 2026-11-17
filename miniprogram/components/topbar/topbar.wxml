@@ -1,16 +1,22 @@
 <view class="bar {{transparent ? 'ghost' : ''}}" style="padding-top:{{sb}}px">
   <view class="inner" style="height:{{navH}}px">
     <view class="back" wx:if="{{showBack}}" bindtap="goBack" hover-class="back-hover">
-      <text class="chev">‹</text>
+      <view class="back-chev"></view>
     </view>
     <image class="logo" wx:if="{{brand}}" src="/assets/logo.png" mode="aspectFill" />
     <view class="texts">
       <view class="title">{{title}}</view>
       <view class="sub" wx:if="{{sub}}">{{sub}}</view>
     </view>
-    <view class="badge" wx:if="{{badge}}">{{badge}}</view>
+    <view class="badge num" wx:if="{{badge}}">{{badge}}</view>
   </view>
+  <!-- 整趟旅程的五色线：五座城按住的天数分段，走过的亮，没走的暗 -->
   <view class="rail" wx:if="{{progress >= 0}}">
-    <view class="rail-fill" style="width:{{progress * 100}}%"></view>
+    <view
+      wx:for="{{segs}}"
+      wx:key="city"
+      class="seg"
+      style="flex:{{item.days}};background:{{item.color}};opacity:{{item.lit ? 1 : 0.28}}"
+    ></view>
   </view>
 </view>

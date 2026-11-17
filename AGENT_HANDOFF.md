@@ -115,22 +115,14 @@ Mac 直连 49.233 的 rsync 会卡死（跨境），国内节点必须经硅谷�
 - **域名**：`trip.byb521.com` 已加进小程序的 request 合法域名（2026-11-17 由 Barry 在后台添加，说明备案没问题）。正式版要把 `project.config.json` 的 `urlCheck` 打开。
 - **测试**：`npm test` 105 项，含小程序代码包的隐私扫描（规则在 `scripts/private-patterns.json`，和网站那份同一个文件）、结构检查、共用代码是否同步、今天卡片的日期逻辑。
 
-## 2026-11-17 小程序设计系统（Apple 那套的落地版）
+## 2026-11-17 小程序设计系统：地铁线路图（替换掉之前 Apple 那套）
 
-来源：`emilkowalski/skills → apple-design`（WWDC 那批讲稿的转译）+ `impeccable` 的工艺底线。
-
-落地在 `miniprogram/app.wxss`，改页面只引用，不再各写一套：
-- 字号梯度 `.t-display/.t-title/.t-head/.t-body/.t-sub/.t-cap`：**字距随字号变**（大标题 -0.03em，小标签 +0.03em），行高反比。
-- 表面 `.card`（白底 28rpx 圆角、几乎不可见的阴影）、`.group/.group-row`（分组列表，行间发丝线）。
-- 交互 `.press`（hover-class 用，按下立刻反馈，120ms 指数缓出）、`.card-tap`。
-- 材质 `.material/.material-light`：顶栏和底栏是半透明 + 毛玻璃，内容从下面滚过；用 `::after` 渐隐代替 1px 硬分割线。
-- 数字 `.num`：所有时间/金额/里程等宽。
-- 空状态 `.empty/.empty-title/.empty-sub`：说清楚"为什么空、怎么办"。
-- 动效：只有两处（`rise` 进场 420ms、`fade` 260ms），曲线统一 `cubic-bezier(0.16,1,0.3,1)`，不做弹跳。
-
-规则（改 UI 前先看这几条）：
-1. 强调色只有一支：篮球橙 #C04A0A。选中态（筛选/日期条/底部导航）都用它，不要再出现黑色选中块。
-2. 可点的东西必须有 `hover-class="press"`（或 `hover-class="tap-dim"`），否则用户会觉得"点了没反应"。
-3. 卡片里不再放右侧箭头（整块可点已经是提示）；元信息用纯文字，不要做成和筛选胶囊一样的灰底胶囊。
-4. 一个页面只留一个视觉焦点：今天页是"现在该干什么"，行程页是当天卡片，首页是封面大标题。
-5. 地图、图片这类网络资源失败时必须有回退（城市色块 / 文字占位），不留白框。
+Barry 说旧样子「太素、像表格、东西不好找」，让新设计不必守旧规范；两轮选风格后定了「地铁线路图」。完整规则在根目录 `DESIGN.md`（令牌在 `miniprogram/app.wxss` 的 `page {}` 变量里）。要点：
+- 午夜蓝 #0E1A3A 做顶栏和线路区，瓷白做阅读区；五城线色 波士顿 #2FB36B / 华盛顿 #E63A3A / 费城 #2F6BFF / 纽约 #FFC233 / 洛杉矶 #19B5C9，只画线和站点。
+- 琥珀 #FFC233 是唯一的操作色；911 用红。
+- 所有页面都用 `top-bar` 组件（不再用系统导航栏）。
+- 今天页的「现在」按行程所在地的钟点算（美东 UTC−5，洛杉矶 UTC−8），和三地时钟、城市图早晚切换同一个来源。
+- 城市图：白天实拍、晚上 codex 夜景，放在 trip.byb521.com/media/mp/（`node scripts/mp-media.mjs` 生成，随网站发版）。
+- 电脑端预览：`node scripts/mp-preview.mjs [页面…]`，截图在 `mp-preview/shots/`（不进仓库）；`NOW=2026-12-22T15:00Z` 假装是旅途中某个时刻（用 UTC 写），`FULL=1` 出整页长图。
+- 守门测试：`tests/mp-design.test.js`。
+- 还没做：订单夹按日期分段画成线路。

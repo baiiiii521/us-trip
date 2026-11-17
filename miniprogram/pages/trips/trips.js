@@ -5,6 +5,7 @@ import { getState } from '../../shared/state.js';
 import { buildTodayView } from '../../lib/today-view.js';
 import { photoOf } from '../../lib/photos.js';
 import { openTarget } from '../../lib/nav.js';
+import { COVER } from '../../lib/media.js';
 
 // 点开哪一页：旅程首页就是「今天」。写死在这里，别散在 WXML 里
 export const OPEN_URL = (id) => `/pages/today/today?id=${id}`;
@@ -19,6 +20,14 @@ const TOOLS = [
 ];
 
 const TRAIL = ['波士顿', '华盛顿', '费城', '纽约', '洛杉矶'];
+// 封面上的五城线：每座城的线色和到达日期
+const LINE = [
+  { key: 'bos', name: '波士顿', md: '12/18', color: '#2FB36B' },
+  { key: 'dc', name: '华盛顿', md: '12/21', color: '#E63A3A' },
+  { key: 'phl', name: '费城', md: '12/23', color: '#2F6BFF' },
+  { key: 'nyc', name: '纽约', md: '12/24', color: '#FFC233' },
+  { key: 'la', name: '洛杉矶', md: '12/31', color: '#19B5C9' }
+];
 
 // 顶栏徽标只说状态，不报天数——天数由下面那张卡片负责，两处别抢同一件事
 const PHASE_WORD = { soon: '未出发', now: '行程中', done: '已结束' };
@@ -30,6 +39,7 @@ Page({
     hero: null,
     now: null,
     tools: TOOLS,
+    line: LINE,
     trips: [],
     ready: false
   },
@@ -47,8 +57,6 @@ Page({
   render() {
     const t = TRIPS[0];
     const phase = tripPhase(t);
-    // 封面是本地的竖版图（1242×1589，301KB 打在包里）：网络图横构图裁成竖版会糊
-    const hero = { src: '/assets/hero-nyc.jpg' };
 
     let view = null;
     try {
@@ -67,6 +75,8 @@ Page({
         days: tripDays(x),
         people: x.people,
         metaText: `${dotDate(x.start)} – ${dotDate(x.end)} · ${tripDays(x)} 天 · ${x.people} 人`,
+        // 封面上那一行要放得下：年份省掉
+        shortMeta: `${x.start.slice(5).replace('-', '.')}–${x.end.slice(5).replace('-', '.')} · ${tripDays(x)} 天 · ${x.people} 人`,
         phaseLabel: PHASE_WORD[p.key] || p.label,
         phaseKey: p.key,
         trail: TRAIL.join(' → ')
@@ -80,7 +90,8 @@ Page({
       hero: {
         ...heroes[0],
         trail: TRAIL.join(' → '),
-        cover: hero.src,
+        // 封面：codex 生成的纽约圣诞夜景（自己的服务器上）；读不到时显示午夜蓝底，线路照常
+        cover: COVER.src,
         credit: '封面为 AI 生成的示意图'
       },
       now: {

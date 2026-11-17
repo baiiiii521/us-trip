@@ -1,5 +1,6 @@
 <view class="page with-nav">
   <top-bar show-back title="景点图鉴" sub="68 个地方 · 按城市筛" />
+  <view class="band">
   <view class="search">
     <input
       class="search-input"
@@ -18,9 +19,10 @@
         class="filter {{active === item.key ? 'on' : ''}}"
         data-key="{{item.key}}"
         bindtap="pick"
-      >{{item.label}}</view>
+      ><view class="fdot" wx:if="{{item.color}}" style="background:{{item.color}}"></view>{{item.label}}</view>
     </view>
   </scroll-view>
+  </view>
 
   <view class="count" wx:if="{{q || active !== 'all'}}">{{total}} 个地方<span wx:if="{{q}}"> · 搜「{{q}}」</span></view>
 
@@ -48,13 +50,13 @@
       <view class="poi-en">{{item.en}}</view>
       <view class="poi-tag">{{item.tag}}</view>
       <view class="poi-days" wx:if="{{item.days.length}}">
+        <view class="pdot" style="border-color:{{item.color}}"></view>
         <text class="poi-day" wx:for="{{item.days}}" wx:key="*this" wx:for-item="d">{{d}}</text>
         <text class="poi-day" wx:if="{{item.moreDays}}">+{{item.moreDays}}</text>
       </view>
     </view>
   </view>
 
-  <view class="empty" wx:if="{{!list.length}}">没找到，换个词试试。</view>
 </view>
 
 <bottom-nav current="guide" tripId="{{tripId}}" />

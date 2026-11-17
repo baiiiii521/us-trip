@@ -1,4 +1,7 @@
 {
   "navigationBarTitleText": "记账与结算",
-  "usingComponents": {}
+  "usingComponents": {
+    "top-bar": "/components/topbar/topbar"
+  },
+  "navigationStyle": "custom"
 }

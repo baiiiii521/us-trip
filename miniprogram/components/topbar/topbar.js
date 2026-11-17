@@ -47,9 +47,9 @@ Component({
     brand: { type: Boolean, value: false },
     transparent: { type: Boolean, value: false },
     badge: { type: String, value: '' },
-    progress: { type: Number, value: -1 }
+    progress: { type: Number, value: -1, observer: 'paint' }
   },
-  data: { sb: 24, navH: 48 },
+  data: { sb: 24, navH: 48, segs: [] },
   lifetimes: {
     attached() {
       const app = getApp();
@@ -57,9 +57,30 @@ Component({
       const m = cached && cached.sb ? cached : readMetrics();
       if (app && app.globalData) app.globalData.metrics = m;
       this.setData({ sb: m.sb, navH: m.navH });
+      this.paint();
     }
   },
   methods: {
+    // 五座城的天数：波士顿 3、华盛顿 2、费城 1、纽约 7、洛杉矶 1（共 14 天）
+    paint() {
+      const p = Number(this.data.progress);
+      if (!(p >= 0)) return;
+      const LINES = [
+        { city: 'bos', days: 3, color: '#2FB36B' },
+        { city: 'dc', days: 2, color: '#E63A3A' },
+        { city: 'phl', days: 1, color: '#2F6BFF' },
+        { city: 'nyc', days: 7, color: '#FFC233' },
+        { city: 'la', days: 1, color: '#19B5C9' }
+      ];
+      const done = p * 14;
+      let acc = 0;
+      const segs = LINES.map((l) => {
+        const lit = done > acc;
+        acc += l.days;
+        return { ...l, lit };
+      });
+      this.setData({ segs });
+    },
     goBack() {
       const pages = getCurrentPages();
       if (pages.length > 1) wx.navigateBack();

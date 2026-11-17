@@ -1,3 +1,4 @@
+<top-bar show-back title="{{poi ? poi.name : '景点'}}" />
 <view class="page-pad" wx:if="{{poi}}">
   <!-- 封面：维基首图（构建时抓好的地址），加载失败退回城市色排印块 -->
   <image
@@ -13,6 +14,11 @@
   </view>
   <view class="credit" wx:if="{{poi.photo && poi.credit}}">图片：{{poi.credit}}</view>
 
+  <!-- 城市线：这个地方在哪座城，排在行程哪几天 -->
+  <view class="where">
+    <view class="where-line" style="background:{{poi.line}}"></view>
+    <text class="where-city">{{poi.cityZh}} · {{poi.catZh}}</text>
+  </view>
   <view class="title">{{poi.name}}</view>
   <view class="tag">{{poi.tag}}</view>
 

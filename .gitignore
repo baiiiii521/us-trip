@@ -31,3 +31,11 @@ video/intro3d/assets/gen/codex.log
 
 # 本机 agent 运行时目录
 .omh/
+
+# 小程序页面的电脑端预览（scripts/mp-preview.mjs 生成）
+mp-preview/
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/questions/
+.impeccable/review/
+.impeccable/mocks/

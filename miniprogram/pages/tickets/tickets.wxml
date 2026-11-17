@@ -1,25 +1,46 @@
+<top-bar show-back title="票务" sub="六场球 · 购票入口" />
+<!-- 球馆图：codex 生成的示意图，读不到就只剩午夜蓝底 -->
+<view class="arena">
+  <image class="arena-img" wx:if="{{arena.src && !arenaFail}}" src="{{arena.src}}" mode="aspectFill" binderror="arenaError" />
+  <view class="arena-fade"></view>
+  <view class="arena-text">
+    <text class="arena-big">4 场排进行程</text>
+    <text class="arena-sub">凯尔特人 · 奇才 · 76人 · 篮网，另有两场可选</text>
+  </view>
+  <text class="arena-credit" wx:if="{{arena.src && !arenaFail}}">{{arena.credit}}</text>
+</view>
+
 <view class="page-pad">
   <view class="lead">个人小程序不能直接跳外部网站，所以这里统一「复制链接 → 去浏览器粘贴」。所有入口和网站用的是同一份数据。</view>
 
-  <view class="section-label">六场球</view>
-  <view class="card game" wx:for="{{games}}" wx:key="id">
-    <view class="game-top">
-      <view class="game-l">
-        <text class="game-title">{{item.title}}</text>
-        <text class="game-when">{{item.when}}</text>
+  <view class="section-label">六场球，按日期</view>
+  <!-- 每场球是一站：站点描边是球馆所在城市的线色 -->
+  <view class="games">
+    <view class="gst" wx:for="{{games}}" wx:key="id">
+      <view class="g-rail">
+        <view class="g-line {{index === 0 ? 'first' : ''}} {{index === games.length - 1 ? 'last' : ''}}"></view>
+        <view class="g-dot {{item.tone === 'ok' ? 'on' : ''}}" style="border-color:{{item.color}}"></view>
       </view>
-      <text class="pill {{item.tone === 'warn' ? 'pill-warn' : ''}}">{{item.status}}</text>
-    </view>
+      <view class="card game">
+        <view class="game-top">
+          <view class="game-l">
+            <text class="game-when num">{{item.when}}</text>
+            <text class="game-title">{{item.title}}</text>
+          </view>
+          <text class="pill {{item.tone === 'ok' ? 'pill-on' : item.tone === 'warn' ? 'pill-warn' : ''}}">{{item.status}}</text>
+        </view>
 
-    <view class="game-meta">
-      <text class="game-arena">{{item.arena}}</text>
-      <text class="game-price">{{item.price}}</text>
-      <text hover-class="press" hover-stay-time="60" class="game-nav" data-id="{{item.id}}" bindtap="nav">球馆位置</text>
-    </view>
+        <view class="game-meta">
+          <text class="game-arena">{{item.arena}}</text>
+          <text class="game-price">{{item.price}}</text>
+          <text hover-class="press" hover-stay-time="60" class="game-nav" data-id="{{item.id}}" bindtap="nav">球馆位置</text>
+        </view>
 
-    <view class="links">
-      <view hover-class="press" hover-stay-time="60" class="link" wx:for="{{item.links}}" wx:key="label" wx:for-item="l" data-url="{{l.url}}" bindtap="copy">
-        {{l.label}}
+        <view class="links">
+          <view hover-class="press" hover-stay-time="60" class="link" wx:for="{{item.links}}" wx:key="label" wx:for-item="l" data-url="{{l.url}}" bindtap="copy">
+            {{l.label}}
+          </view>
+        </view>
       </view>
     </view>
   </view>

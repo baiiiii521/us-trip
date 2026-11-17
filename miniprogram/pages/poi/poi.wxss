@@ -3,12 +3,12 @@
   height: 420rpx;
   border-radius: 28rpx;
   margin-bottom: 8rpx;
-  background: #EEF1F4;
+  background: var(--ground);
 }
 
 .credit {
-  font-size: 21rpx;
-  color: #A3ADB8;
+  font-size: 24rpx;
+  color: var(--muted);
   margin: 0 4rpx 16rpx;
 }
 
@@ -33,12 +33,12 @@
 .cover-city {
   margin-top: 6rpx;
   color: rgba(255, 255, 255, 0.75);
-  font-size: 22rpx;
+  font-size: 24rpx;
 }
 
 .tag {
   font-size: 28rpx;
-  color: #5E6A76;
+  color: var(--muted);
   margin-top: 8rpx;
   margin-bottom: 24rpx;
   line-height: 1.5;
@@ -56,7 +56,7 @@
 
 .hl {
   font-size: 28rpx;
-  color: #33404C;
+  color: var(--ink-2);
   line-height: 1.6;
   padding: 4rpx 0;
 }
@@ -65,7 +65,7 @@
   display: flex;
   gap: 20rpx;
   padding: 10rpx 0;
-  border-bottom: 1rpx solid rgba(22, 32, 43, 0.06);
+  border-bottom: 1rpx solid rgba(14, 26, 58, 0.06);
 }
 
 .kv:last-child {
@@ -76,18 +76,18 @@
   flex: none;
   width: 150rpx;
   font-size: 24rpx;
-  color: #5E6A76;
+  color: var(--muted);
 }
 
 .val {
   flex: 1;
   font-size: 28rpx;
-  color: #16202B;
+  color: var(--ink);
   line-height: 1.5;
 }
 
 .tipv {
-  color: #33404C;
+  color: var(--ink-2);
 }
 
 .day-links {
@@ -101,7 +101,7 @@
   align-items: baseline;
   gap: 16rpx;
   padding: 10rpx 0;
-  border-bottom: 1rpx solid rgba(22, 32, 43, 0.06);
+  border-bottom: 1rpx solid rgba(14, 26, 58, 0.06);
 }
 
 .day-md {
@@ -109,18 +109,18 @@
   width: 90rpx;
   font-size: 24rpx;
   font-weight: 600;
-  color: #C04A0A;
+  color: var(--ink);
 }
 
 .day-t {
   flex: 1;
   font-size: 28rpx;
-  color: #33404C;
+  color: var(--ink-2);
 }
 
 .foot-note {
-  font-size: 22rpx;
-  color: #A3ADB8;
+  font-size: 24rpx;
+  color: var(--muted);
   line-height: 1.6;
   padding: 8rpx 4rpx 40rpx;
 }
@@ -147,7 +147,7 @@
   right: 0;
   top: -14rpx;
   height: 14rpx;
-  background: linear-gradient(0deg, rgba(16, 24, 32, 0.07), rgba(16, 24, 32, 0));
+  background: linear-gradient(0deg, rgba(14, 26, 58, 0.07), rgba(14, 26, 58, 0));
 }
 
 .bar-main {
@@ -161,4 +161,23 @@
 
 .page-pad {
   padding-bottom: calc(180rpx + env(safe-area-inset-bottom));
+}
+
+.where {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin: 26rpx 0 6rpx;
+}
+
+.where-line {
+  width: 44rpx;
+  height: 10rpx;
+  border-radius: 5rpx;
+}
+
+.where-city {
+  font-size: 25rpx;
+  font-weight: 700;
+  color: var(--ink-2);
 }

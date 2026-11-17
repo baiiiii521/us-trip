@@ -1,5 +1,5 @@
 page {
-  background: #16202B;
+  background: var(--ink);
 }
 
 .wrap {
@@ -19,14 +19,14 @@ page {
   flex: 1;
   text-align: center;
   font-size: 28rpx;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.78);
   padding: 14rpx 0;
   border-radius: 14rpx;
   background: rgba(255, 255, 255, 0.07);
 }
 
 .tab.on {
-  color: #16202B;
+  color: var(--ink);
   background: #FFFFFF;
 }
 
@@ -50,7 +50,7 @@ page {
 
 .small {
   margin-top: 20rpx;
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(255, 255, 255, 0.78);
   font-size: 28rpx;
   text-align: center;
 }
@@ -75,7 +75,7 @@ page {
 .dots {
   flex: 1;
   text-align: center;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.78);
   font-size: 24rpx;
 }
 
@@ -85,7 +85,7 @@ page {
   line-height: 88rpx;
   text-align: center;
   border-radius: 16rpx;
-  background: #C04A0A;
+  background: var(--night);
   color: #FFFFFF;
   font-size: 28rpx;
 }
@@ -93,6 +93,6 @@ page {
 .hint {
   margin-top: 18rpx;
   text-align: center;
-  font-size: 21rpx;
-  color: rgba(255, 255, 255, 0.4);
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.78);
 }

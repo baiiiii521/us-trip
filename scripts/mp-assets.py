@@ -47,10 +47,10 @@ def icon(kind, color):
     if kind == 'today':  # 时钟
         d.ellipse([pad, pad, s - pad, s - pad], outline=color, width=lw)
         line([(12, 7.5), (12, 12.4), (15.4, 14.2)])
-    elif kind == 'days':  # 三条清单，带圆点
-        for i, y in enumerate((7, 12, 17)):
-            d.ellipse([4 * SS, (y - 0.9) * SS, 5.8 * SS, (y + 0.9) * SS], fill=color)
-            line([(8, y), (19.5, y)])
+    elif kind == 'days':  # 一条竖着的线路，三个站点（和行程页的线路图同一个样子）
+        d.line([(12 * SS, 3.5 * SS), (12 * SS, 20.5 * SS)], fill=color, width=lw)
+        for y in (5.5, 12, 18.5):
+            d.ellipse([9.2 * SS, (y - 2.8) * SS, 14.8 * SS, (y + 2.8) * SS], fill=(255, 255, 255, 255), outline=color, width=lw)
     elif kind == 'guide':  # 一页地图
         d.rounded_rectangle([pad, 5 * SS, s - pad, 19 * SS], radius=2.4 * SS, outline=color, width=lw)
         line([(9.6, 5), (9.6, 19)])
@@ -65,13 +65,14 @@ def icon(kind, color):
     return img
 
 
-GREY = (138, 148, 160, 255)
-ORANGE = (192, 74, 10, 255)
-BLUE = (31, 78, 140, 255)
+# 2026-11-17 换成「地铁线路图」配色：未选中灰蓝、选中午夜蓝；地图针用琥珀 / 钴蓝 / 绿三条线色
+GREY = (122, 134, 160, 255)
+ORANGE = (14, 26, 58, 255)  # 名字沿用，颜色是午夜蓝 #0E1A3A
+BLUE = (47, 107, 255, 255)
 
-save(pin(ORANGE), 'pin-city.png', (34, 44))
+save(pin((230, 160, 20, 255)), 'pin-city.png', (34, 44))
 save(pin(BLUE), 'pin-poi.png', (34, 44))
-save(pin((46, 125, 50, 255)), 'pin-start.png', (34, 44))
+save(pin((47, 179, 107, 255)), 'pin-start.png', (34, 44))
 
 for kind in ('today', 'days', 'guide', 'money', 'more'):
     save(icon(kind, GREY), f'ic-{kind}.png', (48, 48))

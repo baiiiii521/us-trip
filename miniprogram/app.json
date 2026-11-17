@@ -16,10 +16,10 @@
     "pages/more/more"
   ],
   "window": {
-    "navigationBarBackgroundColor": "#F3F5F7",
+    "navigationBarBackgroundColor": "#0E1A3A",
     "navigationBarTitleText": "行前行后",
-    "navigationBarTextStyle": "black",
-    "backgroundColor": "#F3F5F7",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F3F4F7",
     "backgroundTextStyle": "dark"
   },
   "style": "v2",

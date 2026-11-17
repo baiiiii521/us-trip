@@ -1,3 +1,7 @@
 {
-  "navigationBarTitleText": "景点"
+  "navigationBarTitleText": "景点",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "top-bar": "/components/topbar/topbar"
+  }
 }
