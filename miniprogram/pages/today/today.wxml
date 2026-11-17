@@ -42,6 +42,9 @@
         </view>
       </view>
     </view>
+    <view hover-class="press" hover-stay-time="60" class="see-all" bindtap="openDay">
+      看全天 {{itemCount}} 项 ›
+    </view>
   </block>
 
   <!-- 全天时间轴 -->

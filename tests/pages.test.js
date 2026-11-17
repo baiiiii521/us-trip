@@ -123,4 +123,7 @@ test('关键页面的数据真的算出来了（不是空页）', async () => {
   assert.ok(today.data.bigLine, '今天页有大日期');
   assert.ok(today.data.items.length, '今天页有时间轴');
   assert.ok(today.data.clocks.length === 3, '三地时间都在');
+  // 出发前那四六条预览不能有空行（城际路段以前就是空的，看着像"到 14 点就没了"）
+  const blank = today.data.preview.filter((it) => !it.text);
+  assert.deepEqual(blank.map((x) => x.t), [], '今天页预览里有空行');
 });

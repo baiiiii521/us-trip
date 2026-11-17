@@ -6,6 +6,7 @@ import { buildDays } from '../../shared/data/days.js';
 import { CITIES, TRIP } from '../../shared/data/trip.js';
 import { PACE, paceText } from '../../shared/data/wellbeing.js';
 import { spotFor } from '../../lib/spot.js';
+import { DRIVES } from '../../shared/data/drive.js';
 import { heroOf } from '../../shared/data/heroes.js';
 import { photoOf } from '../../lib/photos.js';
 import { openTarget } from '../../lib/nav.js';
@@ -40,6 +41,8 @@ Page({
     subLine: '',
     items: [],
     preview: [],
+    dayId: '',
+    itemCount: 0,
     nowIndex: -1,
     paceText: '',
     warn: '',
@@ -97,10 +100,13 @@ Page({
         if (i > 0 && minutesOf(day.items[i - 1].t) != null && minutesOf(day.items[i - 1].t) <= nowMin && (mins > nowMin)) state2 = 'next';
         if (mins <= nowMin) state2 = 'past';
       }
+      const legInfo = it.leg && DRIVES[it.leg] ? DRIVES[it.leg] : null;
+      const text = it.text || (legInfo ? `${legInfo.from} → ${legInfo.to}：${legInfo.mi} 英里，${legInfo.h}` : '');
+
       return {
         i,
         t: it.t || '—',
-        text: it.text || '',
+        text,
         note: it.note || '',
         spot,
         tag: it.game ? '球赛' : it.drive ? '取还车' : it.leg ? '城际' : it.xmas ? '圣诞' : '',
@@ -127,7 +133,9 @@ Page({
       bigLine: phase === 'on' ? day.title || '在路上' : phase === 'before' ? `距出发 ${before} 天` : '这趟走完了',
       subLine: phase === 'on' ? `${day.md} ${day.wd} · ${city.zh || ''}` : `${day.md} ${day.wd} · 落地第一天在${city.zh || ''}`,
       items,
-      preview: items.slice(0, 4),
+      preview: items.slice(0, 6),
+      dayId: day.id,
+      itemCount: items.length,
       nowIndex,
       paceText: day.pace ? `${day.pace.km} 公里 · ${PACE[day.pace.lv] || ''}${day.pace.cut ? ` · 想轻松点：${day.pace.cut}` : ''}` : '',
       warn: day.warn || '',
@@ -152,6 +160,10 @@ Page({
       return;
     }
     wx.showToast({ title: '这一条没有地点', icon: 'none' });
+  },
+
+  openDay() {
+    wx.navigateTo({ url: `/pages/days/days?id=${this.data.tripId}&day=${this.data.dayId}` });
   },
 
   go(e) {

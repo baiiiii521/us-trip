@@ -362,3 +362,15 @@ page {
 .tap-dim {
   opacity: 0.65;
 }
+
+/* 出发前预览的出口：想看全天就去行程页那一天 */
+.see-all {
+  margin: 0 28rpx;
+  padding: 22rpx 0;
+  text-align: center;
+  font-size: 23rpx;
+  color: #C04A0A;
+  background: #FFFFFF;
+  border-radius: 0 0 28rpx 28rpx;
+  margin-top: -20rpx;
+}
