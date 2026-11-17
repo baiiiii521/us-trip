@@ -1,116 +1,89 @@
-<view class="page with-nav" wx:if="{{v}}">
-  <top-bar title="今天" sub="{{v.subline}}" badge="{{badge}}" progress="{{progress}}" />
-  <!-- 两地时钟 -->
-  <view class="clockbar">
-    <view class="clock">
-      <text class="clock-label">北京</text>
-      <text class="clock-time">{{v.clock.beijing}}</text>
-    </view>
-    <view class="clock-mid"></view>
-    <view class="clock">
-      <text class="clock-label">{{v.clock.place}}</text>
-      <text class="clock-time">{{v.clock.local}}</text>
-    </view>
-    <text class="clock-note">{{v.clock.call.text}}</text>
-  </view>
+<view class="page with-nav">
+  <top-bar title="今天" sub="{{barSub}}" badge="{{badge}}" progress="{{progress}}" />
 
-  <!-- 标题：行程中显示第几天，出发前显示倒计时 -->
-  <view class="hero">
-    <text class="eyebrow">{{v.phase === 'on' ? 'TODAY' : (v.phase === 'before' ? 'COUNTDOWN' : 'TRIP')}}</text>
-    <view class="hero-title">{{v.headline}}</view>
-    <view class="hero-sub">{{v.subline}}</view>
-  </view>
-
-  <!-- 下一项：最重要的一块，带导航主按钮 -->
-  <view class="card next-card" wx:if="{{v.next}}">
-    <view class="next-top">
-      <text class="next-time">{{v.next.t}}</text>
-      <text class="pill pill-accent" wx:if="{{v.next.count}}">{{v.next.count}}</text>
-    </view>
-    <view class="next-text">{{v.next.text}}</view>
-    <view class="next-note" wx:if="{{v.next.note}}">{{v.next.note}}</view>
-    <view class="next-actions">
-      <view class="btn-primary nav-btn" bindtap="navTo" wx:if="{{v.next.hasTarget}}">导航到这里</view>
-      <view class="btn-ghost nav-btn" bindtap="navTo" wx:else>复制英文地址</view>
+  <!-- 城市横幅 -->
+  <view class="banner">
+    <image class="banner-img" wx:if="{{photo}}" src="{{photo}}" mode="aspectFill" />
+    <view class="banner-fade"></view>
+    <view class="banner-text">
+      <text class="banner-city">{{cityZh || '在路上'}}</text>
+      <text class="banner-wx" wx:if="{{weather}}">{{weather}}</text>
     </view>
   </view>
 
-  <!-- 当前项 -->
-  <view class="card" wx:if="{{v.current}}">
-    <view class="row-head">
-      <text class="section-label">现在</text>
-      <text class="row-time">{{v.current.t}}</text>
-    </view>
-    <view class="body-text">{{v.current.text}}</view>
-    <view class="body-text muted" wx:if="{{v.current.note}}">备注：{{v.current.note}}</view>
+  <!-- 今天第几天 -->
+  <view class="head">
+    <view class="head-big">{{bigLine}}</view>
+    <view class="head-sub">{{subLine}}</view>
+    <view class="head-pace" wx:if="{{paceText}}">{{paceText}}</view>
   </view>
 
-  <!-- 现在和下一项之间没时间的安排 -->
-  <view class="card" wx:if="{{v.between.length}}">
-    <view class="section-label">接着按顺序</view>
-    <view class="between-item" wx:for="{{v.between}}" wx:key="t">
-      <text class="between-time">{{item.t || '—'}}</text>
-      <text class="between-text">{{item.text}}</text>
+  <!-- 现在做的那件事 -->
+  <view class="now" wx:if="{{nowIndex >= 0 && phase === 'on'}}">
+    <view class="now-top">
+      <text class="now-time">{{items[nowIndex].t}}</text>
+      <text class="now-flag">现在</text>
     </view>
-  </view>
-
-  <!-- 出发前：预览第一天 -->
-  <view class="card" wx:if="{{v.phase !== 'on'}}">
-    <view class="row-head">
-      <text class="section-label">第一天预览</text>
-      <text class="row-time">{{v.cityName}}</text>
-    </view>
-    <view class="preview-title">{{v.dayTitle}}</view>
-    <view class="preview-item" wx:for="{{v.preview}}" wx:key="t">
-      <text class="preview-time">{{item.t}}</text>
-      <text class="preview-text">{{item.text}}</text>
+    <view class="now-text">{{items[nowIndex].text}}</view>
+    <view class="now-go" wx:if="{{items[nowIndex].spot}}" data-i="{{nowIndex}}" bindtap="goItem" hover-class="tap-dim">
+      导航去 {{items[nowIndex].spot.name}} ›
     </view>
   </view>
 
-  <!-- 节奏和提示 -->
-  <view class="card" wx:if="{{v.pace || v.warn || v.tips.length}}">
-    <view class="pace-row" wx:if="{{v.pace}}">
-      <text class="pill">今天 {{v.pace.km}} 公里 · {{v.pace.label}}</text>
-    </view>
-    <view class="warn" wx:if="{{v.warn}}">{{v.warn}}</view>
-    <view class="tip" wx:for="{{v.tips}}" wx:key="*this">· {{item}}</view>
-    <view class="pace-cut" wx:if="{{v.pace && v.pace.cut}}">累了先砍：{{v.pace.cut}}</view>
-  </view>
-
-  <!-- 今天整天的时间线（折叠在下面，向下滑就能看） -->
-  <view class="card" wx:if="{{v.phase === 'on'}}">
-    <view class="section-label">今天全部安排</view>
-    <view class="tl" wx:for="{{v.items}}" wx:key="t">
-      <view class="tl-dot {{item.game ? 'game' : ''}}"></view>
-      <view class="tl-body">
-        <view class="tl-time">{{item.t}}</view>
-        <view class="tl-text">{{item.text}}</view>
+  <!-- 出发前：先给第一天的前四件事 -->
+  <block wx:if="{{phase === 'before'}}">
+    <view class="section">落地第一天</view>
+    <view class="card list">
+      <view class="row" wx:for="{{preview}}" wx:key="i" wx:for-item="it" data-i="{{it.i}}" bindtap="goItem" hover-class="row-press">
+        <text class="row-time">{{it.t}}</text>
+        <view class="row-body">
+          <text class="row-text">{{it.text}}</text>
+          <text class="row-go" wx:if="{{it.spot}}">导航 · {{it.spot.name}}</text>
+        </view>
       </view>
     </view>
-    <view class="stay" wx:if="{{v.stay}}">今晚住：{{v.stay}}</view>
-  </view>
+  </block>
 
-  <!-- 快捷入口 -->
-  <view class="quick">
-    <view class="quick-item" data-url="/pages/days/days" bindtap="go">
-      <text class="quick-name">行程</text>
-      <text class="quick-sub">14 天</text>
+  <!-- 全天时间轴 -->
+  <block wx:else>
+    <view class="section">今天的时间</view>
+    <view class="card timeline">
+      <view class="tl" wx:for="{{items}}" wx:key="i" wx:for-item="it">
+        <view class="tl-rail">
+          <view class="tl-dot {{it.state}} {{it.hot ? 'hot' : ''}}"></view>
+          <view class="tl-line"></view>
+        </view>
+        <view class="tl-body">
+          <view class="tl-top">
+            <text class="tl-time {{it.state}}">{{it.t}}</text>
+            <text class="tl-tag" wx:if="{{it.tag}}">{{it.tag}}</text>
+          </view>
+          <text class="tl-text">{{it.text}}</text>
+          <text class="tl-note" wx:if="{{it.note}}">备注：{{it.note}}</text>
+          <view class="tl-go" wx:if="{{it.spot}}" data-i="{{it.i}}" catchtap="goItem" hover-class="tap-dim">
+            导航 · {{it.spot.name}}
+          </view>
+        </view>
+      </view>
     </view>
-    <view class="quick-item" data-url="/pages/guide/guide" bindtap="go">
-      <text class="quick-name">景点</text>
-      <text class="quick-sub">68 个</text>
+
+    <view class="card warn" wx:if="{{warn}}">{{warn}}</view>
+
+    <view class="section" wx:if="{{tips.length}}">小技巧</view>
+    <view class="card tips" wx:if="{{tips.length}}">
+      <view class="tip" wx:for="{{tips}}" wx:key="*this">· {{item}}</view>
     </view>
-    <view class="quick-item" data-url="/pages/eats/eats" bindtap="go">
-      <text class="quick-name">吃什么</text>
-      <text class="quick-sub">34 家</text>
-    </view>
-    <view class="quick-item" data-url="/pages/more/more" bindtap="go">
-      <text class="quick-name">随身</text>
-      <text class="quick-sub">证件·紧急</text>
+
+    <view class="stay" wx:if="{{stay}}">今晚住 {{stay}}</view>
+  </block>
+
+  <!-- 三个地方的时间 -->
+  <view class="clocks">
+    <view class="clock" wx:for="{{clocks}}" wx:key="city">
+      <text class="cl-city">{{item.city}}</text>
+      <text class="cl-time">{{item.time}}</text>
     </view>
   </view>
-
-  <view class="foot-link" bindtap="backToList">← 所有旅行</view>
 </view>
 
 <bottom-nav current="today" tripId="{{tripId}}" />

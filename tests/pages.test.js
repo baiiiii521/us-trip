@@ -120,5 +120,7 @@ test('关键页面的数据真的算出来了（不是空页）', async () => {
   assert.ok(ledger.data.cats.length >= 5, '记账分类');
 
   const today = run(await load('pages/today/today'));
-  assert.ok(today.data.v && today.data.v.headline, '今天卡片有标题');
+  assert.ok(today.data.bigLine, '今天页有大日期');
+  assert.ok(today.data.items.length, '今天页有时间轴');
+  assert.ok(today.data.clocks.length === 3, '三地时间都在');
 });

@@ -47,7 +47,8 @@ Page({
   render() {
     const t = TRIPS[0];
     const phase = tripPhase(t);
-    const photo = photoOf('brooklyn-bridge') || photoOf('msg');
+    // 封面是本地的竖版图（1242×1589，301KB 打在包里）：网络图横构图裁成竖版会糊
+    const hero = { src: '/assets/hero-nyc.jpg' };
 
     let view = null;
     try {
@@ -79,8 +80,8 @@ Page({
       hero: {
         ...heroes[0],
         trail: TRAIL.join(' → '),
-        cover: photo ? photo.src : '',
-        credit: photo ? `图片 ${photo.credit || '维基百科'} · ${photo.license || ''}` : ''
+        cover: hero.src,
+        credit: '封面为 AI 生成的示意图'
       },
       now: {
         label: nowLabel,

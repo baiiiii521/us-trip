@@ -16,7 +16,7 @@ const checkOnly = process.argv.includes('--check');
 // 共用清单：数据全部共用；lib 只挑不碰浏览器的
 const LIB_FILES = ['calc.js', 'today.js', 'extras.js', 'route.js', 'tools.js', 'index.js', 'geo.js', 'exif.js', 'money.js', 'store.js'];
 // 这些文件由别的脚本生成，同步时不要当成「多余的」删掉
-const KEEP = new Set(['data/photos.js', 'data/geo.js', 'data/places.js']);
+const KEEP = new Set(['data/photos.js', 'data/geo.js', 'data/places.js', 'data/heroes.js']);
 // 这些文件里出现浏览器 API 就说明挑错了，同步时直接报错
 const BROWSER_API = /\b(window\.|document\.|localStorage\b|indexedDB\b|navigator\.|requestAnimationFrame\b|new Notification\b)/;
 
