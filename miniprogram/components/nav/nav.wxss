@@ -37,7 +37,7 @@
   height: 8rpx;
   margin-left: -28rpx;
   border-radius: 0 0 6rpx 6rpx;
-  background: #FFC233;
+  background: var(--go, #FFC233);
 }
 
 .item-hover {

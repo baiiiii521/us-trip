@@ -11,6 +11,7 @@ import { heroOf } from '../../shared/data/heroes.js';
 import { photoOf } from '../../lib/photos.js';
 import { openTarget } from '../../lib/nav.js';
 import { cityImage } from '../../lib/media.js';
+import { festiveOf } from '../../lib/festive.js';
 
 // 每座城市一张横幅图（大图优先，实在没有再退回 960 的缩略图）
 const CITY_PHOTO = { bos: 'public-garden', nyc: 'brooklyn-bridge', dc: 'white-house', phl: 'charging-bull', la: 'santa-monica' };
@@ -195,7 +196,7 @@ Page({
       stations,
       paceShort: day.pace ? `步行约 ${day.pace.km} 公里 · ${PACE[day.pace.lv] || ''}` : '',
       paceLv: day.pace ? day.pace.lv : 0,
-      img: cityImage(cityKey, local.hour),
+      img: (() => { const f = festiveOf(now); return f.key && (f.key === 'xmas' || local.hour >= 16) ? { src: f.image, night: true, credit: '' } : cityImage(cityKey, local.hour); })(),
       imgFail: false,
       weatherHi: city.hi != null ? `${city.hi}°` : '',
       weatherLo: city.hi != null ? `12 月平均 · 低 ${city.lo}°` : '',

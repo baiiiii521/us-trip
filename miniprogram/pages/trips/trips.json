@@ -3,7 +3,8 @@
   "enablePullDownRefresh": false,
   "navigationStyle": "custom",
   "usingComponents": {
-    "top-bar": "/components/topbar/topbar"
+    "top-bar": "/components/topbar/topbar",
+    "festive-layer": "/components/festive/festive"
   },
   "navigationBarTextStyle": "white",
   "backgroundColor": "#0E1A3A"

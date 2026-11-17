@@ -92,7 +92,7 @@ Page({
         trail: TRAIL.join(' → '),
         // 封面：codex 生成的纽约圣诞夜景（自己的服务器上）；读不到时显示午夜蓝底，线路照常
         cover: COVER.src,
-        credit: '封面为 AI 生成的示意图'
+        credit: ''
       },
       now: {
         label: nowLabel,

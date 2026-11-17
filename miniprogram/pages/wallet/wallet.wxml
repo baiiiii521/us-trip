@@ -1,3 +1,4 @@
+<page-meta page-style="{{festive.style}}" />
 <top-bar show-back title="订单夹" sub="确认号和截图" />
 <view class="page-pad">
   <view class="lead">确认号随手存这里。截图只留在本机，跟着手机走，不进云同步。</view>

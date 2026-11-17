@@ -1,3 +1,4 @@
+<page-meta page-style="{{festive.style}}" />
 <top-bar show-back title="记账与结算" sub="两人 AA" />
 <view class="page-pad">
   <!-- 结算 -->

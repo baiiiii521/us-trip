@@ -1,4 +1,6 @@
 {
   "component": true,
-  "usingComponents": {}
+  "usingComponents": {
+    "festive-layer": "/components/festive/festive"
+  }
 }

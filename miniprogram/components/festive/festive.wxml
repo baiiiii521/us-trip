@@ -1,0 +1,22 @@
+<!-- 节日彩蛋：12/24、12/25 全屏下雪；当天第一次打开弹一张贺卡 -->
+<view class="snow" wx:if="{{key}}">
+  <view
+    class="flake"
+    wx:for="{{snow}}"
+    wx:key="i"
+    style="left:{{item.left}}%;width:{{item.size}}rpx;height:{{item.size}}rpx;animation-duration:{{item.dur}}s;animation-delay:{{item.delay}}s;--drift:{{item.drift}}rpx"
+  ></view>
+</view>
+
+<view class="card-mask" wx:if="{{key && showCard}}" catchtouchmove="noop">
+  <view class="gcard">
+    <image class="gcard-img" src="{{image}}" mode="aspectFill" binderror="imgError" wx:if="{{!imgFail}}" />
+    <view class="gcard-fade"></view>
+    <view class="gcard-text">
+      <text class="gcard-en">{{en}}</text>
+      <text class="gcard-title">{{title}}</text>
+      <text class="gcard-line">{{line}}</text>
+      <view class="gcard-go" bindtap="close" hover-class="gcard-press">开始今天</view>
+    </view>
+  </view>
+</view>

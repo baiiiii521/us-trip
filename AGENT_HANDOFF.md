@@ -126,3 +126,5 @@ Barry 说旧样子「太素、像表格、东西不好找」，让新设计不�
 - 电脑端预览：`node scripts/mp-preview.mjs [页面…]`，截图在 `mp-preview/shots/`（不进仓库）；`NOW=2026-12-22T15:00Z` 假装是旅途中某个时刻（用 UTC 写），`FULL=1` 出整页长图。
 - 守门测试：`tests/mp-design.test.js`。
 - 还没做：订单夹按日期分段画成线路。
+- 节日彩蛋（2026-11-17）：美东 12/24 平安夜整套换松针绿、12/25 圣诞节换酒红，顶栏挂彩灯、全屏下雪，首页和今天页当天第一次打开弹贺卡（codex 节日图）。逻辑在 `miniprogram/lib/festive.js`，`app.js` 包了一层 Page 把 `festive` 塞进每页，每页第一行 `<page-meta page-style>` 盖配色；组件 `components/festive`。预览：`NOW=2026-12-24T22:00Z node scripts/mp-preview.mjs today`。
+- 图上不再标「AI 示意图」（Barry 2026-11-17 要求）；真实照片的作者署名保留（许可要求），首页底部那行说明还在。

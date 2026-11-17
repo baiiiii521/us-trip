@@ -186,6 +186,11 @@ async function renderEl(n, scope, ctx) {
       return `<input${attrString(n, scope, ctx)} placeholder="${esc(interp(a.placeholder || '', scope))}" value="${esc(interp(a.value || '', scope) ?? '')}">`;
     case 'picker':
       return `<wx-view${attrString(n, scope, ctx)}>${await kids()}</wx-view>`;
+    case 'page-meta': {
+      // 页面级样式（节日配色的 CSS 变量）：预览里直接盖到 body 上
+      const ps = String(interp(a['page-style'] || '', scope) || '');
+      return ps ? `<style>body{${ps.replace(/(-?[\d.]+)rpx/g, (_, v) => `${(+v * W) / 750}px`)}}</style>` : '';
+    }
     case 'map':
       return `<wx-view${attrString(n, scope, ctx, 'background:linear-gradient(135deg,#dfe7ee,#cfd9e2);display:flex;align-items:center;justify-content:center;color:#7a8794;font-size:12px;')}>地图（原生组件，预览里只画占位）</wx-view>`;
     case 'button':
@@ -209,7 +214,7 @@ async function renderComponent(path, n, scope, ctx) {
   const name = path.split('/').pop();
   ctx.css.add(cssOf(join(MP, `${path}.wxss`), `${name}__`));
   const tree = parse(readFileSync(join(MP, `${path}.wxml`), 'utf8'));
-  const html = await renderNodes(tree.kids, inst.data, { ...ctx, prefix: `${name}__`, comps: {} });
+  const html = await renderNodes(tree.kids, inst.data, { ...ctx, prefix: `${name}__`, comps: compOf(join(MP, `${path}.json`)) });
   return `<wx-view class="${esc(n.attrs.class ? String(interp(n.attrs.class, scope)) : '')}" data-comp="${name}">${html}</wx-view>`;
 }
 
@@ -243,6 +248,8 @@ wx-button { text-align: center; }
 
 async function renderPage(page, query = {}) {
   const inst = await loadPage(page, query);
+  // 小程序里 app.js 会给每个页面塞 festive（节日配色）；预览没跑 app.js，这里补上
+  if (!inst.data.festive) inst.data.festive = (await import(pathToFileURL(join(MP, 'lib/festive.js')).href)).festiveOf(new Date());
   const comps = compOf(join(MP, `${page}.json`));
   const json = existsSync(join(MP, `${page}.json`)) ? JSON.parse(readFileSync(join(MP, `${page}.json`), 'utf8')) : {};
   const ctx = { prefix: '', comps, css: new Set() };

@@ -1,3 +1,4 @@
+<page-meta page-style="{{festive.style}}" />
 <top-bar show-back title="{{poi ? poi.name : '景点'}}" />
 <view class="page-pad" wx:if="{{poi}}">
   <!-- 封面：维基首图（构建时抓好的地址），加载失败退回城市色排印块 -->

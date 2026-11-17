@@ -1,3 +1,4 @@
+<page-meta page-style="{{festive.style}}" />
 <top-bar show-back title="小技巧" sub="入境 · 坐车 · 看球" />
 <view class="page-pad">
   <view class="lead">网站「实用提示」整页搬过来的：{{groups.length}} 组、{{checklist.length}} 条待办，出发前按这个勾。</view>

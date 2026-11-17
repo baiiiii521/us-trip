@@ -1,5 +1,6 @@
+<page-meta page-style="{{festive.style}}" />
 <view class="page with-nav">
-  <top-bar show-back title="今天" sub="{{barSub}}" badge="{{badge}}" />
+  <top-bar show-back card title="今天" sub="{{barSub}}" badge="{{badge}}" />
 
   <!-- 城市图：白天是实拍，天黑后是 AI 夜景；城名和天气压在图的暗部 -->
   <view class="photo">
@@ -15,7 +16,7 @@
         <text class="wx-small">{{weatherLo}}</text>
       </view>
     </view>
-    <text class="photo-credit" wx:if="{{img.src && !imgFail}}">{{img.credit}}</text>
+    <text class="photo-credit" wx:if="{{img.src && !imgFail && img.credit}}">{{img.credit}}</text>
   </view>
 
   <!-- 午夜蓝站牌：五城线、三地时间 -->

@@ -1,3 +1,4 @@
+<page-meta page-style="{{festive.style}}" />
 <top-bar show-back title="大字卡" sub="给司机、店员看" />
 <view class="wrap">
   <view class="tabs">

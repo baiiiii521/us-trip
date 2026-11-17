@@ -62,6 +62,14 @@ for (const [key, name] of Object.entries(EXTRA)) {
   credits[key] = { kind: 'ai', source: 'codex 本机生图（AI 生成示意图，不是实拍）', file: src };
 }
 
+// 节日彩蛋（12/24、12/25 的贺卡和今天页头图）：codex 生成，竖版
+for (const name of ['christmas-eve', 'christmas-day']) {
+  const src = join(GEN, 'festive', `${name}.png`);
+  if (!existsSync(src)) continue;
+  squeeze(src, join(OUT, `${name}.jpg`), { w: 1080, h: 1440 });
+  credits[name] = { kind: 'ai', source: 'codex 本机生图（AI 生成示意图，不是实拍）', file: src };
+}
+
 try { execFileSync('rm', ['-f', tmp]); } catch (e) { /* 没有就算了 */ }
 writeFileSync(join(OUT, 'credits.json'), JSON.stringify(credits, null, 2) + '\n');
 console.log(`写好 ${Object.keys(credits).length} 张 → ${OUT}`);

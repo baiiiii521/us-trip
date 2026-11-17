@@ -10,6 +10,11 @@
     </view>
     <view class="badge num" wx:if="{{badge}}">{{badge}}</view>
   </view>
+  <!-- 节日：顶栏下沿挂一串彩灯 -->
+  <view class="bulbs" wx:if="{{festive}}">
+    <view class="wire"></view>
+    <view class="bulb" wx:for="{{bulbs}}" wx:key="i" style="background:{{item.color}};animation-delay:{{item.delay}}ms"></view>
+  </view>
   <!-- 整趟旅程的五色线：五座城按住的天数分段，走过的亮，没走的暗 -->
   <view class="rail" wx:if="{{progress >= 0}}">
     <view
@@ -20,3 +25,4 @@
     ></view>
   </view>
 </view>
+<festive-layer card="{{card}}" />

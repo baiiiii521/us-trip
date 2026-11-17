@@ -1,3 +1,4 @@
+<page-meta page-style="{{festive.style}}" />
 <view class="page">
   <!-- 页头：自己让开状态栏（页面是自定义导航栏），品牌行 + 大标题 -->
   <view class="hero" style="padding-top:{{sb + 10}}px">
@@ -19,7 +20,6 @@
         <text class="cover-title">{{hero.title}}</text>
         <text class="cover-meta num">美国东部 · {{hero.shortMeta}} · 4 场 NBA</text>
       </view>
-      <text class="credit" wx:if="{{hero.credit}}">AI 示意图</text>
     </view>
 
     <view class="line">
@@ -62,3 +62,5 @@
 
   <view class="foot">内容和 trip.byb521.com 同一份 · 景点照片来自维基共享资源，城市夜景为 AI 示意图</view>
 </view>
+
+<festive-layer card />

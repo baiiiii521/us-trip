@@ -1,3 +1,4 @@
+<page-meta page-style="{{festive.style}}" />
 <top-bar show-back title="自驾须知" sub="四段路 · 取车还车" />
 <view class="page-pad">
   <view class="card">

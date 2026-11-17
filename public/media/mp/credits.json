@@ -73,5 +73,15 @@
     "kind": "ai",
     "source": "codex 本机生图（AI 生成示意图，不是实拍）",
     "file": "video/intro3d/assets/gen/brooklyn.jpg"
+  },
+  "christmas-eve": {
+    "kind": "ai",
+    "source": "codex 本机生图（AI 生成示意图，不是实拍）",
+    "file": "video/intro3d/assets/gen/festive/christmas-eve.png"
+  },
+  "christmas-day": {
+    "kind": "ai",
+    "source": "codex 本机生图（AI 生成示意图，不是实拍）",
+    "file": "video/intro3d/assets/gen/festive/christmas-day.png"
   }
 }

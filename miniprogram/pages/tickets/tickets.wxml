@@ -1,3 +1,4 @@
+<page-meta page-style="{{festive.style}}" />
 <top-bar show-back title="票务" sub="六场球 · 购票入口" />
 <!-- 球馆图：codex 生成的示意图，读不到就只剩午夜蓝底 -->
 <view class="arena">
@@ -7,7 +8,7 @@
     <text class="arena-big">4 场排进行程</text>
     <text class="arena-sub">凯尔特人 · 奇才 · 76人 · 篮网，另有两场可选</text>
   </view>
-  <text class="arena-credit" wx:if="{{arena.src && !arenaFail}}">{{arena.credit}}</text>
+  <text class="arena-credit" wx:if="{{arena.src && !arenaFail && arena.credit}}">{{arena.credit}}</text>
 </view>
 
 <view class="page-pad">

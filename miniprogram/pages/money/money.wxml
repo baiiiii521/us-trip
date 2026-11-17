@@ -1,3 +1,4 @@
+<page-meta page-style="{{festive.style}}" />
 <view class="page with-nav">
   <top-bar show-back title="花费" sub="两人预算 · 只读" />
   <view class="card total-card">

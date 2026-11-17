@@ -3,7 +3,8 @@
 // 生成和更新：node scripts/mp-media.mjs，然后随网站发版。
 export const MEDIA = 'https://trip.byb521.com/media/mp/';
 
-// 真实照片的作者和许可（维基共享资源）；夜景是 AI 生成图，标「AI 示意图」
+// 真实照片的作者和许可（维基共享资源，许可要求署名，所以图上保留）；
+// 夜景、封面、球馆图是 codex 生成的，2026-11-17 Barry 要求图上不再标「AI 示意图」（首页底部那行说明还在）
 const CREDIT = {
   'bos-day': 'Gaby Azeem · CC0',
   'dc-day': 'Martin Falbisoner · CC BY-SA 3.0',
@@ -20,9 +21,9 @@ export function cityImage(city, hour) {
   return {
     src: `${MEDIA}${name}.jpg`,
     night,
-    credit: night ? 'AI 示意图' : `实拍 · ${CREDIT[name]}`
+    credit: night ? '' : `实拍 · ${CREDIT[name]}`
   };
 }
 
-export const COVER = { src: `${MEDIA}cover.jpg`, credit: 'AI 示意图' };
-export const ARENA = { src: `${MEDIA}arena.jpg`, credit: 'AI 示意图' };
+export const COVER = { src: `${MEDIA}cover.jpg`, credit: '' };
+export const ARENA = { src: `${MEDIA}arena.jpg`, credit: '' };

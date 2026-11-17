@@ -1,6 +1,6 @@
 /* 首页：整页午夜蓝。一趟旅程是一张带五城线路的卡片 */
 page {
-  background: #0E1A3A;
+  background: var(--night);
 }
 
 .page {
@@ -35,11 +35,11 @@ page {
   padding: 6rpx 16rpx;
   border-radius: 999rpx;
   background: rgba(255, 255, 255, 0.12);
-  color: #A9B6D6;
+  color: var(--on-night-2);
 }
 
 .phase.now {
-  background: #FFC233;
+  background: var(--go);
   color: #0E1A3A;
 }
 
@@ -54,7 +54,7 @@ page {
 .trip-card {
   margin: 0 24rpx;
   border-radius: 32rpx;
-  background: #17264D;
+  background: var(--night-2);
   overflow: hidden;
   box-shadow: 0 24rpx 48rpx -24rpx rgba(0, 0, 0, 0.6);
   transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -67,7 +67,7 @@ page {
 .cover {
   position: relative;
   height: 560rpx;
-  background: #22335F;
+  background: var(--night-3);
 }
 
 .cover-img {
@@ -84,7 +84,7 @@ page {
   right: 0;
   bottom: 0;
   height: 70%;
-  background: linear-gradient(180deg, rgba(23, 38, 77, 0) 0%, rgba(23, 38, 77, 0.78) 58%, #17264D 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 45%, var(--night-2) 100%);
 }
 
 .cover-text {
@@ -99,7 +99,7 @@ page {
 .cover-kicker {
   font-size: 24rpx;
   font-weight: 700;
-  color: #FFC233;
+  color: var(--go);
 }
 
 .cover-title {
@@ -114,7 +114,7 @@ page {
 .cover-meta {
   margin-top: 10rpx;
   font-size: 24rpx;
-  color: #C9D3EA;
+  color: var(--on-night-2);
 }
 
 .credit {
@@ -172,7 +172,7 @@ page {
 .ln-md {
   margin-top: 2rpx;
   font-size: 24rpx;
-  color: #A9B6D6;
+  color: var(--on-night-2);
 }
 
 .cta {
@@ -182,7 +182,7 @@ page {
   justify-content: center;
   min-height: 96rpx;
   border-radius: 999rpx;
-  background: #FFC233;
+  background: var(--go);
   color: #0E1A3A;
   font-size: 31rpx;
   font-weight: 750;
@@ -215,7 +215,7 @@ page {
   display: flex;
   align-items: center;
   border-radius: 999rpx;
-  background: #FFC233;
+  background: var(--go);
   font-size: 25rpx;
   font-weight: 700;
 }
@@ -249,7 +249,7 @@ page {
   margin: 48rpx 32rpx 18rpx;
   font-size: 28rpx;
   font-weight: 750;
-  color: #A9B6D6;
+  color: var(--on-night-2);
 }
 
 .tools {
@@ -265,12 +265,12 @@ page {
   gap: 6rpx;
   padding: 26rpx 26rpx 28rpx;
   border-radius: 24rpx;
-  background: #17264D;
+  background: var(--night-2);
   min-height: 120rpx;
 }
 
 .tool-press {
-  background: #22335F;
+  background: var(--night-3);
 }
 
 .tool-name {
@@ -282,12 +282,12 @@ page {
 .tool-sub {
   font-size: 24rpx;
   line-height: 1.45;
-  color: #A9B6D6;
+  color: var(--on-night-2);
 }
 
 .foot {
   margin: 40rpx 32rpx 0;
   font-size: 24rpx;
   line-height: 1.6;
-  color: #A9B6D6;
+  color: var(--on-night-2);
 }

@@ -39,6 +39,8 @@ function readMetrics() {
   return { sb, navH, platform };
 }
 
+import { festiveKey, BULBS } from '../../lib/festive.js';
+
 Component({
   properties: {
     title: { type: String, value: '' },
@@ -47,16 +49,19 @@ Component({
     brand: { type: Boolean, value: false },
     transparent: { type: Boolean, value: false },
     badge: { type: String, value: '' },
-    progress: { type: Number, value: -1, observer: 'paint' }
+    progress: { type: Number, value: -1, observer: 'paint' },
+    // 今天页传 card：节日当天第一次打开弹贺卡
+    card: { type: Boolean, value: false }
   },
-  data: { sb: 24, navH: 48, segs: [] },
+  data: { sb: 24, navH: 48, segs: [], festive: '', bulbs: [] },
   lifetimes: {
     attached() {
       const app = getApp();
       const cached = app && app.globalData && app.globalData.metrics;
       const m = cached && cached.sb ? cached : readMetrics();
       if (app && app.globalData) app.globalData.metrics = m;
-      this.setData({ sb: m.sb, navH: m.navH });
+      const fk = festiveKey(new Date());
+      this.setData({ sb: m.sb, navH: m.navH, festive: fk, bulbs: fk ? BULBS : [] });
       this.paint();
     }
   },
