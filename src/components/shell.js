@@ -1,7 +1,17 @@
 // 外壳：顶栏、桌面标签、手机底部导航、弹层容器
 import { icon, esc, usd, cny, brandMark } from '../lib/dom.js';
 import { budgetTotal } from '../lib/calc.js';
-import { TRIP } from '../data/trip.js';
+import { TRIP, CITIES } from '../data/trip.js';
+import { codeLabel } from '../lib/weather.js';
+
+// 顶栏第二行：北京时间、纽约时间（12/31 在洛杉矶时多一个洛杉矶时间）、所在城市现在的天气
+const hm = (now, timeZone) => new Intl.DateTimeFormat('zh-CN', { timeZone, hour: '2-digit', minute: '2-digit', hour12: false }).format(now);
+export function nowbarHtml(now, city = 'nyc', wx = null) {
+  const zh = (CITIES[city] || CITIES.nyc).zh;
+  const clocks = [['北京', 'Asia/Shanghai'], ['纽约', 'America/New_York'], ...(city === 'la' ? [['洛杉矶', 'America/Los_Angeles']] : [])];
+  const w = wx ? `${esc(zh)} ${Math.round(wx.temp)}°C ${esc(codeLabel(wx.code))}${wx.feels != null && Math.abs(wx.feels - wx.temp) >= 3 ? `<span class="nowbar__feels">体感 ${Math.round(wx.feels)}°</span>` : ''}` : `${esc(zh)} 天气读取中`;
+  return `${clocks.map(([l, tz]) => `<span class="nowbar__c">${l} <b>${hm(now, tz)}</b></span>`).join('')}<span class="nowbar__wx">${w}</span>`;
+}
 
 export const ROUTES = [
   { id: 'home', label: '总览', icon: 'home' },
@@ -41,6 +51,7 @@ export function shellHtml() {
       </button>
       <button class="iconbtn" type="button" data-action="open-settings" aria-label="方案设置">${icon('gear')}</button>
     </div>
+    <div class="nowbar" id="nowbar" aria-label="现在的时间和天气"></div>
   </header>
   <main id="view" class="view" tabindex="-1"></main>
   <nav class="bottombar" aria-label="主导航">${bottom}</nav>

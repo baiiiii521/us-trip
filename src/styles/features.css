@@ -186,7 +186,7 @@ dialog.sheet.sheet--big { margin: 0; max-width: none; width: 100vw; height: 100d
 .lg-car { background: var(--accent); }
 
 /* 票务页的跳转条：贴在顶栏下面，横向滑动 */
-.jump { position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--nav)); z-index: 9; display: flex; gap: var(--s-2); overflow-x: auto; scrollbar-width: none;
+.jump { position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--nav) + var(--nowbar)); z-index: 9; display: flex; gap: var(--s-2); overflow-x: auto; scrollbar-width: none;
   margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: var(--s-2) max(16px, env(safe-area-inset-left, 0px)); background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
 .jump::-webkit-scrollbar { display: none; }
 .jump .chip { flex: none; text-decoration: none; }

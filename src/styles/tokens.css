@@ -57,6 +57,7 @@
 
   --nav: 64px;
   --bar: 64px;
+  --nowbar: 30px;
   --shadow-hover: 0 8px 24px color-mix(in srgb, var(--ink) 10%, transparent);
 }
 

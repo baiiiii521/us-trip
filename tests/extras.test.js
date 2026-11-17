@@ -127,3 +127,15 @@ test('两地时钟：预览模式按当地钟点推北京时间', () => {
   assert.equal(c.local, '10:00'); assert.equal(c.beijing, '23:00'); assert.equal(c.call.ok, false);
   assert.equal(clocks(new Date(2026, 11, 31, 17, 0), 'la', true).beijing, '09:00');
 });
+
+test('顶栏：北京和纽约时间、现在的天气；在洛杉矶那天多一个洛杉矶时间', async () => {
+  const { nowbarHtml } = await import('../src/components/shell.js');
+  const { parseNow } = await import('../src/lib/weather.js');
+  const t = new Date(Date.UTC(2026, 11, 22, 20, 5));
+  const h = nowbarHtml(t, 'dc', { temp: 3.4, code: 3, feels: -1.2 });
+  assert.match(h, /北京 <b>04:05<\/b>/); assert.match(h, /纽约 <b>15:05<\/b>/); assert.match(h, /华盛顿 3°C 阴/); assert.match(h, /体感 -1°/);
+  assert.doesNotMatch(h, /洛杉矶/);
+  assert.match(nowbarHtml(t, 'la', null), /洛杉矶 <b>12:05<\/b>/); assert.match(nowbarHtml(t, 'nyc', null), /纽约 天气读取中/);
+  assert.deepEqual(parseNow({ current: { temperature_2m: 5, weather_code: 71, apparent_temperature: 1 } }), { temp: 5, code: 71, feels: 1 });
+  assert.equal(parseNow({}), null);
+});

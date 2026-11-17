@@ -144,7 +144,7 @@
 
 /* ───────── 每日行程 ───────── */
 .strip {
-  position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--nav)); z-index: 10;
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--nav) + var(--nowbar)); z-index: 10;
   display: flex; gap: var(--s-2); overflow-x: auto; scrollbar-width: none;
   margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
   padding: var(--s-3) max(16px, env(safe-area-inset-left, 0px));
@@ -168,7 +168,7 @@
 .strip__d.is-today { box-shadow: 0 0 0 2px var(--accent); }
 
 .days { display: grid; gap: var(--s-5); }
-.day { padding: 0; overflow: hidden; scroll-margin-top: calc(var(--nav) + 96px); }
+.day { padding: 0; overflow: hidden; scroll-margin-top: calc(var(--nav) + var(--nowbar) + 96px); }
 .day__h { display: grid; grid-template-columns: auto 1fr; gap: var(--s-4); padding: var(--s-5); border-bottom: 1px solid var(--line); align-items: start; }
 .day__h > .btn { grid-column: 1 / -1; justify-self: stretch; }
 @media (min-width: 640px) { .day__h { grid-template-columns: auto 1fr auto; } .day__h > .btn { grid-column: auto; justify-self: end; } }

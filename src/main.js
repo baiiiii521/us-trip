@@ -19,7 +19,7 @@ import { LEGS } from './data/legs.js';
 import { CITIES } from './data/trip.js';
 import { buildDays } from './data/days.js';
 import { HOTEL_OF } from './data/hotels.js';
-import { shellHtml, updateShell, ROUTES, SUBPAGES } from './components/shell.js';
+import { shellHtml, updateShell, nowbarHtml, ROUTES, SUBPAGES } from './components/shell.js';
 import { settingsHtml } from './components/settings.js';
 import { poiSheetHtml } from './components/poi-sheet.js';
 import { gamedaySheetHtml } from './components/gameday.js';
@@ -44,7 +44,7 @@ import { renderMemories, memUi, loadMemories } from './views/memories.js';
 import { files, uid } from './lib/storage.js';
 import { loadParking } from './views/home.js';
 import { fetchRate } from './lib/money.js';
-import { loadWeather, weatherFor, codeLabel } from './lib/weather.js';
+import { loadWeather, weatherFor, codeLabel, loadNow, cachedNow } from './lib/weather.js';
 import { findToday, keyEvents } from './lib/today.js';
 import { askPermission, notifyPermission, scheduleReminders } from './lib/notify.js';
 import { registerSW, onPwaChange, promptInstall, warmUrls } from './lib/pwa.js';
@@ -697,12 +697,23 @@ loadParking().then(rerender).catch(() => {});
 loadWeather().then((m) => { ctx.weather = m; rerender(); }).catch(() => {});
 onPhotos(() => render({ keepScroll: true }));
 loadPhotos(POIS.map((p) => p.wiki), POI_FILES);
+/* ---------- 顶栏的时间和天气：每分钟走一次；天气半小时取一次，行程中跟着当天的城市走 ---------- */
+function tickNowbar() {
+  const el = document.getElementById('nowbar'); if (!el) return;
+  const today = findToday(buildDays(getState()), new Date());
+  const city = today ? today.city : 'nyc';
+  el.innerHTML = nowbarHtml(new Date(), city, cachedNow(city));
+  if (!cachedNow(city)) loadNow(city).then((d) => { if (d) el.innerHTML = nowbarHtml(new Date(), city, d); });
+}
+tickNowbar();
+
 registerSW();
 onPwaChange(() => { if (route === 'more') rerender(); });
 armReminders();
 // 今天页面每分钟刷新一次“现在/下一项”；顺手重排提醒：
 // 行程离出发还有好多天，只在打开时排一次的话，等事件进到 24 小时窗口内、页面一直开着也不会响。
 setInterval(() => {
+  tickNowbar();
   armReminders();
   if (route === 'home' && !typing() && !sheet.open && findToday(buildDays(getState()), currentNow(getState()))) rerender();
 }, 60000);

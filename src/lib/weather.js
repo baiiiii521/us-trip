@@ -77,3 +77,31 @@ export function weatherFor(map, city, day) {
   const [m, d] = day.md.split('/');
   return map[`${city}|2026-${m.padStart(2, '0')}-${d.padStart(2, '0')}`] || null;
 }
+
+// —— 现在的天气（顶栏用）：当前气温和天气代码，缓存 30 分钟 ——
+const NOW_KEY = 'hoops-weather-now-v1';
+const NOW_TTL = 30 * 60000;
+
+// Open-Meteo 返回 → { temp, code, feels }（纯函数）；数据不全返回 null
+export function parseNow(json) {
+  const c = json && json.current;
+  if (!c || typeof c.temperature_2m !== 'number') return null;
+  return { temp: c.temperature_2m, code: c.weather_code, feels: typeof c.apparent_temperature === 'number' ? c.apparent_temperature : null };
+}
+
+export function cachedNow(city, now = Date.now()) {
+  try { const c = JSON.parse(localStorage.getItem(NOW_KEY) || '{}')[city]; if (c && now - c.at < NOW_TTL) return c.data; } catch (e) { /* 忽略 */ }
+  return null;
+}
+
+export async function loadNow(city) {
+  const hit = cachedNow(city); if (hit) return hit;
+  const [lat, lon, tz] = COORDS[city] || COORDS.nyc;
+  try {
+    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&timezone=${encodeURIComponent(tz)}&current=temperature_2m,apparent_temperature,weather_code`);
+    if (!res.ok) return null;
+    const data = parseNow(await res.json());
+    if (data) { try { const all = JSON.parse(localStorage.getItem(NOW_KEY) || '{}'); all[city] = { at: Date.now(), data }; localStorage.setItem(NOW_KEY, JSON.stringify(all)); } catch (e) { /* 忽略 */ } }
+    return data;
+  } catch (e) { return null; }
+}
