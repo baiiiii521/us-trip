@@ -4,5 +4,7 @@
   "navigationStyle": "custom",
   "usingComponents": {
     "top-bar": "/components/topbar/topbar"
-  }
+  },
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#16202B"
 }

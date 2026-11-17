@@ -85,6 +85,10 @@ test('开了自定义导航栏的页面，wxml 里必须真的有顶部栏', () 
     const cfg = JSON.parse(readFileSync(join(MP, `${page}.json`), 'utf8'));
     if (cfg.navigationStyle !== 'custom') continue;
     const src = readFileSync(join(MP, `${page}.wxml`), 'utf8');
-    assert.ok(src.includes('<top-bar'), `${page} 用了自定义导航栏却没有 <top-bar>`);
+    // 要么用统一顶栏，要么整页自己画（首页是整幅封面，白色状态栏文字压在图上）
+    assert.ok(
+      src.includes('<top-bar') || src.includes('class="hero"'),
+      `${page} 用了自定义导航栏却既没有 <top-bar> 也没有自己的封面`
+    );
   }
 });

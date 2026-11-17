@@ -1,49 +1,75 @@
-<top-bar brand title="行前行后" sub="走过的和要走的，都记在这里" />
+<view class="page">
+  <!-- 封面：整幅图压到状态栏下面，白字压在暗部 -->
+  <view class="hero" style="padding-top:{{sb}}px">
+    <image class="hero-img" wx:if="{{hero.cover}}" src="{{hero.cover}}" mode="aspectFill" />
+    <view class="hero-fade"></view>
 
-<view class="page-pad">
-  <view
-    wx:for="{{list}}"
-    wx:key="id"
-    class="card card-tap trip"
-    hover-class="trip-hover"
-    hover-stay-time="80"
-    data-id="{{item.id}}"
-    bindtap="openTrip"
-  >
-    <view class="trip-cover">
-      <text class="trip-cover-en">{{item.titleEn}}</text>
-      <view class="trip-cover-line"></view>
+    <view class="hero-top">
+      <image class="mark" src="/assets/logo.png" mode="aspectFill" />
+      <text class="mark-name">行前行后</text>
+      <text class="phase {{hero.phaseKey}}">{{hero.phaseLabel}}</text>
     </view>
 
-    <view class="trip-body">
-      <view class="trip-top">
-        <text class="trip-title">{{item.title}}</text>
-        <text class="pill {{item.phaseKey === 'now' ? 'pill-accent' : ''}}">{{item.phaseLabel}}</text>
-      </view>
+    <view class="hero-body">
+      <view class="hero-title">{{hero.title}}</view>
+      <view class="hero-meta">{{hero.metaText}}</view>
 
-      <view class="trip-meta">
-        <text>{{item.dateText}}</text>
-        <text class="dot">·</text>
-        <text>{{item.days}} 天</text>
-        <text class="dot">·</text>
-        <text>{{item.people}} 人</text>
+      <view class="cta" data-id="{{hero.id}}" bindtap="openTrip" hover-class="cta-press">
+        <text class="cta-text">进入行程</text>
+        <text class="cta-arrow">→</text>
       </view>
+    </view>
 
-      <view class="trip-trail">
-        <block wx:for="{{item.trail}}" wx:for-item="city" wx:for-index="i" wx:key="*this">
-          <text class="trail-city">{{city}}</text>
-          <text wx:if="{{i < item.trail.length - 1}}" class="trail-arrow">→</text>
-        </block>
+    <text class="credit" wx:if="{{hero.credit}}">{{hero.credit}}</text>
+  </view>
+
+  <!-- 今天 / 出发前 -->
+  <view class="now" wx:if="{{now}}">
+    <view class="now-head">
+      <text class="now-label">{{now.label}}</text>
+      <text class="now-nav" wx:if="{{now.canNav}}" bindtap="navNow" hover-class="tap-dim">导航 ›</text>
+    </view>
+    <view class="now-title">{{now.title}}</view>
+    <view class="now-sub">{{now.sub}}</view>
+    <view class="now-detail" wx:if="{{now.detail}}">{{now.detail}}</view>
+  </view>
+
+  <!-- 工具：分组列表，一行一件事 -->
+  <view class="section">工具</view>
+  <view class="card group">
+    <view
+      class="row"
+      wx:for="{{tools}}"
+      wx:key="key"
+      data-url="{{item.url}}"
+      bindtap="go"
+      hover-class="row-press"
+    >
+      <view class="row-l">
+        <text class="row-name">{{item.name}}</text>
+        <text class="row-sub">{{item.sub}}</text>
       </view>
-
-      <view class="trip-summary">{{item.summary}}</view>
-
-      <view class="trip-foot">
-        <text class="trip-open">打开旅程</text>
-        <text class="trip-chev">›</text>
-      </view>
+      <text class="row-chev">›</text>
     </view>
   </view>
 
-  <view class="foot-note">下一趟旅行做好了，也会出现在这里。</view>
+  <!-- 所有旅程 -->
+  <view class="section">所有旅程</view>
+  <view
+    class="card trip"
+    wx:for="{{trips}}"
+    wx:key="id"
+    data-id="{{item.id}}"
+    bindtap="openTrip"
+    hover-class="row-press"
+  >
+    <view class="trip-l">
+      <text class="trip-name">{{item.title}}</text>
+      <text class="trip-meta">{{item.dateText}} · {{item.days}} 天 · {{item.people}} 人</text>
+      <text class="trip-trail">{{item.trail}}</text>
+    </view>
+    <text class="trip-chev">›</text>
+  </view>
+
+  <view class="foot">内容与 trip.byb521.com 同源 · 改内容改网站那份</view>
 </view>

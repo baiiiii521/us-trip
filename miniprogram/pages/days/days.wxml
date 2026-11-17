@@ -110,7 +110,7 @@
               <view class="addr-text" data-id="{{day.id}}" data-i="{{ii}}" bindtap="openItem">{{it.addr || ('导航到：' + it.spot.name)}}</view>
               <view class="addr-actions">
                 <view class="addr-btn" data-id="{{day.id}}" data-i="{{ii}}" catchtap="openItem">导航</view>
-                <view class="addr-btn ghost" data-q="{{it.addr}}" catchtap="copyAddr">复制</view>
+                <view class="addr-btn ghost" wx:if="{{it.addr}}" data-q="{{it.addr}}" catchtap="copyAddr">复制</view>
               </view>
             </view>
 

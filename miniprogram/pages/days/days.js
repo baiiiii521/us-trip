@@ -224,8 +224,15 @@ Page({
 
   copyAddr(e) {
     const { q } = e.currentTarget.dataset;
-    if (!q) return;
-    wx.setClipboardData({ data: String(q), success: () => wx.showToast({ title: '英文地址已复制', icon: 'none' }) });
+    if (!q) {
+      wx.showToast({ title: '这一条没有英文地址，点「导航」直接开地图', icon: 'none' });
+      return;
+    }
+    wx.setClipboardData({
+      data: String(q),
+      success: () => wx.showToast({ title: '英文地址已复制', icon: 'none' }),
+      fail: () => wx.showModal({ title: '复制失败，手动抄一下', content: String(q), showCancel: false })
+    });
   },
 
   jump(e) {
