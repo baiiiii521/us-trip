@@ -28,7 +28,7 @@ export function buildDays(state) {
       id: '1218', md: '12/18', wd: '周五', city: 'bos', from: 'nyc', title: '落地取车，开去波士顿',
       items: [
         { t: '10:55 落地', slot: 'flight-in', text: 'MF849 从福州 09:20 起飞，JFK T4 10:55 落地。前一段是 12/17 13:45 郑州 CGO T2（MF8280），福州跨夜中转 17h25m，行李要在福州取出来重新托运。入境排队 1.5–2 小时，食品如实申报。' },
-        { t: '12:45', text: '出关后先别急着上路：到达层吃点东西、买咖啡，手机连上 eSIM，把导航目的地设成波士顿酒店。' },
+        { t: '12:45', text: '出关后先别急着出发：到达层吃点东西、买咖啡，手机连上 eSIM，把导航目的地设成波士顿酒店。' },
         { t: '13:00 取车', drive: 'pickup', text: `${PICKUP.jfk.how} 准备好驾照原件 + 翻译件、护照、主驾驶的信用卡；两人都登记为驾驶员，确认含过路费电子收费服务。取车时绕车拍一圈视频。` },
         { t: '14:00', leg: 's1' },
         { t: '16:00', text: '必停一次：康州 I-95 上的 Milford 服务区（离 JFK 约 1.5 小时）。上厕所、换人开。先喝咖啡再眯 20 分钟，醒来咖啡因正好起效。不困也要停：这时候身体是北京时间凌晨 5 点。' },
@@ -98,7 +98,7 @@ export function buildDays(state) {
     const south = [
       { t: '10:00', nav: { name: '纽黑文 Frank Pepe 披萨', q: 'Frank Pepe Pizzeria Napoletana, 157 Wooster St, New Haven, CT', mode: 'driving' }, text: '到纽黑文（开了 2.5 小时，全程的三分之一）。车停在 Wooster St 路边咪表或旁边的停车场，后备箱别开。先走 15 分钟去耶鲁老校区：Phelps 门、Harkness 塔、Sterling 图书馆外观。今天周一，耶鲁美术馆闭馆，只逛校园。' },
       { t: '11:00', nav: { name: '纽黑文 Frank Pepe 披萨', q: 'Frank Pepe Pizzeria Napoletana, 157 Wooster St, New Haven, CT', mode: 'driving' }, text: 'Frank Pepe 披萨（157 Wooster St），纽黑文披萨的老店：一开门就进，不用排队。招牌是白蛤蜊披萨（White Clam Pie）。开门时间有 10:30 和 11:00 两种说法，出发前看一眼官网。' },
-      { t: '12:15', nav: { name: HOTEL_OF.dc.zh, q: HOTEL_OF.dc.addr, mode: 'driving' }, text: '换人开，上路：I-95 南 → I-287 西过 Mario Cuomo 大桥（绕开纽约市区）→ 新泽西收费公路。15:00 前后在 Molly Pitcher 服务区停 15 分钟，上厕所、再换一次人。' },
+      { t: '12:15', nav: { name: HOTEL_OF.dc.zh, q: HOTEL_OF.dc.addr, mode: 'driving' }, text: '换人开，出发：I-95 南 → I-287 西过 Mario Cuomo 大桥（绕开纽约市区）→ 新泽西收费公路。15:00 前后在 Molly Pitcher 服务区停 15 分钟，上厕所、再换一次人。' },
       { t: '18:00', text: '到酒店（1225 First St NE，NoMa 一带），天已经黑了：车交给代客泊车或停进车库，12/22 全天不碰车。', pois: ['union-station-dc'] },
       { t: '19:00', text: '晚饭就近吃：走 10 分钟到联合车站，或红线两站到 Gallery Place 的中国城。', pois: ['union-station-dc'] },
       { t: '可选 20:00', text: '精神好再去：红线到 Metro Center，走 10 分钟看白宫北侧外观 → 国家圣诞树（日落后亮灯，往年平日亮到 22:00）。累了就不去，明天中午走到华盛顿纪念碑时往北 5 分钟，白天看一眼。', pois: ['white-house', 'national-tree'] }

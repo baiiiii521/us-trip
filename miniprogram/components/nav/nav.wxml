@@ -2,12 +2,13 @@
   <view
     wx:for="{{items}}"
     wx:key="key"
-    class="nav-item {{item.key === current ? 'on' : ''}}"
+    class="item {{item.key === current ? 'on' : ''}}"
     data-key="{{item.key}}"
     data-url="{{item.url}}"
     bindtap="go"
+    hover-class="item-hover"
   >
-    <text class="nav-dot"></text>
-    <text class="nav-label">{{item.label}}</text>
+    <image class="ic" src="{{item.key === current ? item.on : item.icon}}" mode="aspectFit" />
+    <text class="label">{{item.label}}</text>
   </view>
 </view>

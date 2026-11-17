@@ -12,6 +12,7 @@
     "pages/cards/cards",
     "pages/tickets/tickets",
     "pages/drive/drive",
+    "pages/tips/tips",
     "pages/more/more"
   ],
   "window": {

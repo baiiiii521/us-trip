@@ -1,0 +1,12 @@
+<view class="bar {{transparent ? 'ghost' : ''}}" style="padding-top:{{sb}}px">
+  <view class="inner">
+    <view class="back" wx:if="{{showBack}}" bindtap="goBack" hover-class="back-hover">
+      <text class="chev">‹</text>
+    </view>
+    <image class="logo" wx:if="{{brand}}" src="/assets/logo.png" mode="aspectFill" />
+    <view class="texts">
+      <view class="title">{{title}}</view>
+      <view class="sub" wx:if="{{sub}}">{{sub}}</view>
+    </view>
+  </view>
+</view>

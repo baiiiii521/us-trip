@@ -1,4 +1,5 @@
 <view class="page with-nav">
+  <top-bar title="随身" sub="紧急情况 · 证件 · 设置" />
   <!-- 紧急情况：这一块现在就能用 -->
   <view class="card sos">
     <view class="section-label">紧急情况</view>
@@ -24,6 +25,11 @@
 
   <!-- 功能入口 -->
   <view class="card">
+    <view class="entry" data-url="/pages/tips/tips" bindtap="go">
+      <text class="entry-name">小技巧</text>
+      <text class="entry-sub">入境、刷卡坐车、买票、穿衣…网站的实用提示整页</text>
+      <text class="entry-go">›</text>
+    </view>
     <view class="entry" data-url="/pages/wallet/wallet" bindtap="go">
       <text class="entry-name">订单夹</text>
       <text class="entry-sub">机票、酒店、球票的确认号和截图</text>

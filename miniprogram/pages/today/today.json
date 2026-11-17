@@ -2,6 +2,8 @@
   "navigationBarTitleText": "今天",
   "enablePullDownRefresh": true,
   "usingComponents": {
-    "bottom-nav": "/components/nav/nav"
-  }
+    "bottom-nav": "/components/nav/nav",
+    "topbar": "/components/topbar/topbar"
+  },
+  "navigationStyle": "custom"
 }
