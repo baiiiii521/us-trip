@@ -22,28 +22,42 @@
     <view class="tip" wx:for="{{tips}}" wx:key="*this">· {{item}}</view>
   </view>
 
-  <!-- 还没搬过来的入口，先列出来 -->
+  <!-- 功能入口 -->
   <view class="card">
-    <view class="section-label">下一版接入</view>
-    <view class="entry" data-name="证件包" bindtap="soon">
-      <text class="entry-name">证件包</text>
-      <text class="entry-sub">护照、订单、行程单，密码解锁</text>
-    </view>
-    <view class="entry" data-name="订单夹" bindtap="soon">
+    <view class="entry" data-url="/pages/wallet/wallet" bindtap="go">
       <text class="entry-name">订单夹</text>
       <text class="entry-sub">机票、酒店、球票的确认号和截图</text>
+      <text class="entry-go">›</text>
     </view>
-    <view class="entry" data-name="票务" bindtap="soon">
+    <view class="entry" data-url="/pages/tickets/tickets" bindtap="go">
       <text class="entry-name">票务</text>
-      <text class="entry-sub">六场球赛和四段城际的买票入口</text>
+      <text class="entry-sub">六场球赛和比价平台，链接一键复制</text>
+      <text class="entry-go">›</text>
     </view>
-    <view class="entry" data-name="大字卡" bindtap="soon">
+    <view class="entry" data-url="/pages/drive/drive" bindtap="go">
+      <text class="entry-name">自驾须知</text>
+      <text class="entry-sub">四段路线、取还车、停车、租车要带什么</text>
+      <text class="entry-go">›</text>
+    </view>
+    <view class="entry" data-url="/pages/cards/cards" bindtap="go">
       <text class="entry-name">英文大字卡</text>
-      <text class="entry-sub">给司机看地址、常用句子</text>
+      <text class="entry-sub">给司机看地址、球馆、常用句子，横屏常亮</text>
+      <text class="entry-go">›</text>
     </view>
-    <view class="entry" data-name="值机提醒" bindtap="soon">
+    <view class="entry" data-url="/pages/ledger/ledger" bindtap="go">
+      <text class="entry-name">记账与结算</text>
+      <text class="entry-sub">记一笔、两人 AA、最后谁给谁多少</text>
+      <text class="entry-go">›</text>
+    </view>
+    <view class="entry" data-name="证件包" bindtap="soon">
+      <text class="entry-name">证件包</text>
+      <text class="entry-sub">护照、订单、行程单：正在做密码解锁</text>
+      <text class="entry-go soon">下一版</text>
+    </view>
+    <view class="entry" data-name="提醒" bindtap="soon">
       <text class="entry-name">提醒</text>
-      <text class="entry-sub">值机、球赛、取还车（订阅消息要有后端）</text>
+      <text class="entry-sub">值机、球赛、取还车（订阅消息要后端）</text>
+      <text class="entry-go soon">下一版</text>
     </view>
   </view>
 

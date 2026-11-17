@@ -1,0 +1,75 @@
+<view class="page-pad">
+  <!-- 结算 -->
+  <view class="card sum">
+    <view class="sum-row">
+      <view class="sum-block">
+        <text class="eyebrow">一共花了</text>
+        <text class="sum-num">{{total}}</text>
+      </view>
+      <view class="sum-block right">
+        <text class="eyebrow">每人</text>
+        <text class="sum-num sm">{{per}}</text>
+      </view>
+    </view>
+    <view class="hairline"></view>
+    <view class="settle">{{settleText}}</view>
+    <view class="bal">
+      <view class="bal-item" wx:for="{{bal}}" wx:key="name">
+        <text class="bal-name">{{item.name}}</text>
+        <text class="bal-v {{item.pos ? 'pos' : 'neg'}}">{{item.v}}</text>
+        <text class="bal-note">{{item.pos ? '先垫的' : '该给的'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 记一笔 -->
+  <view class="card">
+    <view class="section-label">记一笔</view>
+    <view class="amount-row">
+      <input class="amount" type="digit" placeholder="金额" value="{{form.amount}}" bindinput="onAmount" />
+      <picker mode="selector" range="{{currencyOptions}}" value="{{currencyIndex}}" bindchange="onCurrency">
+        <view class="pick">{{currencyOptions[currencyIndex]}} ▾</view>
+      </picker>
+    </view>
+
+    <view class="pickers">
+      <picker mode="selector" range="{{cats}}" range-key="label" value="{{catIndex}}" bindchange="onCat">
+        <view class="pick">{{cats[catIndex].label}} ▾</view>
+      </picker>
+      <picker mode="selector" range="{{payerOptions}}" range-key="label" value="{{payerIndex}}" bindchange="onPayer">
+        <view class="pick">{{payerOptions[payerIndex].label}} 付 ▾</view>
+      </picker>
+      <picker mode="selector" range="{{splitOptions}}" range-key="label" value="{{splitIndex}}" bindchange="onSplit">
+        <view class="pick">{{splitOptions[splitIndex].label}} ▾</view>
+      </picker>
+    </view>
+
+    <view class="note-row">
+      <input class="note" placeholder="备注（可选）" value="{{form.note}}" bindinput="onNote" maxlength="40" />
+      <picker mode="date" value="{{form.date}}" bindchange="onDate">
+        <view class="pick date">{{form.date}}</view>
+      </picker>
+    </view>
+
+    <view class="btn-primary add" bindtap="add">记上</view>
+    <view class="rate-note">人民币按预算汇率 {{rate}} 折算，只在这里换算，不改账。</view>
+  </view>
+
+  <!-- 明细 -->
+  <view class="card" wx:if="{{list.length}}">
+    <view class="section-label">明细 {{list.length}} 笔</view>
+    <view class="row" wx:for="{{list}}" wx:key="id">
+      <view class="row-l">
+        <text class="row-main">{{item.label}}</text>
+        <text class="row-sub">{{item.date}} · {{item.payer}} 付 · {{item.split}}</text>
+      </view>
+      <view class="row-r">
+        <text class="row-amt">{{item.amount}}</text>
+        <text class="row-usd" wx:if="{{item.usd !== item.amount}}">≈ {{item.usd}}</text>
+        <text class="row-del" data-id="{{item.id}}" catchtap="del">删</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:else>还没有账。第一笔从球票或晚饭开始。</view>
+</view>

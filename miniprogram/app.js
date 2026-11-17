@@ -5,7 +5,7 @@ import { getState } from './shared/state.js';
 App({
   globalData: {
     trips: TRIPS,
-    version: '0.2.0',
+    version: '0.3.1',
     brand: '行前行后'
   },
   onLaunch() {

@@ -1,0 +1,27 @@
+<view class="wrap">
+  <view class="tabs">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="tab {{tab === item.key ? 'on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="pick"
+    >{{item.label}}</view>
+  </view>
+
+  <view class="stage" wx:if="{{card}}" bindtap="next">
+    <view class="big">{{card.big}}</view>
+    <view class="small">{{card.small}}</view>
+  </view>
+  <view class="stage" wx:else>
+    <view class="big">没有卡片</view>
+  </view>
+
+  <view class="bar">
+    <view class="nav-btn" bindtap="prev">‹</view>
+    <view class="dots">{{index + 1}} / {{count}}</view>
+    <view class="nav-btn" bindtap="next">›</view>
+    <view class="copy" bindtap="copy">复制</view>
+  </view>
+  <view class="hint">点一下大屏翻下一页；手机横过来字更大，屏幕不会自动熄灭。</view>
+</view>

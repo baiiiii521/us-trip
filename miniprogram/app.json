@@ -7,6 +7,11 @@
     "pages/poi/poi",
     "pages/eats/eats",
     "pages/money/money",
+    "pages/ledger/ledger",
+    "pages/wallet/wallet",
+    "pages/cards/cards",
+    "pages/tickets/tickets",
+    "pages/drive/drive",
     "pages/more/more"
   ],
   "window": {

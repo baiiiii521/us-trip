@@ -1,9 +1,17 @@
 <view class="page-pad" wx:if="{{poi}}">
-  <!-- 封面：暂时用城市色的排印块，维基照片要经服务器中转，下一版接 -->
-  <view class="cover" style="background:{{poi.coverColor}}">
+  <!-- 封面：维基首图（构建时抓好的地址），加载失败退回城市色排印块 -->
+  <image
+    wx:if="{{poi.photo}}"
+    class="hero"
+    src="{{poi.photo.src}}"
+    mode="aspectFill"
+    binderror="onPhotoError"
+  />
+  <view class="cover" wx:else style="background:{{poi.coverColor}}">
     <text class="cover-en">{{poi.en}}</text>
     <text class="cover-city">{{poi.cityZh}} · {{poi.catZh}}</text>
   </view>
+  <view class="credit" wx:if="{{poi.photo && poi.credit}}">图片：{{poi.credit}}</view>
 
   <view class="title">{{poi.name}}</view>
   <view class="tag">{{poi.tag}}</view>
@@ -37,7 +45,7 @@
     </view>
   </view>
 
-  <view class="foot-note">照片下一版接入（维基图片要经我们自己服务器中转，小程序不能直接加载国外域名）。</view>
+  <view class="foot-note">图片来自维基百科 / 维基共享资源，点击标题可在浏览器查看原图。文字内容与 trip.byb521.com 同源。</view>
 </view>
 
 <view class="page-pad" wx:else>

@@ -1,0 +1,62 @@
+<view class="page-pad">
+  <view class="lead">确认号随手存这里。截图只留在本机，跟着手机走，不进云同步。</view>
+
+  <view wx:for="{{groups}}" wx:key="key">
+    <view class="group-head">{{item.label}}</view>
+    <view class="card slot" wx:for="{{item.items}}" wx:key="id" wx:for-item="s">
+      <view class="slot-top" bindtap="edit" data-id="{{s.id}}">
+        <view class="slot-l">
+          <text class="slot-title">{{s.title}}</text>
+          <text class="slot-hint" wx:if="{{s.hint}}">{{s.hint}}</text>
+        </view>
+        <text class="slot-md" wx:if="{{s.md}}">{{s.md}}</text>
+      </view>
+
+      <view class="slot-val" wx:if="{{s.v}}" bindtap="copyV" data-v="{{s.v}}">
+        <text class="v">{{s.v}}</text>
+        <text class="copy">点一下复制</text>
+      </view>
+      <view class="slot-empty" wx:else bindtap="edit" data-id="{{s.id}}">还没填确认号 · 点这里填</view>
+
+      <view class="slot-foot">
+        <text class="slot-shots">{{s.shots ? s.shots + ' 张截图' : '没有截图'}}</text>
+        <text class="slot-edit" bindtap="edit" data-id="{{s.id}}">编辑</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="foot-note">截图存在小程序的本地文件里，最多 6 张/格；换手机不会自动带走。</view>
+</view>
+
+<!-- 编辑弹层 -->
+<view class="mask" wx:if="{{editing}}" bindtap="cancel"></view>
+<view class="sheet" wx:if="{{editing}}">
+  <view class="sheet-title">{{editing.title}}</view>
+  <view class="sheet-hint" wx:if="{{editing.hint}}">{{editing.hint}}</view>
+
+  <view class="field">
+    <text class="field-label">确认号 / 订单号</text>
+    <input class="field-input" value="{{form.v}}" bindinput="onV" placeholder="例如确认号、房号、座位" />
+  </view>
+  <view class="field">
+    <text class="field-label">备注</text>
+    <input class="field-input" value="{{form.note}}" bindinput="onNote" placeholder="可选" maxlength="60" />
+  </view>
+
+  <view class="shot-row">
+    <view class="btn-ghost shot-btn" bindtap="addShot">＋ 加截图</view>
+    <text class="shot-count">{{editing.shots.length}} 张</text>
+  </view>
+
+  <view class="shots" wx:if="{{editing.shots.length}}">
+    <view class="shot" wx:for="{{editing.shots}}" wx:key="*this" wx:for-item="p">
+      <image class="shot-img" src="{{p}}" mode="aspectFill" data-src="{{p}}" data-id="{{editing.id}}" bindtap="previewShot" />
+      <text class="shot-del" data-src="{{p}}" data-id="{{editing.id}}" catchtap="removeShot">×</text>
+    </view>
+  </view>
+
+  <view class="sheet-actions">
+    <view class="btn-ghost half" bindtap="cancel">取消</view>
+    <view class="btn-primary half" bindtap="save">保存</view>
+  </view>
+</view>

@@ -1,0 +1,59 @@
+<view class="page-pad">
+  <view class="card">
+    <view class="section-label">当前方案</view>
+    <view class="plan">{{rentLabel}}</view>
+    <view class="hairline"></view>
+    <view class="kv"><text class="k">车型</text><text class="val">{{rental.car}}</text></view>
+    <view class="kv"><text class="k">租期</text><text class="val">{{rental.from}} – {{rental.to}}（{{rental.days}} 天）</text></view>
+    <view class="kv"><text class="k">含</text><text class="val">{{termsText}}</text></view>
+  </view>
+
+  <view class="card" wx:if="{{pickup}}">
+    <view class="section-label">取车 {{pickup.md}} {{pickup.at}}</view>
+    <view class="strong">{{pickup.place}}</view>
+    <view class="body-text mt">{{pickup.how}}</view>
+    <view class="btn-primary mt" bindtap="navPickup">导航到取车点</view>
+  </view>
+
+  <view class="card">
+    <view class="section-label">还车 {{dropoff.md}} {{dropoff.at}}</view>
+    <view class="strong">{{dropoff.place}}</view>
+    <view class="body-text mt">{{dropoff.how}}</view>
+    <view class="warn mt">{{dropoff.why}}</view>
+    <view class="note mt">{{dropoff.hours}}</view>
+    <view class="note">{{dropoff.toll}}</view>
+    <view class="btn-ghost mt" bindtap="navDropoff">导航到还车门店</view>
+  </view>
+
+  <view class="section-label block">四段路</view>
+  <view class="card drive" wx:for="{{drives}}" wx:key="id">
+    <view class="drive-top">
+      <text class="drive-name">{{item.from}} → {{item.to}}</text>
+      <text class="drive-mi">{{item.mi}} 英里</text>
+    </view>
+    <view class="drive-h">{{item.h}} · 过路费约 ${{item.toll}}</view>
+    <view class="drive-route">{{item.route}}</view>
+    <view class="drive-via" wx:if="{{item.via}}" data-q="{{item.via}}" bindtap="navVia">途经：{{item.via}}</view>
+    <view class="drive-stops">
+      <text class="stop" wx:for="{{item.stops}}" wx:key="*this" wx:for-item="s">{{s}}</text>
+    </view>
+    <view class="drive-risk" wx:if="{{item.risk}}">{{item.risk}}</view>
+    <view class="drive-toll" wx:if="{{item.tollNote}}">{{item.tollNote}}</view>
+  </view>
+
+  <view class="section-label block">停车</view>
+  <view class="card">
+    <view class="kv" wx:for="{{parking}}" wx:key="city">
+      <text class="k">{{item.zh}}</text>
+      <text class="val">${{item.nightly}}/晚 · {{item.note}}</text>
+    </view>
+    <view class="note">租车公司代扣过路费另收一次服务费，约 ${{tollFee}} 封顶；油按 ${{gas.usdPerGal}}/加仑、{{gas.mpg}} 英里/加仑估。</view>
+    <view class="btn-ghost mt" bindtap="soon">车停在哪（拍照记位置）</view>
+  </view>
+
+  <view class="section-label block">自驾须知</view>
+  <view class="card" wx:for="{{guide}}" wx:key="group">
+    <view class="guide-group">{{item.group}}</view>
+    <view class="guide-item" wx:for="{{item.items}}" wx:key="*this" wx:for-item="t">{{t}}</view>
+  </view>
+</view>

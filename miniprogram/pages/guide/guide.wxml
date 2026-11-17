@@ -23,16 +23,28 @@
 
   <view class="count">{{total}} 个地方</view>
 
-  <view class="card poi-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="open">
-    <view class="poi-head">
-      <text class="poi-name">{{item.name}}</text>
-      <text class="poi-cat">{{item.cat}}</text>
+  <view class="card poi-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="open" hover-class="poi-hover">
+    <image
+      wx:if="{{item.photo}}"
+      class="poi-thumb"
+      src="{{item.photo}}"
+      mode="aspectFill"
+      lazy-load="{{true}}"
+    />
+    <view class="poi-fallback" wx:else style="background:{{item.color}}">
+      <text class="poi-fallback-t">{{item.name}}</text>
     </view>
-    <view class="poi-en">{{item.en}}</view>
-    <view class="poi-tag">{{item.tag}}</view>
-    <view class="poi-days" wx:if="{{item.days.length}}">
-      <text class="poi-day" wx:for="{{item.days}}" wx:key="*this" wx:for-item="d">{{d}}</text>
-      <text class="poi-day-note">去这几天</text>
+    <view class="poi-info">
+      <view class="poi-head">
+        <text class="poi-name">{{item.name}}</text>
+        <text class="poi-cat">{{item.cat}}</text>
+      </view>
+      <view class="poi-en">{{item.en}}</view>
+      <view class="poi-tag">{{item.tag}}</view>
+      <view class="poi-days" wx:if="{{item.days.length}}">
+        <text class="poi-day" wx:for="{{item.days}}" wx:key="*this" wx:for-item="d">{{d}}</text>
+        <text class="poi-day" wx:if="{{item.moreDays}}">+{{item.moreDays}}</text>
+      </view>
     </view>
   </view>
 

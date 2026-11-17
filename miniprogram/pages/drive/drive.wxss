@@ -1,0 +1,149 @@
+.section-label {
+  font-size: 24rpx;
+  letter-spacing: 0.1em;
+  color: #5E6A76;
+  margin-bottom: 10rpx;
+}
+
+.section-label.block {
+  padding: 22rpx 4rpx 10rpx;
+}
+
+.plan {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #C04A0A;
+}
+
+.kv {
+  display: flex;
+  gap: 18rpx;
+  padding: 9rpx 0;
+}
+
+.k {
+  flex: none;
+  width: 90rpx;
+  font-size: 23rpx;
+  color: #5E6A76;
+}
+
+.val {
+  flex: 1;
+  font-size: 25rpx;
+  color: #16202B;
+  line-height: 1.5;
+}
+
+.strong {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #16202B;
+  line-height: 1.45;
+}
+
+.mt {
+  margin-top: 14rpx;
+}
+
+.warn {
+  font-size: 25rpx;
+  color: #8A5A0B;
+  background: rgba(138, 90, 11, 0.08);
+  border-radius: 12rpx;
+  padding: 14rpx;
+  line-height: 1.55;
+}
+
+.note {
+  font-size: 22rpx;
+  color: #A3ADB8;
+  line-height: 1.55;
+  margin-top: 8rpx;
+}
+
+.drive {
+  padding: 20rpx 22rpx;
+}
+
+.drive-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.drive-name {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.drive-mi {
+  font-size: 22rpx;
+  color: #C04A0A;
+}
+
+.drive-h {
+  font-size: 23rpx;
+  color: #5E6A76;
+  margin-top: 4rpx;
+}
+
+.drive-route {
+  font-size: 23rpx;
+  color: #33404C;
+  line-height: 1.55;
+  margin-top: 10rpx;
+}
+
+.drive-via {
+  margin-top: 10rpx;
+  font-size: 23rpx;
+  color: #1F4E8C;
+  background: rgba(31, 78, 140, 0.07);
+  border-radius: 10rpx;
+  padding: 10rpx 14rpx;
+}
+
+.drive-stops {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-top: 10rpx;
+}
+
+.stop {
+  font-size: 21rpx;
+  color: #33404C;
+  background: #EEF1F4;
+  border-radius: 8rpx;
+  padding: 6rpx 12rpx;
+}
+
+.drive-risk {
+  margin-top: 10rpx;
+  font-size: 23rpx;
+  color: #8A5A0B;
+  line-height: 1.55;
+}
+
+.drive-toll {
+  margin-top: 8rpx;
+  font-size: 21rpx;
+  color: #A3ADB8;
+  line-height: 1.5;
+}
+
+.guide-group {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #16202B;
+  margin-bottom: 8rpx;
+}
+
+.guide-item {
+  font-size: 24rpx;
+  color: #33404C;
+  line-height: 1.6;
+  padding: 6rpx 0;
+}

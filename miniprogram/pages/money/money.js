@@ -27,5 +27,9 @@ Page({
       groups,
       rows: rows.map((r) => ({ label: r.label, usd: money(r.amount), kind: KIND[r.kind] || '' }))
     });
+  },
+
+  toLedger() {
+    wx.navigateTo({ url: '/pages/ledger/ledger' });
   }
 });

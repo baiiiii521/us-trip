@@ -89,3 +89,7 @@
 .note-card {
   border-style: dashed;
 }
+
+.mt {
+  margin-top: 18rpx;
+}

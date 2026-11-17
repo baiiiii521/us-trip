@@ -1,0 +1,142 @@
+.lead {
+  font-size: 24rpx;
+  color: #5E6A76;
+  line-height: 1.6;
+  padding: 8rpx 4rpx 16rpx;
+}
+
+.section-label {
+  font-size: 24rpx;
+  letter-spacing: 0.1em;
+  color: #5E6A76;
+  padding: 20rpx 4rpx 12rpx;
+}
+
+.pill-warn {
+  background: rgba(138, 90, 11, 0.12);
+  color: #8A5A0B;
+}
+
+.game {
+  padding: 22rpx 24rpx;
+}
+
+.game-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.game-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #16202B;
+}
+
+.game-when {
+  display: block;
+  font-size: 23rpx;
+  color: #5E6A76;
+  margin-top: 4rpx;
+}
+
+.game-meta {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-top: 12rpx;
+  font-size: 23rpx;
+}
+
+.game-arena {
+  color: #33404C;
+}
+
+.game-price {
+  color: #C04A0A;
+}
+
+.game-nav {
+  margin-left: auto;
+  color: #1F4E8C;
+  border: 1rpx solid rgba(31, 78, 140, 0.3);
+  border-radius: 12rpx;
+  padding: 8rpx 16rpx;
+  font-size: 22rpx;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 14rpx;
+}
+
+.link {
+  font-size: 23rpx;
+  color: #33404C;
+  background: #EEF1F4;
+  border-radius: 10rpx;
+  padding: 10rpx 18rpx;
+}
+
+.plat {
+  padding: 20rpx 22rpx;
+}
+
+.plat-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.plat-name {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.plat-copy {
+  font-size: 21rpx;
+  color: #C04A0A;
+}
+
+.plat-note {
+  margin-top: 6rpx;
+  font-size: 23rpx;
+  color: #5E6A76;
+  line-height: 1.55;
+}
+
+.vendors {
+  padding: 8rpx 22rpx;
+}
+
+.vendor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid rgba(22, 32, 43, 0.07);
+}
+
+.vendor:last-child {
+  border-bottom: none;
+}
+
+.vendor-name {
+  font-size: 26rpx;
+  color: #16202B;
+}
+
+.vendor-copy {
+  font-size: 21rpx;
+  color: #A3ADB8;
+}
+
+.foot-note {
+  font-size: 21rpx;
+  color: #A3ADB8;
+  line-height: 1.6;
+  padding: 20rpx 4rpx 40rpx;
+}

@@ -45,13 +45,49 @@
 }
 
 .poi-card {
-  padding: 22rpx 24rpx;
+  padding: 0;
+  display: flex;
+  gap: 0;
+  overflow: hidden;
+}
+
+.poi-hover {
+  opacity: 0.92;
+}
+
+.poi-thumb {
+  width: 200rpx;
+  height: 200rpx;
+  flex: none;
+  background: #EEF1F4;
+}
+
+.poi-fallback {
+  width: 200rpx;
+  height: 200rpx;
+  flex: none;
+  padding: 16rpx;
+  display: flex;
+  align-items: flex-end;
+}
+
+.poi-fallback-t {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 21rpx;
+  line-height: 1.3;
+}
+
+.poi-info {
+  flex: 1;
+  padding: 18rpx 20rpx;
+  min-width: 0;
 }
 
 .poi-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  gap: 8rpx;
 }
 
 .poi-name {

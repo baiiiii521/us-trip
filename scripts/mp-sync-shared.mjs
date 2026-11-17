@@ -5,7 +5,7 @@
 // 用法：node scripts/mp-sync-shared.mjs [--check]
 //   --check 只比对不写入，发现不一致就以退出码 1 结束（测试里用）。
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, rmSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const repo = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -15,6 +15,8 @@ const checkOnly = process.argv.includes('--check');
 
 // 共用清单：数据全部共用；lib 只挑不碰浏览器的
 const LIB_FILES = ['calc.js', 'today.js', 'extras.js', 'route.js', 'tools.js', 'index.js', 'geo.js', 'exif.js', 'money.js', 'store.js'];
+// 这些文件由别的脚本生成，同步时不要当成「多余的」删掉
+const KEEP = new Set(['data/photos.js']);
 // 这些文件里出现浏览器 API 就说明挑错了，同步时直接报错
 const BROWSER_API = /\b(window\.|document\.|localStorage\b|indexedDB\b|navigator\.|requestAnimationFrame\b|new Notification\b)/;
 
@@ -83,7 +85,7 @@ if (existsSync(OUT)) {
     return existsSync(p) && !f.includes('.') ? walk(p) : [p];
   });
   for (const p of walk(OUT)) {
-    if (!wanted.has(p) && !p.endsWith('.DS_Store')) stale.push(p);
+    if (!wanted.has(p) && !p.endsWith('.DS_Store') && !KEEP.has(relative(OUT, p))) stale.push(p);
   }
 }
 

@@ -3,8 +3,10 @@ import { CITIES, CATEGORIES } from '../../shared/data/trip.js';
 import { buildDays } from '../../shared/data/days.js';
 import { getState } from '../../shared/state.js';
 import { poiAppearances } from '../../shared/lib/index.js';
+import { thumbOf } from '../../lib/photos.js';
 
 const CITY_ORDER = ['bos', 'nyc', 'phl', 'dc', 'la'];
+const CITY_COLOR = { bos: '#1E7A4C', dc: '#2B4C8C', phl: '#1D6FB8', nyc: '#C04A0A', la: '#0E8A8A' };
 
 Page({
   data: {
@@ -40,8 +42,10 @@ Page({
         tag: p.tag || '',
         city: CITIES[p.city] ? CITIES[p.city].zh : '',
         cat: CATEGORIES[p.cat] || '',
-        days: (appears[p.id] || []).map((d) => d.md),
-        hasLL: true
+        days: (appears[p.id] || []).map((d) => d.md).slice(0, 4),
+        moreDays: Math.max(0, (appears[p.id] || []).length - 4),
+        photo: thumbOf(p.id, 480),
+        color: CITY_COLOR[p.city] || '#16202B'
       }));
 
     this.setData({ list, total: list.length });

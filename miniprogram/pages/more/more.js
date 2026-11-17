@@ -58,5 +58,11 @@ Page({
 
   soon(e) {
     wx.showToast({ title: `${e.currentTarget.dataset.name} 下一版接入`, icon: 'none' });
+  },
+
+  go(e) {
+    const { url } = e.currentTarget.dataset;
+    if (!url) return;
+    wx.navigateTo({ url });
   }
 });

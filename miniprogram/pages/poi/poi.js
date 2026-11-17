@@ -5,6 +5,7 @@ import { getState } from '../../shared/state.js';
 import { buildDays } from '../../shared/data/days.js';
 import { poiAppearances } from '../../shared/lib/index.js';
 import { openTarget, poiTarget } from '../../lib/nav.js';
+import { photoOf, creditLine } from '../../lib/photos.js';
 
 const BY_ID = new Map(POIS.map((p) => [p.id, p]));
 const CITY_COLOR = { bos: '#1E7A4C', dc: '#2B4C8C', phl: '#1D6FB8', nyc: '#C04A0A', la: '#0E8A8A' };
@@ -25,6 +26,8 @@ Page({
         cityZh: CITIES[p.city] ? CITIES[p.city].zh : '',
         catZh: CATEGORIES[p.cat] || '',
         coverColor: CITY_COLOR[p.city] || '#16202B',
+        photo: photoOf(p.id),
+        credit: creditLine(p.id),
         highlights: p.highlights || []
       },
       days: (appears[p.id] || []).map((d) => ({ id: d.id, md: d.md, wd: d.wd, title: d.title || '' })),
@@ -46,5 +49,10 @@ Page({
 
   jumpDay(e) {
     wx.redirectTo({ url: `/pages/days/days?day=${e.currentTarget.dataset.id}` });
+  },
+
+  onPhotoError() {
+    // 图挂了就用城市色块顶上，别留一个白框
+    this.setData({ 'poi.photo': null });
   }
 });

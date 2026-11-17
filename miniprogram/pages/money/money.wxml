@@ -28,8 +28,9 @@
   </view>
 
   <view class="card note-card">
-    <view class="section-label">记账还没搬过来</view>
-    <view class="body-text">这一页现在只读：数字来自网站的预算表（改预算在网站的花费页改）。记账、两人 AA 结算、结账计算器排在下一版——数据和算法已经共用，只差界面。</view>
+    <view class="section-label">记账在另一页</view>
+    <view class="body-text">这一页是预算（只读，数字跟着网站的预算表走）。记一笔、两人 AA 结算、谁给谁多少，点下面这个。</view>
+    <view class="btn-primary mt" bindtap="toLedger">记账与结算</view>
   </view>
 </view>
 
