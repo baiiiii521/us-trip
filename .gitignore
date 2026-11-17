@@ -25,3 +25,9 @@ video/intro3d/tools/
 video/intro3d/.om/
 video/intro3d/assets/sound.wav
 video/intro3d/assets/gen/codex.log
+
+# 地理编码缓存（结果已生成到 miniprogram/shared/data/*.js，缓存本身不用进仓库）
+.cache/
+
+# 本机 agent 运行时目录
+.omh/

@@ -139,3 +139,51 @@ git clone https://github.com/baiiiii521/us-trip.git && cd us-trip && bash deploy
 `deploy/server.mjs` 同时提供网页和 `/api/sync`（云同步，数据存在 `data/` 目录，只有密文）。端口用 `PORT` 改，默认 8080。
 前面用 nginx 反代并配 HTTPS：参考 `deploy/nginx.conf`；systemd 服务参考 `deploy/us-trip.service`。离线缓存、通知、添加到主屏幕都要求 HTTPS。
 更新：`git pull && bash deploy/deploy.sh`。
+
+## 接手开发（给本机其他 agent）
+
+仓库：`https://github.com/baiiiii521/us-trip`（分支 `main`）。这是完整工程，不是只读快照。
+
+```bash
+git clone https://github.com/baiiiii521/us-trip.git && cd us-trip
+npm install
+npm test            # 112 项：数据一致性、隐私扫描、页面装载、跳转守门
+npm run build       # 产出 dist/（网站）
+```
+
+目录分工：
+
+| 路径 | 是什么 | 改这里要不要重新生成 |
+| --- | --- | --- |
+| `src/` | 网站 + 数据的**唯一真源**（data / lib / views / styles） | 改完跑 `node scripts/mp-sync-shared.mjs` |
+| `miniprogram/` | 微信小程序（原生，无 web-view） | `miniprogram/shared/` 是生成物，**不要手改** |
+| `scripts/` | 同步、抓图、地理编码、隐私扫描、上传 | — |
+| `tests/` | 上面那些守门测试 | 加功能请同时加测试 |
+| `AGENT_HANDOFF.md` | 交接记录：小程序章节、上传命令、设计系统五条硬规则 | 有结构性改动就补一段 |
+
+小程序数据流（重要）：`src/data|lib` → `node scripts/mp-sync-shared.mjs` → `miniprogram/shared/`。`photos.js` / `geo.js` / `places.js` / `heroes.js` 是**生成物但在 KEEP 白名单里**，同步不会删；要更新它们跑对应脚本：
+
+```bash
+node scripts/mp-photos.mjs         # 68 个景点的维基首图 + 许可
+node scripts/mp-geocode.mjs        # 行程里的英文地址 → 经纬度
+node scripts/mp-geocode-alias.mjs  # 正文里常见地名 → 经纬度
+node scripts/mp-heroes.mjs         # 城市横幅大图（1600/1920 宽）
+node scripts/mp-assets.py          # 地图针 + 底部导航图标
+```
+
+上传小程序（需要上传密钥，**密钥不进仓库**，只放在 CI 机器 `~/.mp-ci/`）：
+
+```bash
+ssh ubuntu@49.233.168.199
+cd ~/us-trip-ci && PATH=/opt/node20/bin:$PATH \
+  node scripts/mp-upload.mjs --key ~/.mp-ci/private.wx678ed2bc735ec846.key --version 0.8.x --desc "说明"
+# 预览码：~/us-trip-ci/.mp-out/preview.png（其实是 JPEG）
+```
+
+同步代码到 CI 机器必须中转（越南→北京直连会超时）：先 rsync 到 `43.153.33.188:/tmp/us-trip-mp/`，再由它 rsync 到 `49.233.168.199:~/us-trip-ci/miniprogram/`。
+
+隐私红线：护照号、PNR、票号、酒店/公寓确认号、房号**不得出现在 `miniprogram/`**；规则在 `scripts/private-patterns.json`，`npm test` 会扫。
+
+界面规范：`miniprogram/app.wxss` 是设计系统（字号梯度、表面、材质栏、按下反馈、动效曲线），页面只引用不重写；五条硬规则见 `AGENT_HANDOFF.md` 的「小程序设计系统」一节。
+
+尚未完成：证件包（小程序里做密码解锁，需要先验证纯 JS 的 PBKDF2+AES-GCM 能解开现有密文）、两人同步（同步码 + 加密云同步）、订阅消息提醒（要后端存 openid + 模板审核）、回忆（照片导入 / 回忆视频 / 分享卡）。

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>行前行后 · 头像</title>
+<style>
+  @font-face { font-family: "Noto Sans SC"; src: url("../../../video/intro3d/assets/fonts/NotoSansSC-900.woff") format("woff"); font-weight: 900; }
+  @font-face { font-family: "Noto Sans SC"; src: url("../../../video/intro3d/assets/fonts/NotoSansSC-700.woff") format("woff"); font-weight: 700; }
+  html, body { margin: 0; width: 1024px; height: 1024px; overflow: hidden; background: transparent; }
+  svg { display: block; width: 1024px; height: 1024px; }
+  .v { display: none; }
+  body.a .va, body.b .vb, body.c .vc { display: block; }
+</style>
+</head>
+<body>
+<!-- 三个方案，靠 #a / #b / #c 切换。内容都放在中间的圆里：微信很多地方把头像裁成圆形 -->
+
+<!-- A · 字：两行四个字，中间一条从空心点走到实心点的虚线 -->
+<svg class="v va" viewBox="0 0 1024 1024">
+  <defs><linearGradient id="ga" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D4580F"/><stop offset="1" stop-color="#B0400A"/></linearGradient></defs>
+  <rect width="1024" height="1024" fill="url(#ga)"/>
+  <text x="512" y="452" text-anchor="middle" font-family="Noto Sans SC" font-weight="900" font-size="292" fill="#FFF8F0" letter-spacing="8">行前</text>
+  <text x="512" y="806" text-anchor="middle" font-family="Noto Sans SC" font-weight="900" font-size="292" fill="#FFF8F0" letter-spacing="8">行后</text>
+  <circle cx="286" cy="528" r="17" fill="none" stroke="#FFF8F0" stroke-width="9"/>
+  <line x1="322" y1="528" x2="704" y2="528" stroke="#FFF8F0" stroke-width="9" stroke-linecap="round" stroke-dasharray="1 30"/>
+  <circle cx="738" cy="528" r="22" fill="#FFF8F0"/>
+</svg>
+
+<!-- B · 路线：空心起点 → 虚线弧 → 落地的定位点，像一趟旅程从出发到抵达 -->
+<svg class="v vb" viewBox="0 0 1024 1024">
+  <defs><linearGradient id="gb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D4580F"/><stop offset="1" stop-color="#B0400A"/></linearGradient></defs>
+  <rect width="1024" height="1024" fill="url(#gb)"/>
+  <path d="M270 700 C 300 380, 640 300, 720 470" fill="none" stroke="#FFF8F0" stroke-width="30" stroke-linecap="round" stroke-dasharray="1 62"/>
+  <circle cx="270" cy="700" r="58" fill="none" stroke="#FFF8F0" stroke-width="30"/>
+  <path d="M752 330 c-92 0-150 70-150 150 0 104 150 252 150 252 s150-148 150-252 c0-80-58-150-150-150z" fill="#FFF8F0"/>
+  <circle cx="752" cy="482" r="54" fill="#C04A0A"/>
+</svg>
+
+<!-- C · 夜色：深蓝底，一个橙色的「行」字，底下一条路线落到实心点（和 3D 行程片同一套颜色）-->
+<svg class="v vc" viewBox="0 0 1024 1024">
+  <defs><radialGradient id="gc" cx=".5" cy=".42" r=".75"><stop offset="0" stop-color="#1B3350"/><stop offset="1" stop-color="#070C13"/></radialGradient></defs>
+  <rect width="1024" height="1024" fill="url(#gc)"/>
+  <text x="512" y="664" text-anchor="middle" font-family="Noto Sans SC" font-weight="900" font-size="520" fill="#FF7A1A">行</text>
+  <circle cx="300" cy="790" r="16" fill="none" stroke="#F4F1EA" stroke-width="8"/>
+  <line x1="334" y1="790" x2="690" y2="790" stroke="#F4F1EA" stroke-width="8" stroke-linecap="round" stroke-dasharray="1 28"/>
+  <circle cx="724" cy="790" r="20" fill="#F4F1EA"/>
+</svg>
+
+<script>
+  document.body.className = (location.hash || '#a').slice(1);
+</script>
+</body>
+</html>
